@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="学术,论文阅读,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Semantic Mapping 文献综述 1，CNN-SLAM为今年CVPR的文章，是比较完整的pipeline，将LSD-SLAM里的深度估计和图像匹配都替换成基于CNN的方法，取得了更为robust的结果，并可以融合语义信息。见ProjectCNNSLAM.类似的工作还有UnDeepVO: Monocular Visual Odometry through Unsupervised Deep">
+<meta name="keywords" content="学术,论文阅读">
+<meta property="og:type" content="article">
+<meta property="og:title" content="semantic_mapping_论文阅读">
+<meta property="og:url" content="http://yoursite.com/2018/03/26/semantic-mapping-论文阅读/index.html">
+<meta property="og:site_name" content="学步">
+<meta property="og:description" content="Semantic Mapping 文献综述 1，CNN-SLAM为今年CVPR的文章，是比较完整的pipeline，将LSD-SLAM里的深度估计和图像匹配都替换成基于CNN的方法，取得了更为robust的结果，并可以融合语义信息。见ProjectCNNSLAM.类似的工作还有UnDeepVO: Monocular Visual Odometry through Unsupervised Deep">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-02-18T16:19:05.809Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="semantic_mapping_论文阅读">
+<meta name="twitter:description" content="Semantic Mapping 文献综述 1，CNN-SLAM为今年CVPR的文章，是比较完整的pipeline，将LSD-SLAM里的深度估计和图像匹配都替换成基于CNN的方法，取得了更为robust的结果，并可以融合语义信息。见ProjectCNNSLAM.类似的工作还有UnDeepVO: Monocular Visual Odometry through Unsupervised Deep">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/03/26/semantic-mapping-论文阅读/">
+
+
+
+
+
+  <title>semantic_mapping_论文阅读 | 学步</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">学步</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-编程">
+          <a href="/categories/programming" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            编程
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-学术">
+          <a href="/categories/science" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            学术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-理论">
+          <a href="/categories/theory" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            理论
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-其他">
+          <a href="/categories/other" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            其他
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/26/semantic-mapping-论文阅读/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Xiaoqiang Teng">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="学步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">semantic_mapping_论文阅读</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-26T15:36:34+08:00">
+                2018-03-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/science/" itemprop="url" rel="index">
+                    <span itemprop="name">学术</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/science/论文阅读/" itemprop="url" rel="index">
+                    <span itemprop="name">论文阅读</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/science/论文阅读/Semantic-Mapping/" itemprop="url" rel="index">
+                    <span itemprop="name">Semantic Mapping</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Semantic-Mapping-文献综述"><a href="#Semantic-Mapping-文献综述" class="headerlink" title="Semantic Mapping 文献综述"></a>Semantic Mapping 文献综述</h1><blockquote>
+<p>1，CNN-SLAM为今年CVPR的文章，是比较完整的pipeline，将LSD-SLAM里的深度估计和图像匹配都替换成基于CNN的方法，取得了更为robust的结果，并可以融合语义信息。见<a href="http://campar.in.tum.de/Chair/ProjectCNNSLAM" target="_blank" rel="noopener">ProjectCNNSLAM</a>.类似的工作还有UnDeepVO: Monocular Visual Odometry through Unsupervised Deep Learning。 问题在于准确度非常低。做过benchmark，基于单帧彩色照片进行距离信息预测，在室内每个像素的平均误差约50cm，在室外平均误差则高达７米以上。一篇投ICRA的工作结合少量的距离信息和彩色信息进行距离图像预测，效果比单纯用彩色照片准确得多且鲁棒性强。这个方法可以帮助传统SLAM从稀疏点云快速生成密集的点云，也可以用在激光雷达的超分辨率上。代码已开源<a href="https://github.com/fangchangma/sparse-to-dense" target="_blank" rel="noopener">sparse-to-dense</a>,论文：Sparse-to-Dense: Depth Prediction from Sparse Depth Samples and a Single Image <br><br></p>
+<ol start="2">
+<li>VINet是AAAI2017的文章，利用CNN和RNN构建了一个VIO，即输入image和IMU信息，直接输出估计的pose。 <br><br></li>
+<li>Unsupervised learning of depth and ego-motion from video是Google CVPR 2017的oral文章，利用CNN学习一个无监督的深度估计和pose估计网络，代码见<a href="https://github.com/tinghuiz/SfMLearner.git" target="_blank" rel="noopener">SfMLearner</a>.SfM-Net利用监督学习也干了类似的工作。 <br><br></li>
+<li>重定位PoseNet和Delving deeper into convolutional neural networks for camera relocalization <br></li>
+<li>语义地图 Semi-Dense 3D Semantic Mapping from Monocular SLAM <br><br></li>
+<li>哪怕在传统基于特征点的SLAM已经能做到非常稳定高效的这个情况下，适合结合deep learning的科研方向还是有很多的。这其中包括 <br><blockquote>
+<ul>
+<li>提高特征点稳定性（减少outlier）和自动提取不同层级的特征点（点、线、面、物体）， <br></li>
+<li>快速生成密集的地图（而非稀疏的三维点云） <br></li>
+<li>结合语义信息和图像分割 <br></li>
+<li>生成动态地图（可以实时更新、表达动态物体） <br></li>
+<li>降低SLAM调参的难度 <br></li>
+</ul>
+</blockquote>
+</li>
+</ol>
+</blockquote>
+<blockquote>
+<p>7.跳出SLAM，说点题外话，利用深度强化学习来进行端对端的机器人导航，已经有了不错的结果。人类在环境中导航，不也是直接输入image，输出action吗？有兴趣的可以看看这两篇文章：<a href="https://arxiv.org/abs/1702.03920" target="_blank" rel="noopener">Cognitive Mapping and Planning for Visual Navigation</a>和<a href="https://arxiv.org/abs/1609.05143" target="_blank" rel="noopener">Target-driven Visual Navigation in Indoor Scenes using Deep Reinforcement Learning</a>。navigation 是更适合 DL 的一个场景。人在移动的时候，并不会建立精确的环境地图，无法具体说出障碍物距离自己多少厘米。所以，我一直有一个直觉：「navigation 应该不需要精确地图信息与定位信息」，而 DL 似乎有可能实现这一全新的方法。 navigation 是更适合 DL 的一个场景。人在移动的时候，并不会建立精确的环境地图，无法具体说出障碍物距离自己多少厘米。所以，一直有一个直觉：「navigation 应该不需要精确地图信息与定位信息」，而 DL 似乎有可能实现这一全新的方法。但是，目前所有这些工作都存在一个问题：只是训练出一个 local planner，无法实现全局的路径规划。 <br><br></p>
+<ol start="8">
+<li>语义分割和SLAM的结合还很粗糙.最简单的方式，就是跑一个pixel-wise的图像语义分割，再跑一个dense或者semi-dense的SLAM，把前者的结果map到后者的地图上去，每个像素（或者surfel）上做recursive Bayesian update，其实也就是概率累乘。参见Andrew Davison组的SemanticFusion (ICRA’17)，代码已开源。国内学者也有类似的工作，用LSD-SLAM + DeepLab v2，这个是单目的（SemanticFusion是RGB-D）,即<a href="https://arxiv.org/abs/1611.04144" target="_blank" rel="noopener">Semi-Dense 3D Semantic Mapping from Monocular SLAM</a>。这种结合方式，按某些学者的意见都不能称为semantic SLAM，只能叫semantic mapping，因为localization部分跟semantics没关系嘛。 <br><br></li>
+<li>真正的semantic SLAM，语义信息是要能够帮助定位的，比如这篇：<a href="https://pdfs.semanticscholar.org/ef4c/ffbbca79df1c1ca7891345f898812289b6cb.pdf" target="_blank" rel="noopener">Probabilistic Data Association for Semantic SLAM</a>(ICRA’17)。用object detection的结果作为SLAM前端的输入，跟ORB之类的特征互补提高定位鲁棒性。优点很明显，这下SLAM不会因为你把床收拾了一下就啥都不认识了（视觉特征都变了，但床还是床）。难点是detection结果的data association最好能跟定位联合优化，但前者是个离散问题。这篇文章用EM算法，E步考虑所有可能的association，比较粗暴，但识别物体较少的时候还不错（论文实验里只识别椅子）。上面这篇文章没有语义分割。。。map里只有稀稀拉拉的几个物体（位置和类别）。 <br><br></li>
+<li>另外，SLAM也能提升语义理解水平。前面提到的SemanticFusion和类似的工作里，融合了多个视角语义理解结果的3D地图，其中的语义标签准确率高于单帧图像得到的结果，这很容易理解。另外，通过在3D空间引入一些先验信息，比如用CRF对地图做一下diffusion，能进一步提升准确率。但CRF毕竟还是简单粗暴，如果设计更精细的滤波算法，尤其是能从真实数据中学习一些先验的话，应该效果还会更好。这方面的工作还没有。 <br><br></li>
+<li>再提一个，融合优化之后的结果如果反馈给图像语义理解算法做一下fine-tuning，那就是self-supervised learning了。这方面的工作也还没有。 <br><br></li>
+<li>接下来是语义地图怎么用的问题。对上层应用有价值的语义地图，应该包含一个个物体及其模型，而不仅是一堆标记了类别的voxel。一个比较好的例子来自IROS’17：<a href="https://arxiv.org/abs/1609.07849" target="_blank" rel="noopener">Meaningful Maps With Object-Oriented Semantic Mapping</a>不过这篇文章里的语义信息来自SSD和非神经网络的分割，还没有用端到端的语义分割网络。 <br><br></li>
+<li>另外，针对动态场景，怎样处理物体移位，怎样区别长效地图和短效地图，怎么“脑补”同类物体，这里面一堆问题可以研究。更别说地图构建出来之后如何做体现空间智能的自然语言交互和任务规划，如何reasoning了，这方面研究目前连影子都没有。 <br><br></li>
+<li>一篇很好的综述，里面也有很多关于语义SLAM的介绍：<a href="https://arxiv.org/abs/1606.05830" target="_blank" rel="noopener">Past, Present, and Future of Simultaneous Localization And Mapping: Towards the Robust-Perception Age</a> <br><br></li>
+<li>语义slam开源：<br></li>
+</ol>
+<ul>
+<li><a href="https://github.com/yuxng/DA-RNN" target="_blank" rel="noopener">DA-RNN_Semantic Mapping with Data Associated</a><br></li>
+<li><a href="https://bitbucket.org/dysonroboticslab/semanticfusion" target="_blank" rel="noopener">SemanticFusion</a><br></li>
+<li><a href="https://github.com/shichaoy/pop_up_image" target="_blank" rel="noopener">Pop-up SLAM: Semantic Monocular Plane SLAM</a>.场景理解用于改善状态估计，尤其是在低纹理区域，是目前极少的开源语义SLAM方案之一<br></li>
+</ul>
+</blockquote>
+<p>参考：</p>
+<ol>
+<li><a href="https://www.zhihu.com/question/66006923/answer/241333356" target="_blank" rel="noopener">当前深度学习和slam结合有哪些比较好的论文，有没有一些开源的代码?</a></li>
+<li><a href="https://www.zhihu.com/question/264578623/answer/283163990" target="_blank" rel="noopener">当前语义分割帮助视觉SLAM提高定位准确度，建立语义地图的研究现状如何？</a></li>
+</ol>
+<h2 id="研读论文一：CNN-SLAM-Real-time-dense-monocular-SLAM-with-learned-depth-prediction"><a href="#研读论文一：CNN-SLAM-Real-time-dense-monocular-SLAM-with-learned-depth-prediction" class="headerlink" title="研读论文一：CNN-SLAM: Real-time dense monocular SLAM with learned depth prediction"></a>研读论文一：CNN-SLAM: Real-time dense monocular SLAM with learned depth prediction</h2><blockquote>
+<p>Tateno, K., Tombari, F., Laina, I., &amp; Navab, N. (2017). CNN-SLAM: Real-time dense monocular SLAM with learned depth prediction. arXiv preprint arXiv:1704.03489.<br>CVPR 2017</p>
+</blockquote>
+<h3 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h3><ol>
+<li>本文提出了一种基于深度神经网络方法能够从单目图像中预测深度信息，用途可为弹幕图像的重建。尤其是对于纯单目重建是小的区域，如纹理不丰富的区域，效果较好。此外，相比较于单目SLAM，该深度SLAM还可提供scale。此外，该方法还融合了语义标记，来重建语义信息的场景。</li>
+<li>传统的基于深度摄像头的SLAM有如下缺点：</li>
+</ol>
+<ul>
+<li>有效工作距离较短</li>
+<li>太阳光的影响等</li>
+<li>普适性</li>
+</ul>
+<ol start="3">
+<li>双目摄像头缺点：特征丰富程度敏感</li>
+<li>鉴于卷积神经网络（CNN）深度预测的最新进展，本文研究了深度神经网络的预测深度图，可以部署用于精确和密集的单目重建。我们提出了一种方法，其中CNN预测的稠密深度图与通过直接单目SLAM获得的深度测量自然地融合在一起。我们的融合方案在图像定位中优于单目SLAM方法，例如沿低纹理区域，反之亦然。我们展示了使用深度预测来估计重建的绝对尺度，从而克服了单眼SLAM的主要局限性之一。最后，我们提出一个框架，从单个帧获得的语义标签有效地融合了密集的SLAM，从单个视图产生语义相干的场景重构。两个基准数据集的评估结果显示了我们的方法的鲁棒性和准确性</li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+        
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/学术/" rel="tag"># 学术</a>
+          
+            <a href="/tags/论文阅读/" rel="tag"># 论文阅读</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/26/numpy和pandas教程/" rel="next" title="numpy和pandas教程">
+                <i class="fa fa-chevron-left"></i> numpy和pandas教程
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/26/python多线程教程/" rel="prev" title="python多线程教程">
+                python多线程教程 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Xiaoqiang Teng</p>
+              <p class="site-description motion-element" itemprop="description">Remember what should be remembered, and forget what should be forgotten.Alter what is changeable, and accept what is mutable.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">70</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">59</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Semantic-Mapping-文献综述"><span class="nav-number">1.</span> <span class="nav-text">Semantic Mapping 文献综述</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#研读论文一：CNN-SLAM-Real-time-dense-monocular-SLAM-with-learned-depth-prediction"><span class="nav-number">1.1.</span> <span class="nav-text">研读论文一：CNN-SLAM: Real-time dense monocular SLAM with learned depth prediction</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Motivation"><span class="nav-number">1.1.1.</span> <span class="nav-text">Motivation</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiaoqiang Teng</span>
+
+  
+</div>
+
+
+
+<div class="powered-by">
+<i class="fa fa-user-md"></i><span id="busuanzi_container_site_uv">
+  本站访客数:<span id="busuanzi_value_site_uv"></span>
+</span>
+</div>
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="并发并发指的是两个或多个独立的活动在同一时段内发生。生活中并发的例子并不少，例如在跑步的时候你可能同时在听音乐；在看电脑显示器的同时你的手指在敲击键盘。这时我们称我们大脑并发地处理这些事件，只不过我们大脑的处理是有次重点的：有时候你会更关注你呼吸的频率，而有时候你更多地被美妙的音乐旋律所吸引。这时我们可以说大脑是一种并发设计的结构。这种次重点在计算机程序设计中，体现为某一个时刻只能处理一个">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++多线程教程">
+<meta property="og:url" content="http://yoursite.com/2018/09/14/C-多线程教程/index.html">
+<meta property="og:site_name" content="学步">
+<meta property="og:description" content="并发并发指的是两个或多个独立的活动在同一时段内发生。生活中并发的例子并不少，例如在跑步的时候你可能同时在听音乐；在看电脑显示器的同时你的手指在敲击键盘。这时我们称我们大脑并发地处理这些事件，只不过我们大脑的处理是有次重点的：有时候你会更关注你呼吸的频率，而有时候你更多地被美妙的音乐旋律所吸引。这时我们可以说大脑是一种并发设计的结构。这种次重点在计算机程序设计中，体现为某一个时刻只能处理一个">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-02-18T16:19:05.798Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="C++多线程教程">
+<meta name="twitter:description" content="并发并发指的是两个或多个独立的活动在同一时段内发生。生活中并发的例子并不少，例如在跑步的时候你可能同时在听音乐；在看电脑显示器的同时你的手指在敲击键盘。这时我们称我们大脑并发地处理这些事件，只不过我们大脑的处理是有次重点的：有时候你会更关注你呼吸的频率，而有时候你更多地被美妙的音乐旋律所吸引。这时我们可以说大脑是一种并发设计的结构。这种次重点在计算机程序设计中，体现为某一个时刻只能处理一个">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/09/14/C-多线程教程/">
+
+
+
+
+
+  <title>C++多线程教程 | 学步</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">学步</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-编程">
+          <a href="/categories/programming" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            编程
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-学术">
+          <a href="/categories/science" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            学术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-理论">
+          <a href="/categories/theory" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            理论
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-其他">
+          <a href="/categories/other" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            其他
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/14/C-多线程教程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Xiaoqiang Teng">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="学步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">C++多线程教程</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-14T11:24:17+08:00">
+                2018-09-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<h1 id="并发"><a href="#并发" class="headerlink" title="并发"></a>并发</h1><p>并发指的是两个或多个独立的活动在同一时段内发生。生活中并发的例子并不少，例如在跑步的时候你可能同时在听音乐；在看电脑显示器的同时你的手指在敲击键盘。这时我们称我们大脑并发地处理这些事件，只不过我们大脑的处理是有次重点的：有时候你会更关注你呼吸的频率，而有时候你更多地被美妙的音乐旋律所吸引。这时我们可以说大脑是一种并发设计的结构。这种次重点在计算机程序设计中，体现为某一个时刻只能处理一个操作。</p>
+<p>与并发相近的另一个概念是并行。它们两者存在很大的差别。并行就是同时执行，计算机在同一时刻，在某个时间点上处理两个或以上的操作。判断一个程序是否并行执行，只需要看某个时刻上是否多两个或以上的工作单位在运行。一个程序如果是单线程的，那么它无法并行地运行。利用多线程与多进程可以使得计算机并行地处理程序（当然 ，前提是该计算机有多个处理核心）。</p>
+<p>并发：同一时间段内可以交替处理多个操作。</p>
+<p>并行：同一时刻内同时处理多个操作。</p>
+<p>并发的程序设计，提供了一种方式让我们能够设计出一种方案将问题（非必须地）并行地解决。如果我们将程序的结构设计为可以并发执行的，那么在支持并行的机器上，我们可以将程序并行地执行。因此，并发重点指的是程序的设计结构，而并行指的是程序运行的状态。并发编程，是一种将一个程序分解成小片段独立执行的程序设计方法。</p>
+<h1 id="并发的基本方式途径"><a href="#并发的基本方式途径" class="headerlink" title="并发的基本方式途径"></a>并发的基本方式途径</h1><p>C++标准并没有提供对多进程并发的原生支持，所以C++的多进程并发要靠其他API——这需要依赖相关平台。<br>C++11 标准提供了一个新的线程库，内容包括了管理线程、保护共享数据、线程间的同步操作、低级原子操作等各种类。标准极大地提高了程序的可移植性，以前的多线程依赖于具体的平台，而现在有了统一的接口进行实现。</p>
+<p>C++11 新标准中引入了几个头文件来支持多线程编程：</p>
+<p>&lt; thread &gt; :包含std::thread类以及std::this_thread命名空间。管理线程的函数和类在 中声明.<br>&lt; atomic &gt; :包含std::atomic和std::atomic_flag类，以及一套C风格的原子类型和与C兼容的原子操作的函数。<br>&lt; mutex &gt; :包含了与互斥量相关的类以及其他类型和函数<br>&lt; future &gt; :包含两个Provider类（std::promise和std::package_task）和两个Future类（std::future和std::shared_future）以及相关的类型和函数。<br>&lt; condition_variable &gt; :包含与条件变量相关的类，包括std::condition_variable和std::condition_variable_any。</p>
+<h2 id="初试多线程"><a href="#初试多线程" class="headerlink" title="初试多线程"></a>初试多线程</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># <span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">cout</span>&lt;&lt;<span class="string">"hello world"</span>&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># <span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">include</span><span class="meta-string">&lt;thread&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">hello</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">cout</span>&lt;&lt;<span class="string">"hello world"</span>&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="function">thread <span class="title">t</span> <span class="params">(hello)</span></span>;</span><br><span class="line">    t.join();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>旭日东升<br>C++11 并发编程基础（一）：并发、并行与C++多线程<br>正文</p>
+<p>C++11标准在标准库中为多线程提供了组件，这意味着使用C++编写与平台无关的多线程程序成为可能，而C++程序的可移植性也得到了有力的保证。另外，并发编程可提高应用的性能，这对对性能锱铢必较的C++程序员来说是值得关注的。</p>
+<p>回到顶部</p>
+<ol>
+<li>何为并发<br>并发指的是两个或多个独立的活动在同一时段内发生。生活中并发的例子并不少，例如在跑步的时候你可能同时在听音乐；在看电脑显示器的同时你的手指在敲击键盘。这时我们称我们大脑并发地处理这些事件，只不过我们大脑的处理是有次重点的：有时候你会更关注你呼吸的频率，而有时候你更多地被美妙的音乐旋律所吸引。这时我们可以说大脑是一种并发设计的结构。这种次重点在计算机程序设计中，体现为某一个时刻只能处理一个操作。</li>
+</ol>
+<p>与并发相近的另一个概念是并行。它们两者存在很大的差别。并行就是同时执行，计算机在同一时刻，在某个时间点上处理两个或以上的操作。判断一个程序是否并行执行，只需要看某个时刻上是否多两个或以上的工作单位在运行。一个程序如果是单线程的，那么它无法并行地运行。利用多线程与多进程可以使得计算机并行地处理程序（当然 ，前提是该计算机有多个处理核心）。</p>
+<p>并发：同一时间段内可以交替处理多个操作：</p>
+<p>图中整个安检系统是一个并发设计的结构。两个安检队列队首的人竞争这一个安检窗口，两个队列可能约定交替着进行安检，也可能是大家同时竞争安检窗口（通信）。后一种方式可能引起冲突：因为无法同时进行两个安检操作。在逻辑上看来，这个安检窗口是同时处理这两个队列。</p>
+<p>并行：同一时刻内同时处理多个操作：</p>
+<p>图中整个安检系统是一个并行的系统。在这里，每个队列都有自己的安检窗口，两个队列中间没有竞争关系，队列中的某个排队者只需等待队列前面的人安检完成，然后再轮到自己安检。在物理上，安检窗口同时处理这两个队列。</p>
+<p>并发的程序设计，提供了一种方式让我们能够设计出一种方案将问题（非必须地）并行地解决。如果我们将程序的结构设计为可以并发执行的，那么在支持并行的机器上，我们可以将程序并行地执行。因此，并发重点指的是程序的设计结构，而并行指的是程序运行的状态。并发编程，是一种将一个程序分解成小片段独立执行的程序设计方法。</p>
+<p>回到顶部<br>2.并发的基本方式途径<br>多线程与多进程是并发的两种途径。<br>想象两个场景：</p>
+<p>场景一：你和小伙伴要开发一个项目，但小伙伴们放寒假都回家了，你们只能通过QQ聊天、手机通话、发送思维导图等方式来进行交流，总之你们无法很方便地进行沟通。好处是你们各自工作时可以互不打扰。<br>场景二：你和小伙伴放假都呆在学校实验室中开发项目，你们可以聚在一起使用头脑风暴，可以使用白板进行观点的阐述，总之你们沟通变得更方便有效了。有点遗憾的是你在思考时可能有小伙伴过来问你问题，你受到了打扰。<br>这两个场景描绘了并发的两种基本途径。每个小伙伴代表一个线程，工作地点代表一个处理器。场景一中每个小伙伴是一个单线程的进程，他们拥有独立的处理器，多个进程同时执行；场景二中只有一个处理器，所有小伙伴都是属于同一进程的线程。</p>
+<p>2.1 多进程并发<br>多个进程独立地运行，它们之间通过进程间常规的通信渠道传递讯息（信号，套接字，文件，管道等），这种进程间通信不是设置复杂就是速度慢，这是因为为了避免一个进程去修改另一个进程，操作系统在进程间提供了一定的保护措施，当然，这也使得编写安全的并发代码更容易。<br>运行多个进程也需要固定的开销：进程的启动时间，进程管理的资源消耗。</p>
+<p>2.2 多线程并发<br>在当个进程中运行多个线程也可以并发。线程就像轻量级的进程，每个线程相互独立运行，但它们共享地址空间，所有线程访问到的大部分数据如指针、对象引用或其他数据可以在线程之间进行传递，它们都可以访问全局变量。进程之间通常共享内存，但这种共享通常难以建立且难以管理，缺少线程间数据的保护。因此，在多线程编程中，我们必须确保每个线程锁访问到的数据是一致的。</p>
+<p>回到顶部</p>
+<ol start="3">
+<li>C++中的并发与多线程<br>C++标准并没有提供对多进程并发的原生支持，所以C++的多进程并发要靠其他API——这需要依赖相关平台。<br>C++11 标准提供了一个新的线程库，内容包括了管理线程、保护共享数据、线程间的同步操作、低级原子操作等各种类。标准极大地提高了程序的可移植性，以前的多线程依赖于具体的平台，而现在有了统一的接口进行实现。</li>
+</ol>
+<p>C++11 新标准中引入了几个头文件来支持多线程编程：</p>
+<p>&lt; thread &gt; :包含std::thread类以及std::this_thread命名空间。管理线程的函数和类在 中声明.<br>&lt; atomic &gt; :包含std::atomic和std::atomic_flag类，以及一套C风格的原子类型和与C兼容的原子操作的函数。<br>&lt; mutex &gt; :包含了与互斥量相关的类以及其他类型和函数<br>&lt; future &gt; :包含两个Provider类（std::promise和std::package_task）和两个Future类（std::future和std::shared_future）以及相关的类型和函数。<br>&lt; condition_variable &gt; :包含与条件变量相关的类，包括std::condition_variable和std::condition_variable_any。</p>
+<p>3.1 初试多线程<br>我们从一个hello开始。在单线程时：</p>
+<p>1 # include<iostream><br>2 using namespace std;<br>3 int main()<br>4 {<br>5     cout&lt;&lt;”hello world”&lt;&lt;endl;<br>6 }</iostream></p>
+<p>在这里，进行由一个线程组成，该线程的初始函数是main。我们启动第二个线程来打印hello world：</p>
+<p>按 Ctrl+C 复制代码</p>
+<h1 id="include"><a href="#include" class="headerlink" title="include"></a>include<iostream></iostream></h1><h1 id="include-1"><a href="#include-1" class="headerlink" title="include"></a>include<thread></thread></h1><p>using namespace std;<br>void hello()<br>{<br>    cout&lt;&lt;”hello world”&lt;&lt;endl;<br>}<br>int main()<br>{<br>    thread t (hello);<br>    t.join();<br>}<br>按 Ctrl+C 复制代码</p>
+<p>在这里，我们将打印hello world的语句放在函数hello中。每个线程都必须有一个初始函数，新线程的执行开始于初始函数。对于第一段程序来说，它的初始函数是main，对于我们新创建的线程，可以在std::thread()对象的构造函数中指定。<br>在第二段程序里，程序由两个线程组成：初始线程始于main，新线程始于hello。这里将新线程t的初始函数指定为hello。<br>新线程启动之后会与初始进程一并运行，初始线程可以等待或不等待新进程的运行结束——如果需要等待线程，则新线程实例需要使用join(),否则可以使用detach()。如果不等待新线程，则初始线程自顾自地运行到main()结束。<br>关于&lt; thread &gt; 我们将在下一篇中进行详解。<br>由于我们的初始线程并没有做什么事情，启动新线程后，新线程将打印出hello world。</p>
+<h1 id="使用互斥"><a href="#使用互斥" class="headerlink" title="使用互斥"></a>使用互斥</h1><p>C++中通过实例化std::mutex创建互斥量，通过调用成员函数lock()进行上锁，unlock()进行解锁。不过，不推荐实践中直接去调用成员函数，因为调用成员函数就意味着，必须记住在每个函数出口都要去调用unlock()，也包括异常的情况。C++标准库为互斥量提供了一个RAII语法的模板类std::lock_guard，其会在构造的时候提供已锁的互斥量，并在析构的时候进行解锁，从而保证了一个已锁的互斥量总是会被正确的解锁。下面的程序清单中，展示了如何在多线程程序中，使用std::mutex构造的std::lock_guard实例，对一个列表进行访问保护。std::mutex和std::lock_guard都在<mutex>头文件中声明。</mutex></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;list&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;mutex&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="built_in">std</span>::<span class="built_in">list</span>&lt;<span class="keyword">int</span>&gt; some_list;    <span class="comment">// 1</span></span><br><span class="line"><span class="built_in">std</span>::mutex some_mutex;    <span class="comment">// 2</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">add_to_list</span><span class="params">(<span class="keyword">int</span> new_value)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="built_in">std</span>::lock_guard&lt;<span class="built_in">std</span>::mutex&gt; guard(some_mutex);    <span class="comment">// 3</span></span><br><span class="line">  some_list.push_back(new_value);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">list_contains</span><span class="params">(<span class="keyword">int</span> value_to_find)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="built_in">std</span>::lock_guard&lt;<span class="built_in">std</span>::mutex&gt; guard(some_mutex);    <span class="comment">// 4</span></span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">std</span>::find(some_list.begin(),some_list.end(),value_to_find) != some_list.end();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当其中一个成员函数返回的是保护数据的指针或引用时，会破坏对数据的保护。具有访问能力的指针或引用可以访问(并可能修改)被保护的数据，而不会被互斥锁限制。互斥量保护的数据需要对接口的设计相当谨慎，要确保互斥量能锁住任何对保护数据的访问，并且不留后门。</p>
+<h1 id="使用锁"><a href="#使用锁" class="headerlink" title="使用锁"></a>使用锁</h1><p>试想有一个玩具，这个玩具由两部分组成，必须拿到这两个部分，才能够玩。例如，一个玩具鼓，需要一个鼓锤和一个鼓才能玩。现在有两个小孩，他们都很喜欢玩这个玩具。当其中一个孩子拿到了鼓和鼓锤时，那就可以尽情的玩耍了。当另一孩子想要玩，他就得等待另一孩子玩完才行。再试想，鼓和鼓锤被放在不同的玩具箱里，并且两个孩子在同一时间里都想要去敲鼓。之后，他们就去玩具箱里面找这个鼓。其中一个找到了鼓，并且另外一个找到了鼓锤。现在问题就来了，除非其中一个孩子决定让另一个先玩，他可以把自己的那部分给另外一个孩子；但当他们都紧握着自己所有的部分而不给予，那么这个鼓谁都没法玩。</p>
+<p>很幸运，C++标准库有办法解决这个问题，std::lock——可以一次性锁住多个(两个以上)的互斥量，并且没有副作用(死锁风险)。</p>
+<p>如何避免死锁？</p>
+<p>避免嵌套锁<br>第一个建议往往是最简单的：一个线程已获得一个锁时，再别去获取第二个。如果能坚持这个建议，因为每个线程只持有一个锁，锁上就不会产生死锁。</p>
+<p>使用固定顺序获取锁<br>当硬性条件要求你获取两个以上(包括两个)的锁，并且不能使用std::lock单独操作来获取它们;那么最好在每个线程上，用固定的顺序获取它们获取它们(锁)。</p>
+<h1 id="同步等待"><a href="#同步等待" class="headerlink" title="同步等待"></a>同步等待</h1><p>假设你在旅游，而且正在一辆在夜间运行的火车上。在夜间，如何在正确的站点下车呢？一种方法是整晚都要醒着，然后注意到了哪一站。这样，你就不会错过你要到达的站点，但是这样会让你感到很疲倦。另外，你可以看一下时间表，估计一下火车到达目的地的时间，然后在一个稍早的时间点上设置闹铃，然后你就可以安心的睡会了。这个方法听起来也很不错，也没有错过你要下车的站点，但是当火车晚点的时候，你就要被过早的叫醒了。当然，闹钟的电池也可能会没电了，并导致你睡过站。理想的方式是，无论是早或晚，只要当火车到站的时候，有人或其他东西能把你唤醒，就好了。</p>
+<p>C++标准库对条件变量有两套实现：std::condition_variable和std::condition_variable_any。这两个实现都包含在&lt;condition_variable&gt;头文件的声明中。两者都需要与一个互斥量一起才能工作(互斥量是为了同步)；前者仅限于与std::mutex一起工作，而后者可以和任何满足最低标准的互斥量一起工作，从而加上了_any的后缀。因为std::condition_variable_any更加通用，这就可能从体积、性能，以及系统资源的使用方面产生额外的开销，所以std::condition_variable一般作为首选的类型，当对灵活性有硬性要求时，我们才会去考虑std::condition_variable_any。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li><a href="https://blog.csdn.net/overlord_bingo/article/details/60955751" target="_blank" rel="noopener">C/C++ Linux下多线程编程 #include &lt;pthread.h&gt;</a></li>
+<li><a href="https://www.cnblogs.com/lpxblog/p/5190438.html" target="_blank" rel="noopener">++11 并发编程基础（一）：并发、并行与C++多线程</a></li>
+<li><a href="https://www.jianshu.com/p/0589ae74ad72" target="_blank" rel="noopener">Linux多线程服务器编程基础 C++ 11 并发编程学习</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+        
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/14/C-宏定义教程/" rel="next" title="C++宏定义教程">
+                <i class="fa fa-chevron-left"></i> C++宏定义教程
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/23/git本地分支关联远程分支/" rel="prev" title="git本地分支关联远程分支">
+                git本地分支关联远程分支 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Xiaoqiang Teng</p>
+              <p class="site-description motion-element" itemprop="description">Remember what should be remembered, and forget what should be forgotten.Alter what is changeable, and accept what is mutable.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">70</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">59</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#并发"><span class="nav-number">1.</span> <span class="nav-text">并发</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#并发的基本方式途径"><span class="nav-number">2.</span> <span class="nav-text">并发的基本方式途径</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#初试多线程"><span class="nav-number">2.1.</span> <span class="nav-text">初试多线程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#include"><span class="nav-number">3.</span> <span class="nav-text">include</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#include-1"><span class="nav-number">4.</span> <span class="nav-text">include</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用互斥"><span class="nav-number">5.</span> <span class="nav-text">使用互斥</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用锁"><span class="nav-number">6.</span> <span class="nav-text">使用锁</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#同步等待"><span class="nav-number">7.</span> <span class="nav-text">同步等待</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">8.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiaoqiang Teng</span>
+
+  
+</div>
+
+
+
+<div class="powered-by">
+<i class="fa fa-user-md"></i><span id="busuanzi_container_site_uv">
+  本站访客数:<span id="busuanzi_value_site_uv"></span>
+</span>
+</div>
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>
