@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="编程,VIO,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="VIO背景  基础知识IMU建模误差基本误差：零偏误差、刻度误差。但实际上环境温度会对这两种误差均造成大大小小的影响（ADC温漂）。 （1）所以首先我们需要对传感器进行恒温处理，通常是在IMU的PCB板子上加一两个恒温电阻，利用传感器本身的温度测量功能进行加热闭环控制，我一般把这个目标温度设定在50-60度之间。 （2）实现恒温后，我们再开始校准传感器的两种误差： 陀螺仪。零偏误差可以通过在传感器">
+<meta name="keywords" content="编程,VIO">
+<meta property="og:type" content="article">
+<meta property="og:title" content="VIO教程">
+<meta property="og:url" content="http://yoursite.com/2018/06/14/VIO教程/index.html">
+<meta property="og:site_name" content="学步">
+<meta property="og:description" content="VIO背景  基础知识IMU建模误差基本误差：零偏误差、刻度误差。但实际上环境温度会对这两种误差均造成大大小小的影响（ADC温漂）。 （1）所以首先我们需要对传感器进行恒温处理，通常是在IMU的PCB板子上加一两个恒温电阻，利用传感器本身的温度测量功能进行加热闭环控制，我一般把这个目标温度设定在50-60度之间。 （2）实现恒温后，我们再开始校准传感器的两种误差： 陀螺仪。零偏误差可以通过在传感器">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-02-18T16:19:05.802Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="VIO教程">
+<meta name="twitter:description" content="VIO背景  基础知识IMU建模误差基本误差：零偏误差、刻度误差。但实际上环境温度会对这两种误差均造成大大小小的影响（ADC温漂）。 （1）所以首先我们需要对传感器进行恒温处理，通常是在IMU的PCB板子上加一两个恒温电阻，利用传感器本身的温度测量功能进行加热闭环控制，我一般把这个目标温度设定在50-60度之间。 （2）实现恒温后，我们再开始校准传感器的两种误差： 陀螺仪。零偏误差可以通过在传感器">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/06/14/VIO教程/">
+
+
+
+
+
+  <title>VIO教程 | 学步</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">学步</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-编程">
+          <a href="/categories/programming" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            编程
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-学术">
+          <a href="/categories/science" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            学术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-理论">
+          <a href="/categories/theory" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            理论
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-其他">
+          <a href="/categories/other" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            其他
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/14/VIO教程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Xiaoqiang Teng">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="学步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">VIO教程</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-14T11:35:25+08:00">
+                2018-06-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">编程</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/programming/VIO/" itemprop="url" rel="index">
+                    <span itemprop="name">VIO</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="VIO背景"><a href="#VIO背景" class="headerlink" title="VIO背景"></a>VIO背景</h1><hr>
+<hr>
+<h1 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h1><h2 id="IMU建模"><a href="#IMU建模" class="headerlink" title="IMU建模"></a>IMU建模</h2><h3 id="误差"><a href="#误差" class="headerlink" title="误差"></a>误差</h3><p>基本误差：零偏误差、刻度误差。但实际上环境温度会对这两种误差均造成大大小小的影响（ADC温漂）。</p>
+<p>（1）所以首先我们需要对传感器进行恒温处理，通常是在IMU的PCB板子上加一两个恒温电阻，利用传感器本身的温度测量功能进行加热闭环控制，我一般把这个目标温度设定在50-60度之间。</p>
+<p>（2）实现恒温后，我们再开始校准传感器的两种误差：</p>
+<p>陀螺仪。零偏误差可以通过在传感器静止时采集输出数据并取其平均值，刻度误差需要通过高精度转台来对每个轴进行校准；</p>
+<p>加速度计。首先建立一个基本的误差方程，g为刻度误差，o为零偏误差，C为重力加速度，u为误差：</p>
+<p>$$(g_xa_x+o_x)^2+(g_ya_y+o_y)^2+(g_za_z+o_z)^2-C^2=u.$$</p>
+<p>这实际上就是一个椭球的方程，为了求解这个方程，我们需要采集多组传感器数据。这些数据尽量在球面上分布均匀（如常用的六面校准），然后最小二乘法求方程的最优解（使u最小），得到传感器的校准参数。</p>
+<p>电子罗盘传感器也可以用这个方法来校准。</p>
+<h2 id="图像特征提取算法"><a href="#图像特征提取算法" class="headerlink" title="图像特征提取算法"></a>图像特征提取算法</h2><h3 id="斑点检测-LoG与DoH"><a href="#斑点检测-LoG与DoH" class="headerlink" title="斑点检测 - LoG与DoH"></a>斑点检测 - LoG与DoH</h3><h3 id="斑点检测-SIFT"><a href="#斑点检测-SIFT" class="headerlink" title="斑点检测 - SIFT"></a>斑点检测 - SIFT</h3><h3 id="斑点检测-SURF"><a href="#斑点检测-SURF" class="headerlink" title="斑点检测 - SURF"></a>斑点检测 - SURF</h3><h3 id="角点检测-Harris角点"><a href="#角点检测-Harris角点" class="headerlink" title="角点检测 - Harris角点"></a>角点检测 - Harris角点</h3><h3 id="角点检测-FAST角点"><a href="#角点检测-FAST角点" class="headerlink" title="角点检测 - FAST角点"></a>角点检测 - FAST角点</h3><p>在实时的视频流处理中，需要对每一帧特征提取，对算法处理速度上有很高的要求，传统的SIFT,Harris等特征点提取很难满足。由此提出Fast（Features from Accelerated Segment Test），由于不涉及尺度，梯度，等复杂运算，Fast检测器速度非常快。它使用一定邻域内像元的灰度值与中心点比较大小去判断是否为一个角点。但它的缺点是不具有方向性,尺度不变性。</p>
+<p>Fast角点提取步骤（以Fast-12-16为例）：</p>
+<p>1.以固定半径为圆的边上取16个像素点（图中白色框出的位置），与中心点像素值Ip做差。</p>
+<p>2.若边上存在连续的12（N&gt;12,若为Fast-9,只需要N&gt;9）个点满足  ( I(x)-I(p) )&gt;threshold 或者 ( I(x)-I(p) ) &lt; -threshold。(其中I(x)表示边上的像素值，I(p)为中心点像素值，threshold为设定的阈值。)则此点作为一个候选角点。如图上的虚线连接的位置。通常为了加速计算，直接比较1,5,9,13位置的差值，超过三个即视为一个候选点（存在连续的12个像元的必要条件），否则直接排除。</p>
+<p>3.非极大值抑制，排除不稳定角点。</p>
+<h3 id="二进制字符串特征描述子-BRIEF算法"><a href="#二进制字符串特征描述子-BRIEF算法" class="headerlink" title="二进制字符串特征描述子 - BRIEF算法"></a>二进制字符串特征描述子 - BRIEF算法</h3><h3 id="二进制字符串特征描述子-BRISK算法"><a href="#二进制字符串特征描述子-BRISK算法" class="headerlink" title="二进制字符串特征描述子 - BRISK算法"></a>二进制字符串特征描述子 - BRISK算法</h3><h3 id="ORB算法"><a href="#ORB算法" class="headerlink" title="ORB算法"></a>ORB算法</h3><h3 id="FREAK算法"><a href="#FREAK算法" class="headerlink" title="FREAK算法"></a>FREAK算法</h3><hr>
+<hr>
+<h1 id="基于滤波的VIO方法"><a href="#基于滤波的VIO方法" class="headerlink" title="基于滤波的VIO方法"></a>基于滤波的VIO方法</h1><h2 id="基于松耦合的方法"><a href="#基于松耦合的方法" class="headerlink" title="基于松耦合的方法"></a>基于松耦合的方法</h2><h2 id="基于紧耦合的方法"><a href="#基于紧耦合的方法" class="headerlink" title="基于紧耦合的方法"></a>基于紧耦合的方法</h2><h3 id="论文1-MSCKF-High-precision-consistent-EKF-based-visual-inertial-odometry"><a href="#论文1-MSCKF-High-precision-consistent-EKF-based-visual-inertial-odometry" class="headerlink" title="论文1. MSCKF: High-precision, consistent EKF-based visual-inertial odometry"></a>论文1. MSCKF: High-precision, consistent EKF-based visual-inertial odometry</h3><blockquote>
+<p>the multi-state-constraint Kalman filter (MSCKF)</p>
+</blockquote>
+<hr>
+<hr>
+<h1 id="基于优化的VIO方法"><a href="#基于优化的VIO方法" class="headerlink" title="基于优化的VIO方法"></a>基于优化的VIO方法</h1><h2 id="基于松耦合的方法-1"><a href="#基于松耦合的方法-1" class="headerlink" title="基于松耦合的方法"></a>基于松耦合的方法</h2><h2 id="基于紧耦合的方法-1"><a href="#基于紧耦合的方法-1" class="headerlink" title="基于紧耦合的方法"></a>基于紧耦合的方法</h2><h3 id="VINS文献解读"><a href="#VINS文献解读" class="headerlink" title="VINS文献解读"></a>VINS文献解读</h3><h4 id="测量预处理"><a href="#测量预处理" class="headerlink" title="测量预处理"></a>测量预处理</h4><h5 id="视觉预处理前端"><a href="#视觉预处理前端" class="headerlink" title="视觉预处理前端"></a>视觉预处理前端</h5><p>（1）对每张新图像，使用KLT稀疏光流算法跟踪已有特征。</p>
+<p>（2）同时检测新的角点特征以维持每张图像100-300特征。其中，新的角点特征利用Good Features to track特征点检测算法，参考文献：《Good Features to track》，<a href="http://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_feature2d/py_shi_tomasi/py_shi_tomasi.html#shi-tomasi" target="_blank" rel="noopener">opencv</a>，详细讲解参考：<a href="https://blog.csdn.net/u010103202/article/details/73331440" target="_blank" rel="noopener">Good Features to track特征点检测原理与opencv（python）实现</a>。</p>
+<p>（3）检测器通过设置相邻特征最小间隔强制特征均匀分布，outlier去除后，特征投影在单位球面上（unit sphere）。Outlier通过RANSAC基础矩阵测试去除。</p>
+<p>（4）关键帧的选取原则有两个：平均视差和跟踪的特征数。当跟踪的特征数小于某个门限或者跟踪特征的平均视差超过某个门限时，插入关键帧。请记住，除了平移，旋转也会导致视差，但是纯旋转时特征无法三角定位，我们在计算视差时用IMU propagation结果补偿旋转。</p>
+<hr>
+<hr>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li><a href="https://www.zhihu.com/question/53571648" target="_blank" rel="noopener">https://www.zhihu.com/question/53571648</a></li>
+<li><a href="http://baijiahao.baidu.com/s?id=1573826383552981&amp;wfr=spider&amp;for=pc" target="_blank" rel="noopener">http://baijiahao.baidu.com/s?id=1573826383552981&amp;wfr=spider&amp;for=pc</a></li>
+<li><a href="https://blog.csdn.net/luoshixian099/article/details/48294967" target="_blank" rel="noopener">https://blog.csdn.net/luoshixian099/article/details/48294967</a></li>
+<li><a href="https://www.jianshu.com/p/2759593bc92b" target="_blank" rel="noopener">https://www.jianshu.com/p/2759593bc92b</a></li>
+<li><a href="https://www.jianshu.com/p/387225a1aa60" target="_blank" rel="noopener">https://www.jianshu.com/p/387225a1aa60</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+        
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/编程/" rel="tag"># 编程</a>
+          
+            <a href="/tags/VIO/" rel="tag"># VIO</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/13/vim教程/" rel="next" title="vim教程">
+                <i class="fa fa-chevron-left"></i> vim教程
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/25/毕业关键流程（三方协议、户口、档案、报到证）/" rel="prev" title="毕业关键流程（三方协议、户口、档案、报到证）">
+                毕业关键流程（三方协议、户口、档案、报到证） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Xiaoqiang Teng</p>
+              <p class="site-description motion-element" itemprop="description">Remember what should be remembered, and forget what should be forgotten.Alter what is changeable, and accept what is mutable.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">70</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">59</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#VIO背景"><span class="nav-number">1.</span> <span class="nav-text">VIO背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基础知识"><span class="nav-number">2.</span> <span class="nav-text">基础知识</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#IMU建模"><span class="nav-number">2.1.</span> <span class="nav-text">IMU建模</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#误差"><span class="nav-number">2.1.1.</span> <span class="nav-text">误差</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#图像特征提取算法"><span class="nav-number">2.2.</span> <span class="nav-text">图像特征提取算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#斑点检测-LoG与DoH"><span class="nav-number">2.2.1.</span> <span class="nav-text">斑点检测 - LoG与DoH</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#斑点检测-SIFT"><span class="nav-number">2.2.2.</span> <span class="nav-text">斑点检测 - SIFT</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#斑点检测-SURF"><span class="nav-number">2.2.3.</span> <span class="nav-text">斑点检测 - SURF</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#角点检测-Harris角点"><span class="nav-number">2.2.4.</span> <span class="nav-text">角点检测 - Harris角点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#角点检测-FAST角点"><span class="nav-number">2.2.5.</span> <span class="nav-text">角点检测 - FAST角点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二进制字符串特征描述子-BRIEF算法"><span class="nav-number">2.2.6.</span> <span class="nav-text">二进制字符串特征描述子 - BRIEF算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二进制字符串特征描述子-BRISK算法"><span class="nav-number">2.2.7.</span> <span class="nav-text">二进制字符串特征描述子 - BRISK算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ORB算法"><span class="nav-number">2.2.8.</span> <span class="nav-text">ORB算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FREAK算法"><span class="nav-number">2.2.9.</span> <span class="nav-text">FREAK算法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基于滤波的VIO方法"><span class="nav-number">3.</span> <span class="nav-text">基于滤波的VIO方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基于松耦合的方法"><span class="nav-number">3.1.</span> <span class="nav-text">基于松耦合的方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于紧耦合的方法"><span class="nav-number">3.2.</span> <span class="nav-text">基于紧耦合的方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#论文1-MSCKF-High-precision-consistent-EKF-based-visual-inertial-odometry"><span class="nav-number">3.2.1.</span> <span class="nav-text">论文1. MSCKF: High-precision, consistent EKF-based visual-inertial odometry</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基于优化的VIO方法"><span class="nav-number">4.</span> <span class="nav-text">基于优化的VIO方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基于松耦合的方法-1"><span class="nav-number">4.1.</span> <span class="nav-text">基于松耦合的方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于紧耦合的方法-1"><span class="nav-number">4.2.</span> <span class="nav-text">基于紧耦合的方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#VINS文献解读"><span class="nav-number">4.2.1.</span> <span class="nav-text">VINS文献解读</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#测量预处理"><span class="nav-number">4.2.1.1.</span> <span class="nav-text">测量预处理</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#视觉预处理前端"><span class="nav-number">4.2.1.1.1.</span> <span class="nav-text">视觉预处理前端</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiaoqiang Teng</span>
+
+  
+</div>
+
+
+
+<div class="powered-by">
+<i class="fa fa-user-md"></i><span id="busuanzi_container_site_uv">
+  本站访客数:<span id="busuanzi_value_site_uv"></span>
+</span>
+</div>
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

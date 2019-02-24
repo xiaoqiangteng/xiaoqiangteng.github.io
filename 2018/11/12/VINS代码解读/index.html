@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="编程,VIO,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="VINS简介VINS框架VINS代码解读ViewController.m入口函数：ViewController.mm的viewDidLoad  VINS采用CvVideoCamera类来实现摄像机图像相关操作。 CvVideoCamera* videoCamera：opencv提供的一个读取相机数据并转成cv::Mat格式的接口 self.videoCamera.delegate = self 设">
+<meta name="keywords" content="编程,VIO">
+<meta property="og:type" content="article">
+<meta property="og:title" content="VINS代码解读">
+<meta property="og:url" content="http://yoursite.com/2018/11/12/VINS代码解读/index.html">
+<meta property="og:site_name" content="学步">
+<meta property="og:description" content="VINS简介VINS框架VINS代码解读ViewController.m入口函数：ViewController.mm的viewDidLoad  VINS采用CvVideoCamera类来实现摄像机图像相关操作。 CvVideoCamera* videoCamera：opencv提供的一个读取相机数据并转成cv::Mat格式的接口 self.videoCamera.delegate = self 设">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-02-18T16:19:05.802Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="VINS代码解读">
+<meta name="twitter:description" content="VINS简介VINS框架VINS代码解读ViewController.m入口函数：ViewController.mm的viewDidLoad  VINS采用CvVideoCamera类来实现摄像机图像相关操作。 CvVideoCamera* videoCamera：opencv提供的一个读取相机数据并转成cv::Mat格式的接口 self.videoCamera.delegate = self 设">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/12/VINS代码解读/">
+
+
+
+
+
+  <title>VINS代码解读 | 学步</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">学步</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-编程">
+          <a href="/categories/programming" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            编程
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-学术">
+          <a href="/categories/science" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            学术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-理论">
+          <a href="/categories/theory" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            理论
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-其他">
+          <a href="/categories/other" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            其他
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/12/VINS代码解读/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Xiaoqiang Teng">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="学步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">VINS代码解读</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-12T22:32:13+08:00">
+                2018-11-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">编程</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/programming/VIO/" itemprop="url" rel="index">
+                    <span itemprop="name">VIO</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="VINS简介"><a href="#VINS简介" class="headerlink" title="VINS简介"></a>VINS简介</h1><h1 id="VINS框架"><a href="#VINS框架" class="headerlink" title="VINS框架"></a>VINS框架</h1><h1 id="VINS代码解读"><a href="#VINS代码解读" class="headerlink" title="VINS代码解读"></a>VINS代码解读</h1><h2 id="ViewController-m"><a href="#ViewController-m" class="headerlink" title="ViewController.m"></a>ViewController.m</h2><p>入口函数：ViewController.mm的viewDidLoad</p>
+<ul>
+<li>VINS采用CvVideoCamera类来实现摄像机图像相关操作。<ul>
+<li>CvVideoCamera* videoCamera：opencv提供的一个读取相机数据并转成cv::Mat格式的接口</li>
+<li>self.videoCamera.delegate = self<ul>
+<li>设置delegate</li>
+<li>delegate对象需要继承CvVideoCameraDelegate</li>
+<li>delegate对象需要实现processImage函数，用于回调收到的图像</li>
+</ul>
+</li>
+<li>一些高级的属性需要获取device来设置，比如曝光时间等。</li>
+<li>AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo]; [device lockForConfiguration:&amp;error]; [device setExposureTargetBias:ev completionHandler:^(CMTime syncTime) {}];   device.exposureMode = AVCaptureExposureModeCustom; [device unlockForConfiguration];</li>
+<li>最后调用start函数开始接受图像</li>
+<li><ul>
+<li>(void)processImage:(cv::Mat&amp;)image开始回调得到能够图像</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>对imageView设置各种手势<ul>
+<li>UIPanGestureRecognizer *resultPanGestureRecognizer =<pre><code>[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
+</code></pre>[self.imageView addGestureRecognizer:resultPanGestureRecognizer];</li>
+<li>handlePan是回调函数</li>
+<li>UIPinchGestureRecognizer 放大、缩小手势</li>
+<li>UIGestureRecognizer是一个定义基本手势的抽象类，具体什么手势，在以下子类中包含：<ul>
+<li>1、拍击UITapGestureRecognizer (任意次数的拍击)</li>
+<li>2、向里或向外捏UIPinchGestureRecognizer (用于缩放)</li>
+<li>3、摇动或者拖拽UIPanGestureRecognizer (拖动)</li>
+<li>4、擦碰UISwipeGestureRecognizer (以任意方向)</li>
+<li>5、旋转UIRotationGestureRecognizer (手指朝相反方向移动)</li>
+<li>6、长按UILongPressGestureRecognizer (长按)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>feature_tracker = new FeatureTracke</li>
+<li>give projection variance<ul>
+<li>vins.setIMUModel();</li>
+</ul>
+</li>
+<li>UI控件设置<ul>
+<li>设置UIActivityIndicatorView *indicator，就是开头那个初始化指引相关的</li>
+</ul>
+</li>
+<li>初始化几个线程<ul>
+<li>在作者的代码中主要是几个部分，mainLoop，saveData，loop_thread，globalLoopThread</li>
+<li>上面的几个thread中，mainLoop，saveData两个线程仅仅是注册了一下，并没有正式启动，mainLoop的启动在下面。但是saveData仅仅是为了调试而写的，所以在实际中被作者给注释了。</li>
+<li>loop_thread，globalLoopThread在注册的时候就直接启动。</li>
+<li>再有，几个线程都分别对应函数run，saveData，loop_thread，globalLoopThread，作者在代码下面均给出了实现的方法。</li>
+</ul>
+</li>
+<li>检查设备<ul>
+<li>主要函数：<ul>
+<li>bool deviceCheck = setGlobalParam(deviceName());</li>
+<li>bool versionCheck = iosVersion();</li>
+</ul>
+</li>
+<li>判断不同ios设备设置不同的相机内参和imu相机变换<ul>
+<li>设置外参矩阵，平移和旋转：vins.setExtrinsic();</li>
+<li>设置投影参数：vins.setIMUModel();</li>
+<li>设置PnP外参矩阵：featuretracker.vins_pnp.setExtrinsic();</li>
+<li>设置PnP投影参数：featuretracker.vins_pnp.setIMUModel();</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>如果检查通过就开启，主要是启动主线程mainLoop<ul>
+<li>设置初始化IMU， 调用imuStartUpdate<ul>
+<li><a href="#imu_process">IMU预积分</a></li>
+</ul>
+</li>
+<li>[mainLoop start]</li>
+</ul>
+</li>
+<li>函数：- (void)processImage:(cv::Mat&amp;)image<ul>
+<li>isCapturing == YES 才开始处理图像</li>
+<li>从image中提取时间戳，存入img_msg-&gt;header<ul>
+<li>image的（0，0）（0，1）存的是时间戳</li>
+<li>float lowPart = image.at<float>(0,0);  //modify opencv library, timestamp was stored at index 0,0<br>float highPart = image.at<float>(0,1);<br>float Group[2]；<br>Group[0] = lowPart;<br>Group[1] = highPart;<br>double<em> time_now_decode = (double</em>)Group;</float></float></li>
+</ul>
+</li>
+<li>将图像从一个颜色空间转换到另一个颜色空间的转换<ul>
+<li>cv::cvtColor(image, image, CV_BGRA2RGB);</li>
+<li>cv::flip(image,image,-1); // 图像的翻转</li>
+</ul>
+</li>
+<li>填充input_frame<ul>
+<li>如果开启了回放start_playback，则从文件中读入图像放入input_frame</li>
+<li>开启回放后，传感器的频率都降低</li>
+<li>本来传感器获得的数据都放弃，用文件读取的数据代替</li>
+</ul>
+</li>
+<li>使用cv::CLAHE做hist均等化<ul>
+<li>自适应直方图均衡化(AHE)用来提升图像的对比度的一种计算机图像处理技术。和普通的直方图均衡算法不同，AHE算法通过计算图像的局部直方图，然后重新分布亮度来来改变图像对比度。因此，该算法更适合于改进图像的局部对比度以及获得更多的图像细节。</li>
+<li>参考：<ul>
+<li><a href="https://www.cnblogs.com/Imageshop/archive/2013/04/07/3006334.html" target="_blank" rel="noopener">限制对比度自适应直方图均衡化算法原理、实现及效果</a></li>
+<li><a href="https://www.cnblogs.com/jsxyhelu/p/6435601.html" target="_blank" rel="noopener">CLAHE的实现和研究</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>给featuretracker填充一些数据<ul>
+<li>solved_features</li>
+<li>solved_vins</li>
+</ul>
+</li>
+<li>调用featuretracker.readImage处理图像<ul>
+<li><a href="#feature_tracker">单目视觉跟踪（KLT跟踪）</a></li>
+</ul>
+</li>
+<li>把提取的特征点画到image上面</li>
+<li>AR相关的东西也画在image上面，image最后返回出去，CvVideoCamera会自动跟新预览图片</li>
+<li>算法和可视化的数据交换通过vins.drawresult完成</li>
+<li>drawAR处理ar相关的可视化</li>
+<li>Reprojection处理3d场景相关的可视化<ul>
+<li>没有使用opengl，完全手动投影，然后用opencv画出来的</li>
+<li>pan操作影响theta，phy。这两个控制可视化的视角</li>
+<li>pinch操作影响radius。控制场景缩放</li>
+<li>两指pan操作影响X0，Y0。在投影结束后，直接平移图片。</li>
+<li>所有3d点通过World2VirturCam这个函数变化到opencv能够画图的空间上</li>
+<li>输入的是所有的当前滑窗的3d点</li>
+<li>traj通过keyframe_database.refine_path拿到</li>
+<li>输入了滑窗所有相机的R和T：T_window，R_window</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>(void)run()<ul>
+<li>实现一帧图像的处理[self process]<ul>
+<li><a href="#imu_process">IMU预积分</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="传感器数据处理"><a href="#传感器数据处理" class="headerlink" title="传感器数据处理"></a>传感器数据处理</h2><h3 id="单目视觉跟踪（KLT跟踪）"><a href="#单目视觉跟踪（KLT跟踪）" class="headerlink" title="单目视觉跟踪（KLT跟踪）"></a><span id="feature_tracker">单目视觉跟踪（KLT跟踪）</span></h3><p><strong><em>Feature Tracker其实仅仅做了视觉前端的数据关联，只是视觉前端的第一步。与ORB通过描述子进行关联匹配不同的是，VINS采用了KLT光流的方式对角点进行关联匹配，并通过id的方式记录关联的结果。总的来说，速度快，抗干扰强，但牺牲了一定的精确度。</em></strong></p>
+<p>通过ViewController.m中processImage:(cv::Mat&amp;)image的featuretracker.readImage()引入系统。</p>
+<ul>
+<li>调用featuretracker.readImage处理图像<ul>
+<li>涉及到3个img(prev_img, cur_img, forw_img)和pts(prev_pts, cur_pts, forw_pts)，cur和forw分别是LK光流跟踪的前后两帧，forw才是真正的”当前”帧，cur实际上是上一帧，而prev是上一次发布的帧，它实际上是光流跟踪以后，prev和forw根据Fundamental Matrix做RANSAC剔除outlier用的，也就是rejectWithF()函数. </li>
+<li>处理流程为: <ul>
+<li>先调用cv::CLAHE对图像做直方图均衡化(如果EQUALIZE打开) </li>
+<li>调用calcOpticalFlowPyrLK()跟踪cur_pts到forw_pts,根据status,把跟踪失败的点剔除(注意:prev, cur, forw, ids, track_cnt都要剔除),这里还加了个inBorder判断,把跟踪到图像边缘的点也剔除掉。函数可以得到当前图像中能通过光流追踪到的角点的坐标，保存在forw_pts中。由于前一帧保存的角点并不一定全部能够被当前帧追踪到，追踪的成功与否保存在status中。因此利用status和void reduceVector(vector<a href="cv::Point2f" target="_blank" rel="noopener">cv::Point2f</a> &amp;v, vector<uchar> status)函数对track_cnt，ids等进行更新。</uchar></li>
+<li>经过更新之后track_cnt里面保存都是能够追踪到的角点的追踪次数，执行+1操作。</li>
+<li>由于光流匹配会导致追踪到的角点越来与少，因此需要根据MAX_CNT和在当前帧中追踪到的角点数目差，进行新的角点的提取。依赖的函数为cv::goodFeaturesToTrack(forw_img, n_pts, MAX_CNT - forw_pts.size(), 0.01, MIN_DIST, mask);新提取的角点坐标保存在n_pts中。值得注意的是这里有个参数MIN_DIST，这个参数保证2个相邻角点之间的最小距离，通过这个参数可以在一定程度上保证角点的均匀分布。</li>
+<li>先调用rejectWithF()对prev_pts和forw_pts做ransac剔除outlier.(实际就是调用了findFundamentalMat函数), 完了以后, 剩下的点track_cnt都加1.</li>
+<li>调用setMask(), 先对跟踪点forw_pts按跟踪次数降排序, 然后依次选点, 选一个点, 在mask中将该点周围一定半径的区域设为0, 后面不再选取该区域内的点. 有点类似与non-max suppression, 但区别是这里保留track_cnt最高的点。这里mask的设置也是有讲究的，因为在forw_img中已经通过光流追踪到了一部分角点，当再次从forw_img中提取角点的时候，通过设置相应的mask,来保证角点的提取不会重复。设置mask是通过void FeatureTracker::setMask()实现的。void FeatureTracker::setMask()里面有个很有趣的操作就是会根据角点被追踪的次数进行排序，即track_cnt, ids, forw_pts都是按照角点被追踪的次数排序的。</li>
+<li>在mask中不为0的区域,调用goodFeaturesToTrack提取新的角点n_pts, 通过addPoints()push到forw_pts中, id初始化-1, track_cnt初始化为1。</li>
+<li>之后会把新追踪到的角点n_pts加入到forw_pts和ids中去。<br>最后调用void FeatureTracker::undistortedPoints()对角点图像坐标做去畸变处理，并计算每个角点的速度。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="IMU预积分"><a href="#IMU预积分" class="headerlink" title="IMU预积分"></a><span id="imu_process">IMU预积分</span></h3><p>通过ViewController.m中ViewDidLoad的[self imuStartUpdate]函数和process()函数引入系统。</p>
+<ul>
+<li>Imu数据预处理<ul>
+<li>acc回调<ul>
+<li>读取后填充cur_acc，供在收到gyro后插值</li>
+</ul>
+</li>
+<li>gyro回调<ul>
+<li>acc和gyro时间同步<ul>
+<li>成员变量gyro_buf用于插值</li>
+<li>acc不变，gyro用附近的数据来插值</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>录制和回放IMU数据</li>
+<li>填充imu_msg，最后缓存到成员变量imu_msg_buf中</li>
+</ul>
+</li>
+<li>process()处理观测值数据线程<ul>
+<li>得到观测值（IMU数据和图像特征点数据）<ul>
+<li>定义观测值数据类measurements，包含了一组IMU数据和一帧图像数据的组合的容器，这里比较有意思的是使用了互斥锁和条件等待的功能，互斥锁用来锁住当前代码段，条件等待是等待上面两个接收数据完成就会被唤醒，然后从imu_buf和feature_buf中提取观测数据measurements = getMeasurements()，需要注意的是在提取观测值数据的时候用到的互斥锁会锁住imu_buf和feature_buf等到提取完成才释放，也就是说在提取的过程中上面两个回调函数是无法接收数据的，同时上面两个回调函数接收数据的时候也使用了互斥锁，锁住了imu_buf和feature_buf，这里也不能提取imu_buf和feature_buf中的数据。因此整个数据获取的过程是：回调函数接收数据，接收完一组数据唤醒提取数据的线程，提取数据的线程提取完数据后，回调函数就可以继续接收数据，依次往复。这就是线程间通信的曼妙啊！</li>
+</ul>
+</li>
+<li>getMeasurements()返回观测值数据<ul>
+<li>函数的作用顾名思义，就是得到一组IMU数据和图像特征数据组合的容器。首先保证存在IMU数据和图像特征数据，然后还要判断图像特征数据和IMU数据是否对齐。这里使用的是队列数据结构（先进先出front是先进的数据，back是后进的数据），需要满足两个条件就能保证数据对齐，第一是IMU最后一个数据的时间要大于图像特征最开始数据的时间，第二是IMU最开始数据的时间要小于图像特征最开始数据的时间。满足数据对齐就可以数据从队列中按对齐的方式取出来。这里知道把缓存中的图像特征数据或者IMU数据取完，才能够跳出此函数，返回数据。</li>
+</ul>
+</li>
+<li>处理IMU数据和图像特征数据<ul>
+<li>步骤1：处理IMU数据（遍历调用send_imu(imu_msg)将单个IMU数据的dt，线加速度值和角加速度值计算出来送给优化器处理，优化器调用estimator.processIMU(dt, Vector3d(dx, dy, dz), Vector3d(rx, ry,rz));方法。）<ul>
+<li>函数VINS::processIMU(double dt, const Vector3d &amp;linear_acceleration, const Vector3d &amp;angular_velocity)</li>
+<li>步骤1调用imu的预积分，调用push_back函数，函数中将时间，加速度和角速度分别存入相应的缓存中，同时调用了propagation函数 ,计算对应的状态量、协方差和雅可比矩阵</li>
+<li>propagate(double _dt, const Eigen::Vector3d &amp;_acc_1, constEigen::Vector3d &amp;_gyr_1)</li>
+<li>预积分传播方程，在预积分传播方程propagate中使用中点积分方法midPointIntegration计算预积分的测量值，中点积分法中主要包含两个部分，分别是得到状态变化量result_delta_q，result_delta_p，result_delta_v，result_linearized_ba，result_linearized_bg和得到跟新协方差矩阵和雅可比矩阵（注意，虽然得到了雅各比矩阵和协方差矩阵，但是还没有求残差和修正偏置一阶项的状态变量），由于使用的是中点积分，所以需要上一个时刻的IMU数据，包括测量值加速度和角速度以及状态变化量，初始值由构造函数提供。需要注意的是这里定义的delta_p等是累积的变化量，也就是说是从i时刻到当前时刻的变化量，这个才是最终要求的结果（为修正偏置一阶项），而result_delta_q等只是一个暂时的变量，最后残差和雅可比矩阵、协方差矩阵保存在pre_integrations中，还有一个函数这里暂时还没有用到，是在优化的时候才被调用的，但是其属于预积分的内容，evaluate函数在这个函数里面进行了状态变化量的偏置一阶修正以及残差的计算。</li>
+</ul>
+</li>
+<li>步骤2预积分公式<ul>
+<li>未考虑误差，提供imu计算的当前旋转，位置，速度，作为优化的初值。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h2><h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li><a href="https://blog.csdn.net/ziliwangmoe/article/details/82930548" target="_blank" rel="noopener">vins-mobile代码解析1：viewDidLoad</a></li>
+<li><a href="https://blog.csdn.net/wangshuailpp/article/details/78719438" target="_blank" rel="noopener">VINS理论与代码详解3——IMU预积分</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+        
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/编程/" rel="tag"># 编程</a>
+          
+            <a href="/tags/VIO/" rel="tag"># VIO</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/11/线性方程组Ax-b求解/" rel="next" title="线性方程组Ax=b求解">
+                <i class="fa fa-chevron-left"></i> 线性方程组Ax=b求解
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/17/AR引擎调研/" rel="prev" title="AR引擎调研">
+                AR引擎调研 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Xiaoqiang Teng</p>
+              <p class="site-description motion-element" itemprop="description">Remember what should be remembered, and forget what should be forgotten.Alter what is changeable, and accept what is mutable.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">70</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">59</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#VINS简介"><span class="nav-number">1.</span> <span class="nav-text">VINS简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#VINS框架"><span class="nav-number">2.</span> <span class="nav-text">VINS框架</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#VINS代码解读"><span class="nav-number">3.</span> <span class="nav-text">VINS代码解读</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ViewController-m"><span class="nav-number">3.1.</span> <span class="nav-text">ViewController.m</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#传感器数据处理"><span class="nav-number">3.2.</span> <span class="nav-text">传感器数据处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#单目视觉跟踪（KLT跟踪）"><span class="nav-number">3.2.1.</span> <span class="nav-text">单目视觉跟踪（KLT跟踪）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IMU预积分"><span class="nav-number">3.2.2.</span> <span class="nav-text">IMU预积分</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#初始化"><span class="nav-number">3.3.</span> <span class="nav-text">初始化</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiaoqiang Teng</span>
+
+  
+</div>
+
+
+
+<div class="powered-by">
+<i class="fa fa-user-md"></i><span id="busuanzi_container_site_uv">
+  本站访客数:<span id="busuanzi_value_site_uv"></span>
+</span>
+</div>
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>
