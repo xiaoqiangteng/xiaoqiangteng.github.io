@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="学步">
 <meta property="og:description" content="1. Hexo简介Hexo是一款基于Node.js的静态博客框架，依赖少易于安装使用，可以方便的生成静态网页托管在GitHub和Heroku上，是搭建博客的首选框架。这里我们选用的是GitHub。Hexo同时也是GitHub上的开源项目，参见：hexojs/hexo 如果想要更加全面的了解Hexo，可以到其官网 Hexo 了解更多的细节，因为Hexo的创建者是台湾人，对中文的支持很友好，可以选择中">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-07-27T16:37:10.799Z">
+<meta property="og:updated_time" content="2019-07-27T16:37:43.314Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="基于hexo+github免费搭建个人博客">
 <meta name="twitter:description" content="1. Hexo简介Hexo是一款基于Node.js的静态博客框架，依赖少易于安装使用，可以方便的生成静态网页托管在GitHub和Heroku上，是搭建博客的首选框架。这里我们选用的是GitHub。Hexo同时也是GitHub上的开源项目，参见：hexojs/hexo 如果想要更加全面的了解Hexo，可以到其官网 Hexo 了解更多的细节，因为Hexo的创建者是台湾人，对中文的支持很友好，可以选择中">
@@ -533,7 +533,12 @@
 <figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// 文章内链接文本样式</span><br><span class="line"><span class="selector-class">.post-body</span> <span class="selector-tag">p</span> <span class="selector-tag">a</span>&#123;</span><br><span class="line">  <span class="attribute">color</span>: <span class="number">#0593d3</span>;</span><br><span class="line">  <span class="attribute">border-bottom</span>: none;</span><br><span class="line">  <span class="attribute">border-bottom</span>: <span class="number">1px</span> solid <span class="number">#0593d3</span>;</span><br><span class="line">  &amp;:hover &#123;</span><br><span class="line">    <span class="selector-tag">color</span>: <span class="selector-id">#fc6423</span>;</span><br><span class="line">    <span class="selector-tag">border-bottom</span>: <span class="selector-tag">none</span>;</span><br><span class="line">    <span class="selector-tag">border-bottom</span>: 1<span class="selector-tag">px</span> <span class="selector-tag">solid</span> <span class="selector-id">#fc6423</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>其中选择.post-body 是为了不影响标题，选择 p 是为了不影响首页“阅读全文”的显示样式,颜色可以自己定义。</p>
 <h1 id="5-外链设置"><a href="#5-外链设置" class="headerlink" title="5. 外链设置"></a>5. 外链设置</h1><p>最初使用七牛云作为图床外链，由于其测试域名回收，导致大部分外链失效。隧抛弃七牛云，开始寻找稳定可靠的图床外链存储服务。</p>
-<h2 id="5-1-购买阿里云对象存储服务"><a href="#5-1-购买阿里云对象存储服务" class="headerlink" title="5.1 购买阿里云对象存储服务"></a>5.1 购买阿里云对象存储服务</h2>
+<h2 id="5-1-购买阿里云对象存储服务"><a href="#5-1-购买阿里云对象存储服务" class="headerlink" title="5.1 购买阿里云对象存储服务"></a>5.1 购买阿里云对象存储服务</h2><p>访问<a href="https://www.aliyun.com/product/oss?spm=5176.12825654.eofdhaal5.81.e9392c4ao0cQj6" target="_blank" rel="noopener">阿里云OSS对象云存储</a>站点，创建Bucket。所谓的Bucket类似于一个存储空间，可以将自己要存储的对象放在该空间里，例如图片。阿里云OSS服务根据该空间的存储大小进行收费。当然，其收费的服务不仅仅是存储空间大小，还包括流量等费用，后续会提及。</p>
+<p>创建Bucket时，需要填写Bucket名称，自定义的。所属区域，例如香港。存储类型，例如标准存储。</p>
+<p>如果不购买阿里云OSS服务流量包，其收费默认是按量收费，即用多少收取对应的费用。当然，也可以购买流量包。一般而言，流量包相对便宜些。</p>
+<p>购买流量包可进入进行购买。</p>
+<p>关于流量包的使用。购买后从控制台OSS对象存储处即可看到购买的流量包。无需关联。当OSS收取服务费用时，会检测相应的流量包。如果流量包满足使用条件，则自动从流量包中抵扣。</p>
+
       
     </div>
     
