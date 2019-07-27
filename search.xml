@@ -631,6 +631,33 @@
     
     
     <entry>
+      <title>基于hexo+github免费搭建个人博客</title>
+      <link href="/2018/03/04/%E5%9F%BA%E4%BA%8EHexo+GitHub%20Pages%20%E5%85%8D%E8%B4%B9%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/"/>
+      <url>/2018/03/04/%E5%9F%BA%E4%BA%8EHexo+GitHub%20Pages%20%E5%85%8D%E8%B4%B9%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/</url>
+      
+        <content type="html"><![CDATA[<h1 id="1-Hexo简介"><a href="#1-Hexo简介" class="headerlink" title="1. Hexo简介"></a>1. Hexo简介</h1><p>Hexo是一款基于Node.js的静态博客框架，依赖少易于安装使用，可以方便的生成静态网页托管在GitHub和Heroku上，是搭建博客的首选框架。这里我们选用的是GitHub。Hexo同时也是GitHub上的开源项目，参见：<a href="https://github.com/hexojs/hexo" target="_blank" rel="noopener">hexojs/hexo</a> 如果想要更加全面的了解Hexo，可以到其官网 <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> 了解更多的细节，因为Hexo的创建者是台湾人，对中文的支持很友好，可以选择中文进行查看。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 其他 </category>
+          
+          <category> hexo </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> hexo </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Hexo使用攻略-添加分类标签和搜索功能</title>
       <link href="/2018/03/04/Hexo%E4%BD%BF%E7%94%A8%E6%94%BB%E7%95%A5-%E6%B7%BB%E5%8A%A0%E5%88%86%E7%B1%BB%E5%8F%8A%E6%A0%87%E7%AD%BE/"/>
       <url>/2018/03/04/Hexo%E4%BD%BF%E7%94%A8%E6%94%BB%E7%95%A5-%E6%B7%BB%E5%8A%A0%E5%88%86%E7%B1%BB%E5%8F%8A%E6%A0%87%E7%AD%BE/</url>
