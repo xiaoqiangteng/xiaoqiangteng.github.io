@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="学步">
 <meta property="og:description" content="1. Hexo简介Hexo是一款基于Node.js的静态博客框架，依赖少易于安装使用，可以方便的生成静态网页托管在GitHub和Heroku上，是搭建博客的首选框架。这里我们选用的是GitHub。Hexo同时也是GitHub上的开源项目，参见：hexojs/hexo 如果想要更加全面的了解Hexo，可以到其官网 Hexo 了解更多的细节，因为Hexo的创建者是台湾人，对中文的支持很友好，可以选择中">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-07-27T16:37:43.314Z">
+<meta property="og:updated_time" content="2019-07-27T16:40:21.218Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="基于hexo+github免费搭建个人博客">
 <meta name="twitter:description" content="1. Hexo简介Hexo是一款基于Node.js的静态博客框架，依赖少易于安装使用，可以方便的生成静态网页托管在GitHub和Heroku上，是搭建博客的首选框架。这里我们选用的是GitHub。Hexo同时也是GitHub上的开源项目，参见：hexojs/hexo 如果想要更加全面的了解Hexo，可以到其官网 Hexo 了解更多的细节，因为Hexo的创建者是台湾人，对中文的支持很友好，可以选择中">
@@ -536,8 +536,18 @@
 <h2 id="5-1-购买阿里云对象存储服务"><a href="#5-1-购买阿里云对象存储服务" class="headerlink" title="5.1 购买阿里云对象存储服务"></a>5.1 购买阿里云对象存储服务</h2><p>访问<a href="https://www.aliyun.com/product/oss?spm=5176.12825654.eofdhaal5.81.e9392c4ao0cQj6" target="_blank" rel="noopener">阿里云OSS对象云存储</a>站点，创建Bucket。所谓的Bucket类似于一个存储空间，可以将自己要存储的对象放在该空间里，例如图片。阿里云OSS服务根据该空间的存储大小进行收费。当然，其收费的服务不仅仅是存储空间大小，还包括流量等费用，后续会提及。</p>
 <p>创建Bucket时，需要填写Bucket名称，自定义的。所属区域，例如香港。存储类型，例如标准存储。</p>
 <p>如果不购买阿里云OSS服务流量包，其收费默认是按量收费，即用多少收取对应的费用。当然，也可以购买流量包。一般而言，流量包相对便宜些。</p>
-<p>购买流量包可进入进行购买。</p>
 <p>关于流量包的使用。购买后从控制台OSS对象存储处即可看到购买的流量包。无需关联。当OSS收取服务费用时，会检测相应的流量包。如果流量包满足使用条件，则自动从流量包中抵扣。</p>
+<h2 id="5-2-上传对象至阿里云OSS服务"><a href="#5-2-上传对象至阿里云OSS服务" class="headerlink" title="5.2 上传对象至阿里云OSS服务"></a>5.2 上传对象至阿里云OSS服务</h2><p>1）进入创建的Bucket中，点击文件管理，创建文件夹。</p>
+<p>2）上传图片至相应位置，即可生成外链。</p>
+<h2 id="5-3-阿里云OSS绑定域名"><a href="#5-3-阿里云OSS绑定域名" class="headerlink" title="5.3 阿里云OSS绑定域名"></a>5.3 阿里云OSS绑定域名</h2><p>1）在bucket 的域名管理中绑定域名。</p>
+<p>2）进入域名解析界面，对域名进行解析。</p>
+<p>首先进入OSS概览页面，找到外网访问地址。</p>
+<p>其次，进入域名解析界面，添加如下设置：</p>
+<p>记录类型：CNAME</p>
+<p>主机记录：oss</p>
+<p>记录值：为外网访问地址。</p>
+<h2 id="5-4-使用iPic实现快速上传图片"><a href="#5-4-使用iPic实现快速上传图片" class="headerlink" title="5.4 使用iPic实现快速上传图片"></a>5.4 使用iPic实现快速上传图片</h2><p>iPic下载和配置地址：<a href="https://toolinbox.net/iPic/" target="_blank" rel="noopener">https://toolinbox.net/iPic/</a></p>
+<p>其中，阿里云OSS服务开启”公共读”权限，使得复制的外链可直接使用。</p>
 
       
     </div>
@@ -718,7 +728,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-Hexo简介"><span class="nav-number">1.</span> <span class="nav-text">1. Hexo简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-环境配置"><span class="nav-number">2.</span> <span class="nav-text">2. 环境配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-本机环境配置"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 本机环境配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-git环境配置"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 git环境配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-同步本地博客到Github"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 同步本地博客到Github</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-设置专属域名"><span class="nav-number">3.</span> <span class="nav-text">3. 设置专属域名</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-Hexo配置"><span class="nav-number">4.</span> <span class="nav-text">4. Hexo配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-主题设置"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 主题设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-修改文章内链接文本样式"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 修改文章内链接文本样式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-外链设置"><span class="nav-number">5.</span> <span class="nav-text">5. 外链设置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#5-1-购买阿里云对象存储服务"><span class="nav-number">5.1.</span> <span class="nav-text">5.1 购买阿里云对象存储服务</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-Hexo简介"><span class="nav-number">1.</span> <span class="nav-text">1. Hexo简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-环境配置"><span class="nav-number">2.</span> <span class="nav-text">2. 环境配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-本机环境配置"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 本机环境配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-git环境配置"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 git环境配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-同步本地博客到Github"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 同步本地博客到Github</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-设置专属域名"><span class="nav-number">3.</span> <span class="nav-text">3. 设置专属域名</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-Hexo配置"><span class="nav-number">4.</span> <span class="nav-text">4. Hexo配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-主题设置"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 主题设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-修改文章内链接文本样式"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 修改文章内链接文本样式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-外链设置"><span class="nav-number">5.</span> <span class="nav-text">5. 外链设置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#5-1-购买阿里云对象存储服务"><span class="nav-number">5.1.</span> <span class="nav-text">5.1 购买阿里云对象存储服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-2-上传对象至阿里云OSS服务"><span class="nav-number">5.2.</span> <span class="nav-text">5.2 上传对象至阿里云OSS服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-3-阿里云OSS绑定域名"><span class="nav-number">5.3.</span> <span class="nav-text">5.3 阿里云OSS绑定域名</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-4-使用iPic实现快速上传图片"><span class="nav-number">5.4.</span> <span class="nav-text">5.4 使用iPic实现快速上传图片</span></a></li></ol></li></ol></div>
             
 
           </div>
