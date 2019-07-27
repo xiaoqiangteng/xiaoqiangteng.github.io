@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="学步">
 <meta property="og:description" content="1. Hexo简介Hexo是一款基于Node.js的静态博客框架，依赖少易于安装使用，可以方便的生成静态网页托管在GitHub和Heroku上，是搭建博客的首选框架。这里我们选用的是GitHub。Hexo同时也是GitHub上的开源项目，参见：hexojs/hexo 如果想要更加全面的了解Hexo，可以到其官网 Hexo 了解更多的细节，因为Hexo的创建者是台湾人，对中文的支持很友好，可以选择中">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-07-27T16:35:36.721Z">
+<meta property="og:updated_time" content="2019-07-27T16:36:18.357Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="基于hexo+github免费搭建个人博客">
 <meta name="twitter:description" content="1. Hexo简介Hexo是一款基于Node.js的静态博客框架，依赖少易于安装使用，可以方便的生成静态网页托管在GitHub和Heroku上，是搭建博客的首选框架。这里我们选用的是GitHub。Hexo同时也是GitHub上的开源项目，参见：hexojs/hexo 如果想要更加全面的了解Hexo，可以到其官网 Hexo 了解更多的细节，因为Hexo的创建者是台湾人，对中文的支持很友好，可以选择中">
@@ -508,6 +508,30 @@
 </ul>
 </li>
 </ol>
+<h1 id="3-设置专属域名"><a href="#3-设置专属域名" class="headerlink" title="3. 设置专属域名"></a>3. 设置专属域名</h1><p>博客搭建好后，我们可以通过之前设置好的GitHub仓库地址来访问，比如：<a href="http://XXX.github.io，而且GitHub是免费替我们托管的的，如果我们想要设置自己的专属的域名，我们可以去阿里云购买域名，我们点击添加记录，设置主机记录为@，类型为A，到IP" target="_blank" rel="noopener">http://XXX.github.io，而且GitHub是免费替我们托管的的，如果我们想要设置自己的专属的域名，我们可以去阿里云购买域名，我们点击添加记录，设置主机记录为@，类型为A，到IP</a> 192.30.252.153（固定值）。按照如上设置完成之后， 可能不会立即生效，等个几分钟，在./source目录下新建文件CNAME（没有后缀名），文件中写上我们要绑定的域名，例如: XXX.com.部署到GitHub上。这时就可以通过<a href="http://XXX.com访问。" target="_blank" rel="noopener">http://XXX.com访问。</a></p>
+<p>GitHub Pages默认是支持https的，即我们可通常<a href="https://XXX.github.io来访问博客。如果想要实现自定义域名访问，需要将自定义域名正确解析到XXX.github.io中。" target="_blank" rel="noopener">https://XXX.github.io来访问博客。如果想要实现自定义域名访问，需要将自定义域名正确解析到XXX.github.io中。</a></p>
+<h1 id="4-Hexo配置"><a href="#4-Hexo配置" class="headerlink" title="4. Hexo配置"></a>4. Hexo配置</h1><h2 id="4-1-主题设置"><a href="#4-1-主题设置" class="headerlink" title="4.1 主题设置"></a>4.1 主题设置</h2><p>搭建自己的博客，最吸引人的莫过于那千变万化的主题了，大家可以在<a href="https://hexo.io/themes/" target="_blank" rel="noopener">Hexo官网</a>上看到无数漂亮、大方、简洁的主题。本人使用的是简洁的<a href="https://github.com/iissnan/hexo-theme-next" target="_blank" rel="noopener">Next主题</a>，你可以选择你喜欢的下载下来，将其解压放入themes目录中，比如我的目录是.\themes，然后修改我在上面提到的站点配置文件中的theme属性，为你刚刚放入themes目录中文件的名字（最好是对解压文件修改一个名字，否则名字可能会比较长，我把我下载下来的主题改文了next）,做完这些之后并不代表你完成了，你还需要参考你所下载的主题所说的配置步骤进行相关的配置，由于不同的主题配置过程也尽不相同，大家根据自己下载的主题去配置，我在这里只说我使用的Next主题如何配置。</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">theme:</span> <span class="string">next</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注意：从下面开始所说的都是Next主题的相关配置。</p>
+</blockquote>
+<p>如果你使用的和我一样，也是Next的主题，那么你最好还是看官方提供<a href="http://theme-next.iissnan.com/" target="_blank" rel="noopener">Next使用文档</a>，并且文档是中文版的,我也仅仅是讲一些容易被忽略的配置，以及我使用的配置，以及在使用过程中遇到的问题;至于如何更换头像，添加分类和标签页面、切换主题样式（Next主题包含3中样式）之类的，大家还是照着官方的做更好。</p>
+<ol>
+<li><p>配置网站图标 </p>
+<p> 如何让网站前能显示自己想要的图标，我当时也是找了很久，最后发现是在主题配置文件（我的是F:\myblog\themes\next_config.yml）的最前面，有一个favicon属性，我把一个名字叫favicon.ico的图片放到了F:\myblog\source下，然后配置如下：</p>
+ <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">favicon:</span> <span class="string">/favicon.ico</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<ol start="2">
+<li><p>首页显示阅读全文按钮</p>
+<p> 首页的文章是不是默认展开了，显示出了整篇文章，怎么才能显示出如下的阅读全文的按钮。在主题配置文件中找到auto_excerpt属性进行配置:</p>
+ <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">auto_excerpt:</span></span><br><span class="line">	 	<span class="attr">enable:</span> <span class="literal">true</span> <span class="comment">#改写为true</span></span><br><span class="line"><span class="attr">   length:</span> <span class="number">150</span> <span class="comment">#默认展示的高度</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<pre><code>你也可以在自己的博文中添加\&lt;!--more--&gt;来决定在首页展示到什么位置（我就喜欢用这种方式），这个标签后的内容就不会展示到首页啦。
+</code></pre><h2 id="4-2-修改文章内链接文本样式"><a href="#4-2-修改文章内链接文本样式" class="headerlink" title="4.2 修改文章内链接文本样式"></a>4.2 修改文章内链接文本样式</h2><p>修改文件 themes\next\source\css_common\components\post\post.styl，在末尾添加如下css样式，：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// 文章内链接文本样式</span><br><span class="line"><span class="selector-class">.post-body</span> <span class="selector-tag">p</span> <span class="selector-tag">a</span>&#123;</span><br><span class="line">  <span class="attribute">color</span>: <span class="number">#0593d3</span>;</span><br><span class="line">  <span class="attribute">border-bottom</span>: none;</span><br><span class="line">  <span class="attribute">border-bottom</span>: <span class="number">1px</span> solid <span class="number">#0593d3</span>;</span><br><span class="line">  &amp;:hover &#123;</span><br><span class="line">    <span class="selector-tag">color</span>: <span class="selector-id">#fc6423</span>;</span><br><span class="line">    <span class="selector-tag">border-bottom</span>: <span class="selector-tag">none</span>;</span><br><span class="line">    <span class="selector-tag">border-bottom</span>: 1<span class="selector-tag">px</span> <span class="selector-tag">solid</span> <span class="selector-id">#fc6423</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中选择.post-body 是为了不影响标题，选择 p 是为了不影响首页“阅读全文”的显示样式,颜色可以自己定义。</p>
 
       
     </div>
@@ -688,7 +712,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-Hexo简介"><span class="nav-number">1.</span> <span class="nav-text">1. Hexo简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-环境配置"><span class="nav-number">2.</span> <span class="nav-text">2. 环境配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-本机环境配置"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 本机环境配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-git环境配置"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 git环境配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-同步本地博客到Github"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 同步本地博客到Github</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-Hexo简介"><span class="nav-number">1.</span> <span class="nav-text">1. Hexo简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-环境配置"><span class="nav-number">2.</span> <span class="nav-text">2. 环境配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-本机环境配置"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 本机环境配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-git环境配置"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 git环境配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-同步本地博客到Github"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 同步本地博客到Github</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-设置专属域名"><span class="nav-number">3.</span> <span class="nav-text">3. 设置专属域名</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-Hexo配置"><span class="nav-number">4.</span> <span class="nav-text">4. Hexo配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-主题设置"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 主题设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-修改文章内链接文本样式"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 修改文章内链接文本样式</span></a></li></ol></li></ol></div>
             
 
           </div>
