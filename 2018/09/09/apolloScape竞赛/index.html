@@ -429,7 +429,7 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> datasets.apolloscape <span class="keyword">import</span> Apolloscape</span><br><span class="line"><span class="keyword">from</span> torchvision <span class="keyword">import</span> transforms</span><br><span class="line"></span><br><span class="line"><span class="comment"># Path to unpacked data folders</span></span><br><span class="line">APOLLO_PATH = <span class="string">"./data/apolloscape"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Resize transform that is applied on every image read</span></span><br><span class="line">transform = transforms.Compose([transforms.Resize(<span class="number">250</span>)])</span><br><span class="line"></span><br><span class="line">apollo_dataset = Apolloscape(root=os.path.join(APOLLO_PATH), road=<span class="string">"zpark-sample"</span>,</span><br><span class="line">                             transform=transform, train=<span class="keyword">True</span>, pose_format=<span class="string">'quat'</span>,</span><br><span class="line">                             stereo=<span class="keyword">True</span>)</span><br><span class="line">print(apollo_dataset)</span><br></pre></td></tr></table></figure>
 <p>output:</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Dataset: Apolloscape</span><br><span class="line">    Road: zpark-sample</span><br><span class="line">    Record: <span class="keyword">None</span></span><br><span class="line">    Train: <span class="keyword">None</span></span><br><span class="line">    Normalize Poses: <span class="keyword">False</span></span><br><span class="line">    Stereo: <span class="keyword">True</span></span><br><span class="line">    Length: <span class="number">1499</span> of <span class="number">1499</span></span><br><span class="line">    Cameras: [<span class="string">'Camera_2'</span>, <span class="string">'Camera_1'</span>]</span><br><span class="line">    Records: [<span class="string">'Record001'</span>, <span class="string">'Record002'</span>, <span class="string">'Record003'</span>, <span class="string">'Record004'</span>, <span class="string">'Record006'</span>, <span class="string">'Record007'</span>, <span class="string">'Record008'</span>, <span class="string">'Record009'</span>, <span class="string">'Record010'</span>, <span class="string">'Record011'</span>, <span class="string">'Record012'</span>, <span class="string">'Record013'</span>, <span class="string">'Record014'</span>]</span><br></pre></td></tr></table></figure>
-<p>POLLO_PATH is a folder with unpacked Apolloscape datasets, e.g. \$APOLLO_PATH/road02_seg or \$APOLLO_PATH/zpark. Download data from Apolloscape page and unpack iot. Let’s assume that we’ve also created a symlink ./data/apolloscape that points to $APOLLO_PATH folder.</p>
+<p>POLLO_PATH is a folder with unpacked Apolloscape datasets, e.g. $APOLLO_PATH/road02_seg or $APOLLO_PATH/zpark. Download data from Apolloscape page and unpack iot. Let’s assume that we’ve also created a symlink ./data/apolloscape that points to $APOLLO_PATH folder.</p>
 <p>We can view the list of available records with a number of data samples in each:</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Show records with numbers of data points</span></span><br><span class="line">recs_num = apollo_dataset.get_records_counts()</span><br><span class="line">recs_num = sorted(recs_num.items(), key=<span class="keyword">lambda</span> kv: kv[<span class="number">1</span>], reverse=<span class="keyword">True</span>)</span><br><span class="line">print(<span class="string">"Records:"</span>)</span><br><span class="line">print(<span class="string">"\n"</span>.join([<span class="string">"\t&#123;&#125; - &#123;&#125;"</span>.format(r[<span class="number">0</span>], r[<span class="number">1</span>]) <span class="keyword">for</span> r <span class="keyword">in</span> recs_num ]))</span><br></pre></td></tr></table></figure>
 <p>output:</p>
@@ -483,35 +483,35 @@
 <li>Kendall, Alex, and Roberto Cipolla. “Geometric loss functions for camera pose regression with deep learning.” (2017).</li>
 </ol>
 </li>
-<li><ol start="2">
+<li><ol>
 <li>Kendall, Alex, Matthew Grimes, and Roberto Cipolla. “Posenet: A convolutional network for real-time 6-dof camera relocalization.” (2015).</li>
 </ol>
 </li>
-<li><ol start="3">
+<li><ol>
 <li>Brahmbhatt, Samarth, et al. “Mapnet: Geometry-aware learning of maps for camera localization.” (2017).</li>
 </ol>
 </li>
-<li><ol start="4">
+<li><ol>
 <li>He, Kaiming, et al. “Delving deep into rectifiers: Surpassing human-level performance on imagenet classification.” (2015).</li>
 </ol>
 </li>
-<li><ol start="5">
+<li><ol>
 <li>Kendall, Alex, Yarin Gal, and Roberto Cipolla. “Multi-task learning using uncertainty to weigh losses for scene geometry and semantics.” (2017).</li>
 </ol>
 </li>
-<li><ol start="6">
+<li><ol>
 <li>Kendall, Alex, and Yarin Gal. “What uncertainties do we need in bayesian deep learning for computer vision?.” (2017).</li>
 </ol>
 </li>
-<li><ol start="7">
+<li><ol>
 <li>Clark, Ronald, et al. “VidLoc: A deep spatio-temporal model for 6-dof video-clip relocalization.” (2017).</li>
 </ol>
 </li>
-<li><ol start="8">
+<li><ol>
 <li>Calafiore, Giuseppe, Luca Carlone, and Frank Dellaert. “Pose graph optimization in the complex domain: Lagrangian duality, conditions for zero duality gap, and optimal solutions.” (2015).</li>
 </ol>
 </li>
-<li><ol start="9">
+<li><ol>
 <li>Martinec, Daniel, and Tomas Pajdla. “Robust rotation and translation estimation in multiview reconstruction.” (2007).</li>
 </ol>
 </li>
@@ -557,8 +557,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/06/11/AWS免费搭建ss教程/" rel="next" title="AWS免费搭建ss教程">
-                <i class="fa fa-chevron-left"></i> AWS免费搭建ss教程
+              <a href="/2018/09/09/C-回调机制教程/" rel="next" title="C++回调机制教程">
+                <i class="fa fa-chevron-left"></i> C++回调机制教程
               </a>
             
           </div>
@@ -567,8 +567,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/09/09/C-回调机制教程/" rel="prev" title="C++回调机制教程">
-                C++回调机制教程 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/09/11/算法-元素最近邻快速查找/" rel="prev" title="算法-元素最近邻快速查找">
+                算法-元素最近邻快速查找 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>

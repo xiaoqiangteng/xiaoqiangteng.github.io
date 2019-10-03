@@ -414,24 +414,24 @@
 <li>git add  文件添加到仓库</li>
 <li>git commit  文件提交到仓库</li>
 <li>git log  历史记录</li>
-<li>git log –pretty=oneline  历史记录</li>
+<li>git log —pretty=oneline  历史记录</li>
 <li>HEAD  当前版本</li>
 <li>HEAD^  上一个版本</li>
 <li>HEAD^^  上上一个版本</li>
 <li>HEAD~100  往上100个版本</li>
-<li>git reset –hard HEAD^  回退到上一个版本</li>
+<li>git reset —hard HEAD^  回退到上一个版本</li>
 <li>git reflog  记录你的每一次命令</li>
-<li>git diff HEAD – readme.txt  查看工作区和版本库里面最新版本的区别</li>
+<li>git diff HEAD — readme.txt  查看工作区和版本库里面最新版本的区别</li>
 <li>git status  版本的状态</li>
-<li>git checkout – file  丢弃工作区的修改</li>
+<li>git checkout — file  丢弃工作区的修改</li>
 <li>git reset HEAD file  暂存区的修改撤销掉（unstage），重新放回工作区</li>
 <li>git reset  既可以回退版本，也可以把暂存区的修改回退到工作区</li>
 <li>git rm  从版本库中删除该文件</li>
-<li>git remote add origin <a href="mailto:git@github.com" target="_blank" rel="noopener">git@github.com</a>:michaelliao/learngit.git  关联远程库</li>
+<li>git remote add origin git@github.com:michaelliao/learngit.git  关联远程库</li>
 <li>git push -u origin master  本地库的所有内容推送到远程库上</li>
 <li>git push  本地库的内容推送到远程</li>
 <li>git push origin master  推送最新修改</li>
-<li>git clone <a href="mailto:git@github.com" target="_blank" rel="noopener">git@github.com</a>:michaelliao/gitskills.git  克隆一个本地库</li>
+<li>git clone git@github.com:michaelliao/gitskills.git  克隆一个本地库</li>
 <li>git checkout -b dev  创建dev分支，然后切换到dev分支</li>
 <li>git branch  查看当前分支</li>
 <li>git checkout master  切换回master分支</li>
@@ -440,8 +440,8 @@
 <li>git branch -d dev  删除dev分支</li>
 <li>git branch <name>  创建分支</name></li>
 <li>git checkout <name>  切换分支</name></li>
-<li>git log –grap  分支合并图</li>
-<li>git merge –no-ff -m “merge with no-ff” dev  强制禁用Fast forward模式，Git就会在merge时生成一个新的commit，这样，从分支历史上就可以看出分支信息</li>
+<li>git log —grap  分支合并图</li>
+<li>git merge —no-ff -m “merge with no-ff” dev  强制禁用Fast forward模式，Git就会在merge时生成一个新的commit，这样，从分支历史上就可以看出分支信息</li>
 <li>git stash  把当前工作现场“储藏”起来，等以后恢复现场后继续工作</li>
 <li>git stash list  工作现场</li>
 <li>git stash apply  恢复stash内容并不删除</li>
@@ -451,19 +451,19 @@
 <li>git remote  查看远程库的信息</li>
 <li>git remote -v  显示更详细的信息</li>
 <li>git pull  最新的提交从origin/dev抓下来</li>
-<li>git branch –set-upstream dev origin/dev  git pull也失败了，原因是没有指定本地dev分支与远程origin/dev分支的链接，根据提示，设置dev和origin/dev的链接，建立本地分支和远程分支的关联</li>
+<li>git branch —set-upstream dev origin/dev  git pull也失败了，原因是没有指定本地dev分支与远程origin/dev分支的链接，根据提示，设置dev和origin/dev的链接，建立本地分支和远程分支的关联</li>
 <li>git checkout -b branch-name origin/branch-name  在本地创建和远程分支对应的分支，本地和远程分支的名称最好一致</li>
 <li>git tag <name>  打一个新标签</name></li>
 <li>git tag  查看所有标签</li>
-<li>git log –pretty=oneline –abbrev-commit  找到历史提交的commit id</li>
+<li>git log —pretty=oneline —abbrev-commit  找到历史提交的commit id</li>
 <li>git show <tagname>  查看标签信息</tagname></li>
 <li>git tag -a <tagname> -m “blablabla…”  指定标签信息</tagname></li>
 <li>git tag -s <tagname> -m “blablabla…”  用PGP签名标签</tagname></li>
 <li>git push origin <tagname>  推送某个标签到远程</tagname></li>
-<li>git push origin –tags  一次性推送全部尚未推送到远程的本地标签</li>
+<li>git push origin —tags  一次性推送全部尚未推送到远程的本地标签</li>
 <li>git tag -d <tagname>  删除一个本地标签</tagname></li>
 <li>git push origin :refs/tags/<tagname>  删除一个远程标签</tagname></li>
-<li>git config –global alias.st status  告诉Git，以后st就表示status </li>
+<li>git config —global alias.st status  告诉Git，以后st就表示status </li>
 </ul>
 <h1 id="安装Git"><a href="#安装Git" class="headerlink" title="安装Git"></a>安装Git</h1><ul>
 <li><p>Linux上安装Git</p>
@@ -477,10 +477,10 @@
 <p>  安装完成后，在开始菜单里找到“Git”-&gt;“Git Bash”，蹦出一个类似命令行窗口的东西，就说明Git安装成功！</p>
 </li>
 <li><p>安装完成后，还需要最后一步设置，在命令行输入：</p>
-<p>  $ git config –global user.name “Your Name”</p>
-<p>  $ git config –global user.email “<a href="mailto:email@example.com" target="_blank" rel="noopener">email@example.com</a>“</p>
+<p>  $ git config —global user.name “Your Name”</p>
+<p>  $ git config —global user.email “email@example.com”</p>
 <p>  因为Git是分布式版本控制系统，所以，每个机器都必须自报家门：你的名字和Email地址。你也许会担心，如果有人故意冒充别人怎么办？这个不必担心，首先我们相信大家都是善良无知的群众，其次，真的有冒充的也是有办法可查的。</p>
-<p>  注意git config命令的–global参数，用了这个参数，表示你这台机器上所有的Git仓库都会使用这个配置，当然也可以对某个仓库指定不同的用户名和Email地址。</p>
+<p>  注意git config命令的—global参数，用了这个参数，表示你这台机器上所有的Git仓库都会使用这个配置，当然也可以对某个仓库指定不同的用户名和Email地址。</p>
 </li>
 </ul>
 <h1 id="创建版本库"><a href="#创建版本库" class="headerlink" title="创建版本库"></a>创建版本库</h1><p>版本库又名仓库，英文名repository。首先，选择一个合适的地方，创建一个空目录：</p>
@@ -529,7 +529,7 @@ Author: Michael Liao &lt;askxuefeng@gmail.com&gt;
 Date:   Mon Aug 19 17:51:55 2013 +0800
 
 wrote a readme file
-</code></pre><p>git log命令显示从最近到最远的提交日志，我们可以看到3次提交，最近的一次是append GPL，上一次是add distributed，最早的一次是wrote a readme file。<br>如果嫌输出信息太多，看得眼花缭乱的，可以试试加上–pretty=oneline参数：</p>
+</code></pre><p>git log命令显示从最近到最远的提交日志，我们可以看到3次提交，最近的一次是append GPL，上一次是add distributed，最早的一次是wrote a readme file。<br>如果嫌输出信息太多，看得眼花缭乱的，可以试试加上—pretty=oneline参数：</p>
 <pre><code>$ git log --pretty=oneline
 3628164fb26d48395383f8f31179f24e0882e1e0 append GPL
 ea34578d5496d7dd233c827ed32a8cd576c5ee85 add distributed
@@ -545,14 +545,14 @@ HEAD is now at ea34578 add distributed
 Git is a distributed version control system.
 Git is free software.
 </code></pre><p>现在，你回退到了某个版本，关掉了电脑，第二天早上就后悔了，想恢复到新版本怎么办？找不到新版本的commit id怎么办？</p>
-<p>在Git中，总是有后悔药可以吃的。当你用$ git reset –hard HEAD^回退到add distributed版本时，再想恢复到append GPL，就必须找到append GPL的commit id。Git提供了一个命令git reflog用来记录你的每一次命令：</p>
+<p>在Git中，总是有后悔药可以吃的。当你用$ git reset —hard HEAD^回退到add distributed版本时，再想恢复到append GPL，就必须找到append GPL的commit id。Git提供了一个命令git reflog用来记录你的每一次命令：</p>
 <pre><code>$ git reflog
 ea34578 HEAD@{0}: reset: moving to HEAD^
 3628164 HEAD@{1}: commit: append GPL
 ea34578 HEAD@{2}: commit: add distributed
 cb926e7 HEAD@{3}: commit (initial): wrote a readme file
 </code></pre><h1 id="撤销修改"><a href="#撤销修改" class="headerlink" title="撤销修改"></a>撤销修改</h1><ul>
-<li><p>场景1：当你改乱了工作区某个文件的内容，想直接丢弃工作区的修改时，用命令git checkout – file。</p>
+<li><p>场景1：当你改乱了工作区某个文件的内容，想直接丢弃工作区的修改时，用命令git checkout — file。</p>
 </li>
 <li><p>场景2：当你不但改乱了工作区某个文件的内容，还添加到了暂存区时，想丢弃修改，分两步，第一步用命令git reset HEAD file，就回到了场景1，第二步按场景1操作。</p>
 </li>
@@ -563,7 +563,7 @@ cb926e7 HEAD@{3}: commit (initial): wrote a readme file
 <p>这个时候，Git知道你删除了文件，因此，工作区和版本库就不一致了，git status命令会立刻告诉你哪些文件被删除了</p>
 <p>现在你有两个选择，一是确实要从版本库中删除该文件，那就用命令git rm删掉，并且git commit：</p>
 <pre><code>$ git rm test.txt
-rm &apos;test.txt&apos;
+rm &#39;test.txt&#39;
 $ git commit -m &quot;remove test.txt&quot;
 [master d17efd8] remove test.txt
  1 file changed, 1 deletion(-)
@@ -583,9 +583,9 @@ Counting objects: 19, done.
 Delta compression using up to 4 threads.
 Compressing objects: 100% (19/19), done.
 Writing objects: 100% (19/19), 13.73 KiB, done.
-</code></pre><p>   Total 23 (delta 6), reused 0 (delta 0)<br>   To <a href="mailto:git@github.com" target="_blank" rel="noopener">git@github.com</a>:michaelliao/learngit.git</p>
-<pre><code>* [new branch]      master -&gt; master
-Branch master set up to track remote branch master from origin.
+</code></pre><p>   Total 23 (delta 6), reused 0 (delta 0)<br>   To git@github.com:michaelliao/learngit.git</p>
+<pre><code> * [new branch]      master -&gt; master
+ Branch master set up to track remote branch master from origin.
 </code></pre><p>把本地库的内容推送到远程，用git push命令，实际上是把当前分支master推送到远程。</p>
 <p>由于远程库是空的，我们第一次推送master分支时，加上了-u参数，Git不但会把本地的master分支内容推送的远程新的master分支，还会把本地的master分支和远程的master分支关联起来，在以后的推送或者拉取时就可以简化命令。</p>
 <p>从现在起，只要本地作了提交，就可以通过命令：</p>
@@ -598,16 +598,16 @@ Branch master set up to track remote branch master from origin.
 <p>一开始的时候，master分支是一条线，Git用master指向最新的提交，再用HEAD指向master，就能确定当前分支，以及当前分支的提交点，每次提交，master分支都会向前移动一步，这样，随着你不断提交，master分支的线也越来越长</p>
 <p>当我们创建新的分支，例如dev时，Git新建了一个指针叫dev，指向master相同的提交，再把HEAD指向dev，就表示当前分支在dev，你看，Git创建一个分支很快，因为除了增加一个dev指针，改改HEAD的指向，工作区的文件都没有任何变化！不过，从现在开始，对工作区的修改和提交就是针对dev分支了，比如新提交一次后，dev指针往前移动一步，而master指针不变</p>
 <p>假如我们在dev上的工作完成了，就可以把dev合并到master上。Git怎么合并呢？最简单的方法，就是直接把master指向dev的当前提交，就完成了合并，所以Git合并分支也很快！就改改指针，工作区内容也不变！合并完分支后，甚至可以删除dev分支。删除dev分支就是把dev指针给删掉，删掉后，我们就剩下了一条master分支：</p>
-<ol start="2">
+<ol>
 <li>实战</li>
 </ol>
 <p>首先，我们创建dev分支，然后切换到dev分支：</p>
 <pre><code>$ git checkout -b dev
-Switched to a new branch &apos;dev&apos;
+Switched to a new branch &#39;dev&#39;
 </code></pre><p>git checkout命令加上-b参数表示创建并切换，相当于以下两条命令：</p>
 <pre><code>$ git branch dev
 $ git checkout dev
-Switched to branch &apos;dev&apos;
+Switched to branch &#39;dev&#39;
 </code></pre><p>然后，用git branch命令查看当前分支</p>
 <pre><code>$ git branch
 * dev
@@ -620,7 +620,7 @@ $ git commit -m &quot;branch test&quot;
  1 file changed, 1 insertion(+)
 </code></pre><p>现在，dev分支的工作完成，我们就可以切换回master分支</p>
 <pre><code>$ git checkout master
-Switched to branch &apos;master&apos;
+Switched to branch &#39;master&#39;
 </code></pre><p>切换回master分支后，再查看一个readme.txt文件，刚才添加的内容不见了！因为那个提交是在dev分支上，而master分支此刻的提交点并没有变</p>
 <p>现在，我们把dev分支的工作成果合并到master分支上：</p>
 <pre><code>$ git merge dev
@@ -638,7 +638,7 @@ Deleted branch dev (was fec145a).
 <pre><code>$ git branch
 * master
 </code></pre><p>因为创建、合并和删除分支非常快，所以Git鼓励你使用分支完成某个任务，合并后再删掉分支，这和直接在master分支上工作效果是一样的，但过程更安全。</p>
-<ol start="3">
+<ol>
 <li>小结</li>
 </ol>
 <p>Git鼓励大量使用分支：</p>
@@ -649,22 +649,22 @@ Deleted branch dev (was fec145a).
 <p>合并某分支到当前分支：git merge <name></name></p>
 <p>删除分支：git branch -d <name></name></p>
 <h2 id="解决冲突"><a href="#解决冲突" class="headerlink" title="解决冲突"></a>解决冲突</h2><p>当Git无法自动合并分支时，就必须首先解决冲突。解决冲突后，再提交，合并完成。</p>
-<p>用git log –graph命令可以看到分支合并图。</p>
+<p>用git log —graph命令可以看到分支合并图。</p>
 <h2 id="分支管理策略"><a href="#分支管理策略" class="headerlink" title="分支管理策略"></a>分支管理策略</h2><p>通常，合并分支时，如果可能，Git会用Fast forward模式，但这种模式下，删除分支后，会丢掉分支信息。</p>
 <p>如果要强制禁用Fast forward模式，Git就会在merge时生成一个新的commit，这样，从分支历史上就可以看出分支信息。</p>
-<p>下面我们实战一下–no-ff方式的git merge：</p>
+<p>下面我们实战一下—no-ff方式的git merge：</p>
 <p>首先，仍然创建并切换dev分支：</p>
 <pre><code>$ git checkout -b dev
-Switched to a new branch &apos;dev&apos;
+Switched to a new branch &#39;dev&#39;
 </code></pre><p>修改readme.txt文件，并提交一个新的commit：</p>
 <pre><code>$ git add readme.txt 
 $ git commit -m &quot;add merge&quot;
 [dev 6224937] add merge
  1 file changed, 1 insertion(+)
 </code></pre><p>现在，我们切换回master：</p>
-<p>   $ git checkout master<br>   Switched to branch ‘master’<br>准备合并dev分支，请注意–no-ff参数，表示禁用Fast forward：</p>
+<p>   $ git checkout master<br>   Switched to branch ‘master’<br>准备合并dev分支，请注意—no-ff参数，表示禁用Fast forward：</p>
 <pre><code>$ git merge --no-ff -m &quot;merge with no-ff&quot; dev
-Merge made by the &apos;recursive&apos; strategy.
+Merge made by the &#39;recursive&#39; strategy.
  readme.txt |    1 +
  1 file changed, 1 insertion(+)
 </code></pre><p>因为本次合并要创建一个新的commit，所以加上-m参数，把commit描述写进去。</p>
@@ -689,10 +689,10 @@ HEAD is now at 6224937 add merge
 </code></pre><p>现在，用git status查看工作区，就是干净的（除非有没有被Git管理的文件），因此可以放心地创建分支来修复bug。</p>
 <p>首先确定要在哪个分支上修复bug，假定需要在master分支上修复，就从master创建临时分支：</p>
 <pre><code>$ git checkout master
-Switched to branch &apos;master&apos;
-Your branch is ahead of &apos;origin/master&apos; by 6 commits.
+Switched to branch &#39;master&#39;
+Your branch is ahead of &#39;origin/master&#39; by 6 commits.
 $ git checkout -b issue-101
-Switched to a new branch &apos;issue-101&apos;
+Switched to a new branch &#39;issue-101&#39;
 </code></pre><p>现在修复bug，需要把“Git is free software …”改为“Git is a free software …”，然后提交：</p>
 <pre><code>$ git add readme.txt 
 $ git commit -m &quot;fix bug 101&quot;
@@ -700,17 +700,17 @@ $ git commit -m &quot;fix bug 101&quot;
  1 file changed, 1 insertion(+), 1 deletion(-)
 </code></pre><p>修复完成后，切换到master分支，并完成合并，最后删除issue-101分支：</p>
 <pre><code>$ git checkout master
-Switched to branch &apos;master&apos;
-Your branch is ahead of &apos;origin/master&apos; by 2 commits.
+Switched to branch &#39;master&#39;
+Your branch is ahead of &#39;origin/master&#39; by 2 commits.
 $ git merge --no-ff -m &quot;merged bug fix 101&quot; issue-101
-Merge made by the &apos;recursive&apos; strategy.
+Merge made by the &#39;recursive&#39; strategy.
  readme.txt |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 $ git branch -d issue-101
 Deleted branch issue-101 (was cc17032).
 </code></pre><p>太棒了，原计划两个小时的bug修复只花了5分钟！现在，是时候接着回到dev分支干活了！</p>
 <pre><code>$ git checkout dev
-Switched to branch &apos;dev&apos;
+Switched to branch &#39;dev&#39;
 $ git status
 # On branch dev
 nothing to commit (working directory clean)
@@ -743,7 +743,7 @@ Dropped refs/stash@{0} (f624f8e5f082f2df2bed8a4e09c12fd2943bdd40)
 <p>现在，你终于接到了一个新任务：开发代号为Vulcan的新功能，该功能计划用于下一代星际飞船。</p>
 <p>于是准备开发：</p>
 <pre><code>$ git checkout -b feature-vulcan
-Switched to a new branch &apos;feature-vulcan&apos;
+Switched to a new branch &#39;feature-vulcan&#39;
 </code></pre><p>5分钟后，开发完毕：</p>
 <pre><code>$ git add vulcan.py
 $ git status
@@ -762,8 +762,8 @@ $ git commit -m &quot;add feature vulcan&quot;
 </code></pre><p>一切顺利的话，feature分支和bug分支是类似的，合并，然后删除。</p>
 <p>但是，就在此时，接到上级命令，因经费不足，新功能必须取消！虽然白干了，但是这个分支还是必须就地销毁：</p>
 <pre><code>$ git branch -d feature-vulcan
-error: The branch &apos;feature-vulcan&apos; is not fully merged.
-If you are sure you want to delete it, run &apos;git branch -D feature-vulcan&apos;.
+error: The branch &#39;feature-vulcan&#39; is not fully merged.
+If you are sure you want to delete it, run &#39;git branch -D feature-vulcan&#39;.
 </code></pre><p>销毁失败。Git友情提醒，feature-vulcan分支还没有被合并，如果删除，将丢失掉修改，如果要强行删除，需要使用命令git branch -D feature-vulcan。</p>
 <p>现在我们强行删除：</p>
 <pre><code>$ git branch -D feature-vulcan
@@ -792,11 +792,11 @@ $ git commit -m &quot;add coding: utf-8&quot;
  $ git push origin dev
 To git@github.com:michaelliao/learngit.git
  ! [rejected]        dev -&gt; dev (non-fast-forward)
-error: failed to push some refs to &apos;git@github.com:michaelliao/learngit.git&apos;
+error: failed to push some refs to &#39;git@github.com:michaelliao/learngit.git&#39;
 hint: Updates were rejected because the tip of your current branch is behind
-hint: its remote counterpart. Merge the remote changes (e.g. &apos;git pull&apos;)
+hint: its remote counterpart. Merge the remote changes (e.g. &#39;git pull&#39;)
 hint: before pushing again.
-hint: See the &apos;Note about fast-forwards&apos; in &apos;git push --help&apos; for details.
+hint: See the &#39;Note about fast-forwards&#39; in &#39;git push --help&#39; for details.
 </code></pre><p>推送失败，因为你的小伙伴的最新提交和你试图推送的提交有冲突，解决办法也很简单，Git已经提示我们，先用git pull把最新的提交从origin/dev抓下来，然后，在本地合并，解决冲突，再推送：</p>
 <pre><code>$ git pull
 remote: Counting objects: 5, done.
@@ -842,7 +842,7 @@ To git@github.com:michaelliao/learngit.git
 </li>
 <li><p>没有冲突或者解决掉冲突后，再用git push origin branch-name推送就能成功！</p>
 </li>
-<li><p>如果git pull提示“no tracking information”，则说明本地分支和远程分支的链接关系没有创建，用命令git branch –set-upstream branch-name origin/branch-name。</p>
+<li><p>如果git pull提示“no tracking information”，则说明本地分支和远程分支的链接关系没有创建，用命令git branch —set-upstream branch-name origin/branch-name。</p>
 </li>
 </ol>
 <p>这就是多人协作的工作模式，一旦熟悉了，就非常简单。</p>
@@ -856,7 +856,7 @@ To git@github.com:michaelliao/learngit.git
 </li>
 <li><p>在本地创建和远程分支对应的分支，使用git checkout -b branch-name origin/branch-name，本地和远程分支的名称最好一致；</p>
 </li>
-<li><p>建立本地分支和远程分支的关联，使用git branch –set-upstream branch-name origin/branch-name；</p>
+<li><p>建立本地分支和远程分支的关联，使用git branch —set-upstream branch-name origin/branch-name；</p>
 </li>
 <li><p>从远程抓取分支，使用git pull，如果有冲突，要先处理冲突。</p>
 </li>

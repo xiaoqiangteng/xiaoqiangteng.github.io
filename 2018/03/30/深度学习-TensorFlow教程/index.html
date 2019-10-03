@@ -467,7 +467,7 @@
 <p>上面命令的输出结果之中，包括容器的 ID。很多地方都需要提供这个 ID，比如上一节终止容器运行的docker container kill命令。</p>
 <p>终止运行的容器文件，依然会占据硬盘空间，可以使用docker container rm命令删除。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker container rm [containerID]</span><br></pre></td></tr></table></figure>
-<p>运行上面的命令之后，再使用docker container ls –all命令，就会发现被删除的容器文件已经消失了。</p>
+<p>运行上面的命令之后，再使用docker container ls —all命令，就会发现被删除的容器文件已经消失了。</p>
 <p>创建tensorflow docker容器：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker container run --name [name] -it -p 8888:8888 tensorflow/tensorflow:latest-gpu /bin/bash</span><br><span class="line"><span class="comment"># [name]-- 容器的名字</span></span><br><span class="line"><span class="comment"># -it -- 保留命令行运行</span></span><br><span class="line"><span class="comment"># -p 8888:8888 —— 将本地的8888端口和http://localhost:8888/映射</span></span><br><span class="line"><span class="comment"># tensorflow/tensorflow:latest-gpu ：默认是tensorflow/tensorflow:latest,指定使用的镜像</span></span><br></pre></td></tr></table></figure>
 <p>启动docker：</p>
@@ -499,7 +499,7 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ nsenter --target <span class="variable">$PID</span> --mount --uts --ipc --net --pid</span><br></pre></td></tr></table></figure>
 <p>为了使用方便可以写一个脚本自动完成：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ cat /bin/docker_enter</span><br><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line">sudo nsenter --target `docker inspect --format &#123;&#123;.State.Pid&#125;&#125; <span class="variable">$1</span>` --mount --uts --ipc --net --pid bash</span><br></pre></td></tr></table></figure>
-<p>这样每次要进入某个container只需要执行docker_enter &lt;container_name_or_ID&gt;就可以了。</p>
+<p>这样每次要进入某个container只需要执行docker_enter <container_name_or_id>就可以了。</container_name_or_id></p>
 <h4 id="ssh"><a href="#ssh" class="headerlink" title="ssh"></a>ssh</h4><p>这个原理也很简单，在container里面启动ssh服务，然后通过ssh的方式去登陆到container里面，不推荐这种方式，主要是配置ssh登陆比较繁琐，开启ssh服务也会耗费资源，完全没有必要。</p>
 <h3 id="TensorFlow安装方式一"><a href="#TensorFlow安装方式一" class="headerlink" title="TensorFlow安装方式一"></a>TensorFlow安装方式一</h3><ol>
 <li><p>下载镜像</p>
@@ -528,7 +528,7 @@
  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker run -it --name bash_tensorflow tensorflow/tensorflow /bin/bash</span><br><span class="line"><span class="comment"># 这样我们就创建了名为bash_tensorflow的容器</span></span><br></pre></td></tr></table></figure>
 </li>
 </ol>
-<ol start="3">
+<ol>
 <li><p>start命令启动容器</p>
  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker start bash_tensorflow</span><br></pre></td></tr></table></figure>
 </li>
@@ -545,7 +545,7 @@
  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt-get install libcupti-dev</span><br><span class="line">$ sudo apt-get install python-pip python-dev   <span class="comment"># for Python 2.7</span></span><br><span class="line">$ sudo apt-get install python3-pip python3-dev <span class="comment"># for Python 3.n</span></span><br><span class="line">$ pip install tensorflow      <span class="comment"># Python 2.7; CPU support (no GPU support)</span></span><br><span class="line">$ pip3 install tensorflow     <span class="comment"># Python 3.n; CPU support (no GPU support)</span></span><br><span class="line">$ pip install tensorflow-gpu  <span class="comment"># Python 2.7;  GPU support</span></span><br><span class="line">$ pip3 install tensorflow-gpu <span class="comment"># Python 3.n; GPU support</span></span><br></pre></td></tr></table></figure>
 </li>
 </ol>
-<ol start="3">
+<ol>
 <li><p>测试</p>
  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow</span><br></pre></td></tr></table></figure>
 </li>

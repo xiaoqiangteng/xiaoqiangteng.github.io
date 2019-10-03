@@ -449,8 +449,6 @@
 <p>此外，我们保留60%的图像。剩下的25%的图像我们通过半高斯分布采样方法来筛选。如此，文章保证了图像的多样性。</p>
 <blockquote>
 <p>The dataset contains densely sampled RGB images per scan location. These images were sampled from equirectangular images that were generated per scan location and modality using the raw data captured by the scanner. All images in the dataset are stored in full high-definition at 1080x1080 resolution. For more details on the random sampling of RGB images read section 4.2 in the paper. We provide the camera metadata for each generated image.</p>
-</blockquote>
-<blockquote>
 <p>We also provide depth images that were computed on the 3D mesh instead of directly on the 3D mesh, as well as surface normal images. 2D semantic annotations are computed for each image by projecting the 3D mesh labels on the image plane. Due to certain geo- metric artifacts present at the mesh model mainly because of the level of detail in the reconstruction, the 2D annotations occasionally present small local misalignment to the underlying pixels, especially for points that have a short distance to the camera. This issue can be easily addressed by fusing image content with the projected annotations using graphical models. The dataset also includes 3D coordinate encoded images where each pixel encodes the X, Y, Z location of the point in the world coordinate system. Last, an equirectangular projection is also provided per scan location and modality.</p>
 </blockquote>
 <p>该数据集包含了每个采集区域的稠密的RGB图像。作者使用扫描仪输出的全景图像来生成这些图像。在数据集里的所有的图像的分辨率均为1080x1080。细节请参考论文。</p>
