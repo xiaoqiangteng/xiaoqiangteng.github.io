@@ -90,7 +90,17 @@
 <meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-10-13-062045.png">
 <meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-10-13-062408.png">
 <meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-10-13-062414.png">
-<meta property="og:updated_time" content="2019-10-13T06:24:20.121Z">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-10-13-071040.png">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-10-13-074056.png">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-10-13-074146.png">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-10-13-075925.png">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-10-13-132101.png">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-10-13-132459.png">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-10-13-133232.png">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-10-13-133423.png">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-10-13-133344.png">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-10-13-133525.png">
+<meta property="og:updated_time" content="2019-10-13T13:42:29.785Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="线性代数及其应用-线性方程组">
 <meta name="twitter:description" content="1. 线性方程组定义：包含未知数的$x_1, x_2, \cdots, x_n$的线性方程组如下所示：  a_1x_1+a_2x_2+\cdots+a_nx_n = b.矩阵形式：  x_1 - 2x_2 + x3 = 0 \\ 2x_2-8x_3 = 8 \\ -4x_1 + 5x_2 + 9x_3 = -9系数矩阵为：  \left[  \begin{matrix}    1 &amp; -2 &amp; 1">
@@ -540,6 +550,47 @@ x_3 = 3
 <p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-10-13-062408.png" alt="image-20191013142401120"></p>
 <p>矩阵方程形如：</p>
 <p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-10-13-062414.png" alt="image-20191013142331968"></p>
+<h2 id="4-2-解的存在性"><a href="#4-2-解的存在性" class="headerlink" title="4.2 解的存在性"></a>4.2 解的存在性</h2><p>设A是mxn矩阵，则下列命题是逻辑上等价的。也就是说，对某个A，他们都成立或者都不成立：</p>
+<ul>
+<li>对$R^{m}$中每个b，方程Ax = b有解</li>
+<li>$R^{m}$中的每个b都是A的列的一个线性组合</li>
+<li>A的各列生成$R^m$</li>
+<li>A的每一行都有一个主元位置</li>
+</ul>
+<h1 id="5-线性方程组的解集"><a href="#5-线性方程组的解集" class="headerlink" title="5. 线性方程组的解集"></a>5. 线性方程组的解集</h1><h2 id="5-1-齐次线性方程组"><a href="#5-1-齐次线性方程组" class="headerlink" title="5.1 齐次线性方程组"></a>5.1 齐次线性方程组</h2><p>线性方程组称为齐次的，若它可写成Ax = 0的形式，其中A是mxn矩阵，0是$R^m$中的零向量。这样的方程组至少有一个解，即x = 0。这个解称为它的平凡解。</p>
+<p>齐次方程Ax = 0有非平凡解，当且仅当方程至少有一个自由变量。</p>
+<h2 id="5-2-参数向量形式"><a href="#5-2-参数向量形式" class="headerlink" title="5.2 参数向量形式"></a>5.2 参数向量形式</h2><p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-10-13-071040.png" alt="image-20191013151029601"></p>
+<p>方程（2）是称为平面的参数向量方程。有时也可写为：</p>
+<p><script type="math/tex">x = sy + tv</script>。</p>
+<h2 id="5-3-非齐次方程组的解"><a href="#5-3-非齐次方程组的解" class="headerlink" title="5.3 非齐次方程组的解"></a>5.3 非齐次方程组的解</h2><p>当非齐次方程组有许多解时，一般可表示为参数向量形式，即由一个向量加上满足对应的齐次方程的一些向量的任意线性组合的形式。</p>
+<p>例：</p>
+<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-10-13-074056.png" alt="image-20191013153845394"></p>
+<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-10-13-074146.png" alt="image-20191013154102302"></p>
+<p>几何解释：</p>
+<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-10-13-075925.png" alt="image-20191013155859814"></p>
+<h1 id="6-线性无关"><a href="#6-线性无关" class="headerlink" title="6. 线性无关"></a>6. 线性无关</h1><h2 id="6-1-定义"><a href="#6-1-定义" class="headerlink" title="6.1 定义"></a>6.1 定义</h2><p>$R^n$中一组向量$\{v_1, \dots, v_p\}$称为线性无关的，若向量方程$x_1v_1 + x_2v_2 + \dots + x_pv_p = 0$仅有平凡解。向量组（集）称为线性无关的，若存在不全为零的权$c_1, \dots, c_p$，使$c_1v_1 + c_2v_2 + \dots + c_pv_p = 0$。</p>
+<h2 id="6-2-矩阵各列的线性无关"><a href="#6-2-矩阵各列的线性无关" class="headerlink" title="6.2 矩阵各列的线性无关"></a>6.2 矩阵各列的线性无关</h2><p>矩阵A的各列线性无关，当且仅当方程Ax = 0仅有平凡解。</p>
+<h2 id="6-3-一个或多个向量的集合"><a href="#6-3-一个或多个向量的集合" class="headerlink" title="6.3 一个或多个向量的集合"></a>6.3 一个或多个向量的集合</h2><ul>
+<li><p>两个向量的集合$\{v_1, v_2\}$线性相关，当且仅当其中一个向量是另一个向量的倍数。这个集合线性无关，当且仅当其中一个向量都不是另一个向量的倍数。</p>
+</li>
+<li><p>更多个向量的集合$S = \{v_1, \dots, v_p\}$线性相关，当且仅当S中至少有一个向量是其他向量的线性组合。</p>
+</li>
+<li><p>若一个向量组的向量个数超过每个向量元素个数，那么这个向量组线性相关。</p>
+</li>
+<li>若向量组$S = \{v_1, \dots, v_p\}$包含零向量，则它线性相关。</li>
+</ul>
+<h1 id="7-线性变换介绍"><a href="#7-线性变换介绍" class="headerlink" title="7. 线性变换介绍"></a>7. 线性变换介绍</h1><h2 id="7-1-矩阵变换"><a href="#7-1-矩阵变换" class="headerlink" title="7.1 矩阵变换"></a>7.1 矩阵变换</h2><p>变换（或映射）T称为线性的，若：</p>
+<ul>
+<li>对T的定义域中一切u, v，T(u + v) = T(u) + T(v)</li>
+<li>对一切u和标量c，T(cu) = cT(u)</li>
+</ul>
+<h2 id="7-2-线性变换的矩阵"><a href="#7-2-线性变换的矩阵" class="headerlink" title="7.2 线性变换的矩阵"></a>7.2 线性变换的矩阵</h2><p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-10-13-132101.png" alt="image-20191013212009351"></p>
+<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-10-13-132459.png" alt="image-20191013212458966"></p>
+<h2 id="7-3-R-2-中的几何线性变换"><a href="#7-3-R-2-中的几何线性变换" class="headerlink" title="7.3 $R^2$中的几何线性变换"></a>7.3 $R^2$中的几何线性变换</h2><p>例：</p>
+<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-10-13-133232.png" alt="image-20191013213231663"></p>
+<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-10-13-133423.png" alt="image-20191013213325065"></p>
+<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-10-13-133344.png" alt="image-20191013213343910"></p>
+<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-10-13-133525.png" alt="image-20191013213358029"></p>
 
       
     </div>
@@ -722,7 +773,7 @@ x_3 = 3
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-线性方程组"><span class="nav-text">1. 线性方程组</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-1-线性方程组的解法"><span class="nav-text">1.1 线性方程组的解法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-2-存在与唯一性问题"><span class="nav-text">1.2 存在与唯一性问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-行化简与阶梯型矩阵"><span class="nav-text">2. 行化简与阶梯型矩阵</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-阶梯型定义"><span class="nav-text">2.1 阶梯型定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-简化阶梯型"><span class="nav-text">2.2 简化阶梯型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-例子"><span class="nav-text">2.3 例子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-主元位置和主元列"><span class="nav-text">2.4 主元位置和主元列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-5-线性方程组的解"><span class="nav-text">2.5 线性方程组的解</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-向量方程"><span class="nav-text">3. 向量方程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-R-2-中的向量定义"><span class="nav-text">3.1 $R^{2}$中的向量定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-向量的性质"><span class="nav-text">3.2 向量的性质</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-线性组合"><span class="nav-text">3.3 线性组合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-4-向量方程"><span class="nav-text">3.4 向量方程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-矩阵方程"><span class="nav-text">4. 矩阵方程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-向量方程和矩阵方程的区别"><span class="nav-text">4.1 向量方程和矩阵方程的区别</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-线性方程组"><span class="nav-text">1. 线性方程组</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-1-线性方程组的解法"><span class="nav-text">1.1 线性方程组的解法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-2-存在与唯一性问题"><span class="nav-text">1.2 存在与唯一性问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-行化简与阶梯型矩阵"><span class="nav-text">2. 行化简与阶梯型矩阵</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-阶梯型定义"><span class="nav-text">2.1 阶梯型定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-简化阶梯型"><span class="nav-text">2.2 简化阶梯型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-例子"><span class="nav-text">2.3 例子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-主元位置和主元列"><span class="nav-text">2.4 主元位置和主元列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-5-线性方程组的解"><span class="nav-text">2.5 线性方程组的解</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-向量方程"><span class="nav-text">3. 向量方程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-R-2-中的向量定义"><span class="nav-text">3.1 $R^{2}$中的向量定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-向量的性质"><span class="nav-text">3.2 向量的性质</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-线性组合"><span class="nav-text">3.3 线性组合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-4-向量方程"><span class="nav-text">3.4 向量方程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-矩阵方程"><span class="nav-text">4. 矩阵方程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-向量方程和矩阵方程的区别"><span class="nav-text">4.1 向量方程和矩阵方程的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-解的存在性"><span class="nav-text">4.2 解的存在性</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-线性方程组的解集"><span class="nav-text">5. 线性方程组的解集</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#5-1-齐次线性方程组"><span class="nav-text">5.1 齐次线性方程组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-2-参数向量形式"><span class="nav-text">5.2 参数向量形式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-3-非齐次方程组的解"><span class="nav-text">5.3 非齐次方程组的解</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-线性无关"><span class="nav-text">6. 线性无关</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#6-1-定义"><span class="nav-text">6.1 定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-2-矩阵各列的线性无关"><span class="nav-text">6.2 矩阵各列的线性无关</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-3-一个或多个向量的集合"><span class="nav-text">6.3 一个或多个向量的集合</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7-线性变换介绍"><span class="nav-text">7. 线性变换介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#7-1-矩阵变换"><span class="nav-text">7.1 矩阵变换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-2-线性变换的矩阵"><span class="nav-text">7.2 线性变换的矩阵</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-3-R-2-中的几何线性变换"><span class="nav-text">7.3 $R^2$中的几何线性变换</span></a></li></ol></li></ol></div>
             
 
           </div>
