@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="学步">
 <meta property="og:description" content="1. 配置Hexo 的自带的 Markdown 引擎并不支持 LaTeX 公式。 但是 MathJax 支持，因此首先要 启用 MathJax 才能渲染 LaTeX 公式。如果你已经安装了 NexT theme，开启 MathJax 支持非常容易，在最新版的 NexT 主题的 _config.yml 文件里，找到 MathJax 相关部分，使用以下配置： 1234567math:  enable:">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-10-03T20:25:25.080Z">
+<meta property="og:updated_time" content="2019-10-04T12:10:39.016Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Markdown-数学公式">
 <meta name="twitter:description" content="1. 配置Hexo 的自带的 Markdown 引擎并不支持 LaTeX 公式。 但是 MathJax 支持，因此首先要 启用 MathJax 才能渲染 LaTeX 公式。如果你已经安装了 NexT theme，开启 MathJax 支持非常容易，在最新版的 NexT 主题的 _config.yml 文件里，找到 MathJax 相关部分，使用以下配置： 1234567math:  enable:">
@@ -470,7 +470,14 @@
 \right]</script><h2 id="2-5-行间矩阵"><a href="#2-5-行间矩阵" class="headerlink" title="2.5 行间矩阵"></a>2.5 行间矩阵</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Test$\bigl(</span><br><span class="line">    \begin&#123;smallmatrix&#125;</span><br><span class="line">		l&amp;l\\j&amp;z</span><br><span class="line">	\end&#123;smallmatrix&#125;</span><br><span class="line">\bigr)<span class="variable">$Test</span></span><br></pre></td></tr></table></figure>
 <p>效果：</p>
 <p>Test$\bigl(<br>    \begin{smallmatrix}<br>        l&amp;l\\j&amp;z<br>    \end{smallmatrix}<br>\bigr)$Test</p>
-<h1 id="10-参考"><a href="#10-参考" class="headerlink" title="10. 参考"></a>10. 参考</h1><ul>
+<h1 id="3-方程组"><a href="#3-方程组" class="headerlink" title="3. 方程组"></a>3. 方程组</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">\begin&#123;cases&#125;</span><br><span class="line">x+y+z=0 \\</span><br><span class="line">x+2y+3z=0 \\</span><br><span class="line">x+4y+5z=0</span><br><span class="line">\end&#123;cases&#125;</span><br></pre></td></tr></table></figure>
+<p>效果：</p>
+<script type="math/tex; mode=display">
+\begin{cases}
+x+y+z=0 \\
+x+2y+3z=0 \\
+x+4y+5z=0
+\end{cases}</script><h1 id="10-参考"><a href="#10-参考" class="headerlink" title="10. 参考"></a>10. 参考</h1><ul>
 <li><a href="https://abelsu7.top/2018/10/29/hexo-mathjax/" target="_blank" rel="noopener">在 Hexo 中使用 MathJax 渲染数学公式</a></li>
 </ul>
 
@@ -651,7 +658,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-配置"><span class="nav-text">1. 配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-矩阵"><span class="nav-text">2. 矩阵</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-不带括号的矩阵"><span class="nav-text">2.1 不带括号的矩阵</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-带括号-的矩阵"><span class="nav-text">2.2 带括号{}的矩阵</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-带括号-的矩阵"><span class="nav-text">2.3 带括号[]的矩阵</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-带省略号的矩阵"><span class="nav-text">2.4 带省略号的矩阵</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-5-行间矩阵"><span class="nav-text">2.5 行间矩阵</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#10-参考"><span class="nav-text">10. 参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-配置"><span class="nav-text">1. 配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-矩阵"><span class="nav-text">2. 矩阵</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-不带括号的矩阵"><span class="nav-text">2.1 不带括号的矩阵</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-带括号-的矩阵"><span class="nav-text">2.2 带括号{}的矩阵</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-带括号-的矩阵"><span class="nav-text">2.3 带括号[]的矩阵</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-带省略号的矩阵"><span class="nav-text">2.4 带省略号的矩阵</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-5-行间矩阵"><span class="nav-text">2.5 行间矩阵</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-方程组"><span class="nav-text">3. 方程组</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#10-参考"><span class="nav-text">10. 参考</span></a></li></ol></div>
             
 
           </div>
