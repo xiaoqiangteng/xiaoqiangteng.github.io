@@ -87,10 +87,12 @@
 <meta property="og:site_name" content="学步">
 <meta property="og:description" content="1. 矩阵运算1.1 矩阵乘法若乘积AB有定义，AB的第i行第j列的元素是A的第i行与B的第j列对应元素乘积之和。若$(AB)_{ij}$表示AB的(i, j)元素，A为mxn矩阵，则$(AB)_{ij} = a_{i1}b_{1j} + a_{i2}b_{2j} + \dots + a_{in}b_{nj}$。 1.2 矩阵乘法的性质设A为mxn矩阵，B、C的维数使下列各式的乘积有定义：  A(">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-11-24T08:44:58.937Z">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-10-26-163027.png">
+<meta property="og:updated_time" content="2019-11-24T08:50:10.493Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="线性代数及其应用-矩阵代数">
 <meta name="twitter:description" content="1. 矩阵运算1.1 矩阵乘法若乘积AB有定义，AB的第i行第j列的元素是A的第i行与B的第j列对应元素乘积之和。若$(AB)_{ij}$表示AB的(i, j)元素，A为mxn矩阵，则$(AB)_{ij} = a_{i1}b_{1j} + a_{i2}b_{2j} + \dots + a_{in}b_{nj}$。 1.2 矩阵乘法的性质设A为mxn矩阵，B、C的维数使下列各式的乘积有定义：  A(">
+<meta name="twitter:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-10-26-163027.png">
 
 
 
@@ -447,39 +449,26 @@
 <li>不可逆矩阵有时称为奇异矩阵，而可逆矩阵也称为非奇异矩阵。</li>
 </ul>
 <h2 id="2-1-逆矩阵的求法"><a href="#2-1-逆矩阵的求法" class="headerlink" title="2.1 逆矩阵的求法"></a>2.1 逆矩阵的求法</h2><p>下面利用一个例子来说明逆矩阵的求法，并给出矩阵可逆的一些判断条件。</p>
-<p>例：设$A = \left[ \begin{matrix}   a &amp; b \\ c &amp; d \\ \end{matrix} \right]$，若$ad - bc \neq 0$，则A可逆且</p>
-<script type="math/tex; mode=display">A^{-1} = \frac{1}{ad - bc}\left[ \begin{matrix}   d & -b \\ -c & a \\ \end{matrix} \right]$$.
-
-若$ad - bc = 0$，则A不可逆。其中，$det A = ad - bc$。
-
-定理: 
-
-- 若A是nXn可逆矩阵，则对每一$R^n$中的向量b，方程Ax = b有唯一解$x = A^{-1}b$
-- 若A是可逆矩阵，则$A^{-1}$也可逆且$(A^{-1})^{-1} = A$
-- 若A和B都是nXn可逆矩阵，AB也可逆，且其逆是A和B的逆矩阵按相反顺序的乘积，即$(AB)^{-1} = b^{-1}A^{-1}$
-- 若A可逆，则$A^{T}$也可逆，且其逆是$A^{-1}$的转置，即$(A^T)^{-1} = (A^{-1})^T$
-
-代数余子式：代数余子式是从行列式的公式中提取出来的，它的作用是把n阶行列式化简为n – 1阶行列式。
-
-## 2.2 初等矩阵
-
-把单位矩阵进行一次行变换，就得到初等矩阵。
-
-![image-20191027003001123](https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-10-26-163027.png)
-
-定理：
-
-- nXn矩阵A是可逆的，当且仅当A行等价于$I_n$，这时，把A变为$I_n$的一系列初等行变换同时把$I_n$变成$A^{-1}$
-
-## 2.3 $A^{-1}$的求法
-
-把增广矩阵[A I]进行行化简。若A行等价于I，则[A I]行等价于$[I A^{-1}]$，否则A没有逆。
-
-线性方程组解释：
-
-用$e_1, \dots, e_n$表示$I_n$的各列，则把[A I]行变换成$[I A^{-1}]$的过程可看作是解n个方程组，
-
-$$Ax = e_1, Ax = e_2, \dots, Ax = e_n$$，
+<p>例：设$A = \left[ \begin{matrix}   a &amp; b \\ c &amp; d \\ \end{matrix} \right]$，若$ad - bc \neq 0$，则A可逆且<script type="math/tex">A^{-1} = \frac{1}{ad - bc}\left[ \begin{matrix}   d & -b \\ -c & a \\ \end{matrix} \right]</script>.</p>
+<p>若$ad - bc = 0$，则A不可逆。其中，$det A = ad - bc$。</p>
+<p>定理: </p>
+<ul>
+<li>若A是nXn可逆矩阵，则对每一$R^n$中的向量b，方程Ax = b有唯一解$x = A^{-1}b$</li>
+<li>若A是可逆矩阵，则$A^{-1}$也可逆且$(A^{-1})^{-1} = A$</li>
+<li>若A和B都是nXn可逆矩阵，AB也可逆，且其逆是A和B的逆矩阵按相反顺序的乘积，即$(AB)^{-1} = b^{-1}A^{-1}$</li>
+<li>若A可逆，则$A^{T}$也可逆，且其逆是$A^{-1}$的转置，即$(A^T)^{-1} = (A^{-1})^T$</li>
+</ul>
+<p>代数余子式：代数余子式是从行列式的公式中提取出来的，它的作用是把n阶行列式化简为n – 1阶行列式。</p>
+<h2 id="2-2-初等矩阵"><a href="#2-2-初等矩阵" class="headerlink" title="2.2 初等矩阵"></a>2.2 初等矩阵</h2><p>把单位矩阵进行一次行变换，就得到初等矩阵。</p>
+<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-10-26-163027.png" alt="image-20191027003001123"></p>
+<p>定理：</p>
+<ul>
+<li>nXn矩阵A是可逆的，当且仅当A行等价于$I_n$，这时，把A变为$I_n$的一系列初等行变换同时把$I_n$变成$A^{-1}$</li>
+</ul>
+<h2 id="2-3-A-1-的求法"><a href="#2-3-A-1-的求法" class="headerlink" title="2.3 $A^{-1}$的求法"></a>2.3 $A^{-1}$的求法</h2><p>把增广矩阵[A I]进行行化简。若A行等价于I，则[A I]行等价于$[I A^{-1}]$，否则A没有逆。</p>
+<p>线性方程组解释：</p>
+<p>用$e_1, \dots, e_n$表示$I_n$的各列，则把[A I]行变换成$[I A^{-1}]$的过程可看作是解n个方程组，</p>
+<script type="math/tex; mode=display">Ax = e_1, Ax = e_2, \dots, Ax = e_n$$，
 
 其中这些方程组的“增广列”都放在A的右边，构成矩阵,
 
@@ -873,7 +862,7 @@ SVD算法流程如下：
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-矩阵运算"><span class="nav-text">1. 矩阵运算</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-矩阵乘法"><span class="nav-text">1.1 矩阵乘法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-2-矩阵乘法的性质"><span class="nav-text">1.2 矩阵乘法的性质</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-矩阵的转置"><span class="nav-text">1.3 矩阵的转置</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-4-数值计算的注解"><span class="nav-text">1.4 数值计算的注解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-5-练习题"><span class="nav-text">1.5 练习题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-矩阵的逆"><span class="nav-text">2. 矩阵的逆</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-逆矩阵的求法"><span class="nav-text">2.1 逆矩阵的求法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-R-n-子空间"><span class="nav-text">6. $R^{n}$子空间</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7-维数和秩"><span class="nav-text">7. 维数和秩</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#8-参考"><span class="nav-text">8 参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-矩阵运算"><span class="nav-text">1. 矩阵运算</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-矩阵乘法"><span class="nav-text">1.1 矩阵乘法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-2-矩阵乘法的性质"><span class="nav-text">1.2 矩阵乘法的性质</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-矩阵的转置"><span class="nav-text">1.3 矩阵的转置</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-4-数值计算的注解"><span class="nav-text">1.4 数值计算的注解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-5-练习题"><span class="nav-text">1.5 练习题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-矩阵的逆"><span class="nav-text">2. 矩阵的逆</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-逆矩阵的求法"><span class="nav-text">2.1 逆矩阵的求法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-初等矩阵"><span class="nav-text">2.2 初等矩阵</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-A-1-的求法"><span class="nav-text">2.3 $A^{-1}$的求法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-R-n-子空间"><span class="nav-text">6. $R^{n}$子空间</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7-维数和秩"><span class="nav-text">7. 维数和秩</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#8-参考"><span class="nav-text">8 参考</span></a></li></ol></div>
             
 
           </div>
