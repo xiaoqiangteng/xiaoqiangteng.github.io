@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="学步">
 <meta property="og:description" content="1. 网络管理1.1 ⽹络状态查看 net-tools ifconfig eth0 第⼀块⽹卡（⽹络接口） 查看⽹卡物理连接情况 mii-tool eth0     route 查看⽹网关 route -n 使⽤ -n 参数不解析主机名   添加⽹关 route add default gw &amp;lt;⽹网关ip&amp;gt; route add -host &amp;lt;指定ip&amp;gt; gw &amp;lt;⽹网关">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-12-07T14:23:16.934Z">
+<meta property="og:updated_time" content="2019-12-09T14:17:36.463Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linux实战技能（三）-系统管理">
 <meta name="twitter:description" content="1. 网络管理1.1 ⽹络状态查看 net-tools ifconfig eth0 第⼀块⽹卡（⽹络接口） 查看⽹卡物理连接情况 mii-tool eth0     route 查看⽹网关 route -n 使⽤ -n 参数不解析主机名   添加⽹关 route add default gw &amp;lt;⽹网关ip&amp;gt; route add -host &amp;lt;指定ip&amp;gt; gw &amp;lt;⽹网关">
@@ -649,7 +649,33 @@
 </ul>
 </li>
 </ul>
-<h1 id="3-进程管理"><a href="#3-进程管理" class="headerlink" title="3. 进程管理"></a>3. 进程管理</h1>
+<h1 id="3-进程管理"><a href="#3-进程管理" class="headerlink" title="3. 进程管理"></a>3. 进程管理</h1><ul>
+<li>进程—运⾏中的程序，从程序开始运⾏到终⽌的整个⽣生命周期是可管理的</li>
+<li>进程也是树形结构</li>
+<li>进程和权限有着密不可分的关系</li>
+<li>查看命令<ul>
+<li>ps</li>
+<li>pstree</li>
+<li>top</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看进行信息，包括UID、PID、PPID、C、STIME、TTY、TIME、CMD</span></span><br><span class="line">$ ps -eLf | more</span><br><span class="line"></span><br><span class="line"><span class="comment"># MacOS信息</span></span><br><span class="line">$ top</span><br><span class="line">Processes: 405 total, 5 running, 400 sleeping, 1826 threads                                                              22:02:45</span><br><span class="line">Load Avg: 3.54, 4.17, 4.47  CPU usage: 15.43% user, 19.71% sys, 64.84% idle  SharedLibs: 138M resident, 42M data, 24M linkedit.</span><br><span class="line">MemRegions: 98102 total, 2019M resident, 101M private, 1087M shared. PhysMem: 7732M used (2199M wired), 459M unused.</span><br><span class="line">VM: 1969G vsize, 1372M framework vsize, 118892587(0) swapins, 120274963(0) swapouts.</span><br><span class="line">Networks: packets: 111277167/150G <span class="keyword">in</span>, 85519715/43G out. Disks: 21984786/773G <span class="built_in">read</span>, 16581121/641G written.</span><br><span class="line">- Load Avg为平均负载，用来衡量系统的繁忙程度，包括1min, 5min, 15min</span><br><span class="line">- CPU usage为CPU利用率</span><br><span class="line">- Processes处理的任务</span><br></pre></td></tr></table></figure>
+<ul>
+<li>进程的优先级调整<ul>
+<li>nice 范围从-20 到 19 ，值越⼩小优先级越⾼高，抢占资源就越多</li>
+<li>renice 重新设置优先级</li>
+<li>进程的作业控制<ul>
+<li>jobs</li>
+<li>&amp; 符号</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="built_in">echo</span> $$</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> :</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">	:</span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ ./XXX.sh</span><br><span class="line">18746</span><br><span class="line"></span><br><span class="line">$ top -p 18746</span><br><span class="line">$ nice -n 10 ./XXX.sh</span><br><span class="line">$ renice -n 15 18764</span><br><span class="line"></span><br><span class="line"><span class="comment"># 程序运行在后台</span></span><br><span class="line">$ ./XXX.sh &amp;</span><br><span class="line"><span class="comment"># 程序运行在前台</span></span><br><span class="line">$ <span class="built_in">jobs</span></span><br><span class="line">$ <span class="built_in">fg</span> 1</span><br></pre></td></tr></table></figure>
+
       
     </div>
     
