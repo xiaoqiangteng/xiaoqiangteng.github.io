@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="学步">
 <meta property="og:description" content="1. 网络管理1.1 ⽹络状态查看 net-tools ifconfig eth0 第⼀块⽹卡（⽹络接口） 查看⽹卡物理连接情况 mii-tool eth0     route 查看⽹网关 route -n 使⽤ -n 参数不解析主机名   添加⽹关 route add default gw &amp;lt;⽹网关ip&amp;gt; route add -host &amp;lt;指定ip&amp;gt; gw &amp;lt;⽹网关">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-12-09T14:17:36.463Z">
+<meta property="og:updated_time" content="2019-12-15T13:08:31.401Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linux实战技能（三）-系统管理">
 <meta name="twitter:description" content="1. 网络管理1.1 ⽹络状态查看 net-tools ifconfig eth0 第⼀块⽹卡（⽹络接口） 查看⽹卡物理连接情况 mii-tool eth0     route 查看⽹网关 route -n 使⽤ -n 参数不解析主机名   添加⽹关 route add default gw &amp;lt;⽹网关ip&amp;gt; route add -host &amp;lt;指定ip&amp;gt; gw &amp;lt;⽹网关">
@@ -675,6 +675,106 @@
 </ul>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="built_in">echo</span> $$</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> :</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">	:</span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ ./XXX.sh</span><br><span class="line">18746</span><br><span class="line"></span><br><span class="line">$ top -p 18746</span><br><span class="line">$ nice -n 10 ./XXX.sh</span><br><span class="line">$ renice -n 15 18764</span><br><span class="line"></span><br><span class="line"><span class="comment"># 程序运行在后台</span></span><br><span class="line">$ ./XXX.sh &amp;</span><br><span class="line"><span class="comment"># 程序运行在前台</span></span><br><span class="line">$ <span class="built_in">jobs</span></span><br><span class="line">$ <span class="built_in">fg</span> 1</span><br></pre></td></tr></table></figure>
+<ul>
+<li>进程通信信号<ul>
+<li>Ctrl + C终止进程</li>
+<li>kill -9 id终止id进程</li>
+</ul>
+</li>
+<li>守护进程<ul>
+<li>使⽤nohup 与 &amp; 符号配合运⾏⼀个命令<ul>
+<li>运行的该命令将不会因为终端等关闭而终止</li>
+</ul>
+</li>
+<li>screen 命令<ul>
+<li>进入screen，命令为screen</li>
+<li>退出，ctrl+a d</li>
+<li>screen -ls 查看 screen 的会话</li>
+<li>screen -r sessionid 恢复会话</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>查看系统日志<ul>
+<li>路径为/var/log/</li>
+<li>messages，操作日志</li>
+<li>dmesg，内核相关日志信息</li>
+<li>secure，安全日志</li>
+<li>cron，计划任务日志</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 运行程序</span></span><br><span class="line">$ nohup sh XXX.sh &amp;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 进入screen环境</span></span><br><span class="line">$ screen</span><br><span class="line"></span><br><span class="line"><span class="comment"># 恢复程序</span></span><br><span class="line">$ screen -r sessionid</span><br></pre></td></tr></table></figure>
+<h1 id="4-服务管理工具"><a href="#4-服务管理工具" class="headerlink" title="4. 服务管理工具"></a>4. 服务管理工具</h1><ul>
+<li>服务（提供常⻅功能的守护进程）集中管理工具<ul>
+<li>service<ul>
+<li>/etc/init.d/</li>
+</ul>
+</li>
+<li>systemctl<ul>
+<li>/usr/lib/systemd/system/</li>
+<li>systemctl start | stop | restart | reload | enable | disable 服务名称</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="5-内存和磁盘管理"><a href="#5-内存和磁盘管理" class="headerlink" title="5. 内存和磁盘管理"></a>5. 内存和磁盘管理</h1><ul>
+<li>内存使用率查看<ul>
+<li>free<ul>
+<li>free -m</li>
+<li>free -g</li>
+</ul>
+</li>
+<li>top</li>
+<li>du<ul>
+<li>du -h</li>
+</ul>
+</li>
+<li>fdisk<ul>
+<li>fdisk -l</li>
+</ul>
+</li>
+<li>df<ul>
+<li>df -h</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>文件系统<ul>
+<li>ext4<ul>
+<li>超级块、超级块副本</li>
+<li>i 节点(inode)<ul>
+<li>ls -i</li>
+<li>记录每一个文件相关属性</li>
+</ul>
+</li>
+<li>数据块(datablock)<ul>
+<li>记录数据</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>cp更改了文件i节点和复制了数据block</li>
+<li>mv没有改变i节点和数据block，只更改了文件名</li>
+<li>硬链接ln，不改变文件的i节点</li>
+<li>软连接ln -s，更改了文件i节点</li>
+</ul>
+</li>
+<li>磁盘分区和挂载<ul>
+<li>fdisk /dev/sdc</li>
+<li>parted</li>
+</ul>
+</li>
+<li>逻辑卷管理<ul>
+<li>pvcreate /dev/sdb1</li>
+<li>pvs，显示所有物理卷</li>
+</ul>
+</li>
+</ul>
+<h1 id="6-参考"><a href="#6-参考" class="headerlink" title="6. 参考"></a>6. 参考</h1><ul>
+<li><a href="geekbang.org">Linux实战技能100讲</a></li>
+</ul>
 
       
     </div>
@@ -802,7 +902,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">50</span>
+                  <span class="site-state-item-count">52</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -857,7 +957,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-网络管理"><span class="nav-text">1. 网络管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-⽹络状态查看"><span class="nav-text">1.1 ⽹络状态查看</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-⽹络故障排除命令"><span class="nav-text">1.2 ⽹络故障排除命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-网络服务管理"><span class="nav-text">1.3 网络服务管理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-软件安装"><span class="nav-text">2. 软件安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-软件包管理器"><span class="nav-text">2.1 软件包管理器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-yum管理软件包"><span class="nav-text">2.2 yum管理软件包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-其他安装方式"><span class="nav-text">2.3 其他安装方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-升级内核"><span class="nav-text">2.4 升级内核</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-5-grub-配置⽂件"><span class="nav-text">2.5 grub 配置⽂件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-进程管理"><span class="nav-text">3. 进程管理</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-网络管理"><span class="nav-text">1. 网络管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-⽹络状态查看"><span class="nav-text">1.1 ⽹络状态查看</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-⽹络故障排除命令"><span class="nav-text">1.2 ⽹络故障排除命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-网络服务管理"><span class="nav-text">1.3 网络服务管理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-软件安装"><span class="nav-text">2. 软件安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-软件包管理器"><span class="nav-text">2.1 软件包管理器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-yum管理软件包"><span class="nav-text">2.2 yum管理软件包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-其他安装方式"><span class="nav-text">2.3 其他安装方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-升级内核"><span class="nav-text">2.4 升级内核</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-5-grub-配置⽂件"><span class="nav-text">2.5 grub 配置⽂件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-进程管理"><span class="nav-text">3. 进程管理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-服务管理工具"><span class="nav-text">4. 服务管理工具</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-内存和磁盘管理"><span class="nav-text">5. 内存和磁盘管理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-参考"><span class="nav-text">6. 参考</span></a></li></ol></div>
             
 
           </div>
@@ -879,7 +979,7 @@
       <div class="footer-inner">
         
 <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-<div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
