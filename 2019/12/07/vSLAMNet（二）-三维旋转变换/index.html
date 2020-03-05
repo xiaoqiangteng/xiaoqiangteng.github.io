@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="理论,SLAM,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="1. 概述 欧拉角 旋转矩阵 四元数  2. 欧拉角与旋转矩阵相互转换2.1 旋转矩阵转欧拉角 C++  12345678910111213void rotationMatrixToEuler(Eigen::Matrix3d rotation, Eigen::Vector3d&amp;amp; euler) &amp;#123;    float sy = static_cast&amp;lt;float&amp;gt;(sqr">
+<meta name="keywords" content="理论,SLAM">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vSLAMNet（二）-三维旋转变换">
+<meta property="og:url" content="http://yoursite.com/2019/12/07/vSLAMNet（二）-三维旋转变换/index.html">
+<meta property="og:site_name" content="学步">
+<meta property="og:description" content="1. 概述 欧拉角 旋转矩阵 四元数  2. 欧拉角与旋转矩阵相互转换2.1 旋转矩阵转欧拉角 C++  12345678910111213void rotationMatrixToEuler(Eigen::Matrix3d rotation, Eigen::Vector3d&amp;amp; euler) &amp;#123;    float sy = static_cast&amp;lt;float&amp;gt;(sqr">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-12-07T14:24:03.859Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="vSLAMNet（二）-三维旋转变换">
+<meta name="twitter:description" content="1. 概述 欧拉角 旋转矩阵 四元数  2. 欧拉角与旋转矩阵相互转换2.1 旋转矩阵转欧拉角 C++  12345678910111213void rotationMatrixToEuler(Eigen::Matrix3d rotation, Eigen::Vector3d&amp;amp; euler) &amp;#123;    float sy = static_cast&amp;lt;float&amp;gt;(sqr">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/12/07/vSLAMNet（二）-三维旋转变换/">
+
+
+
+
+
+  <title>vSLAMNet（二）-三维旋转变换 | 学步</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">学步</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-编程">
+          <a href="/categories/programming" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            编程
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-学术">
+          <a href="/categories/science" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            学术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-理论">
+          <a href="/categories/theory" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            理论
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-其他">
+          <a href="/categories/other" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            其他
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+    
+  
+  
+
+  <article class="post post-type-normal true" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/07/vSLAMNet（二）-三维旋转变换/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Xiaoqiang Teng">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="学步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">vSLAMNet（二）-三维旋转变换</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-07T22:19:09+08:00">
+                2019-12-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/theory/" itemprop="url" rel="index">
+                    <span itemprop="name">理论</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/theory/SLAM/" itemprop="url" rel="index">
+                    <span itemprop="name">SLAM</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h1><ul>
+<li>欧拉角</li>
+<li>旋转矩阵</li>
+<li>四元数</li>
+</ul>
+<h1 id="2-欧拉角与旋转矩阵相互转换"><a href="#2-欧拉角与旋转矩阵相互转换" class="headerlink" title="2. 欧拉角与旋转矩阵相互转换"></a>2. 欧拉角与旋转矩阵相互转换</h1><h2 id="2-1-旋转矩阵转欧拉角"><a href="#2-1-旋转矩阵转欧拉角" class="headerlink" title="2.1 旋转矩阵转欧拉角"></a>2.1 旋转矩阵转欧拉角</h2><ul>
+<li>C++</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">rotationMatrixToEuler</span><span class="params">(Eigen::Matrix3d rotation, Eigen::Vector3d&amp; euler)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">float</span> sy = <span class="keyword">static_cast</span>&lt;<span class="keyword">float</span>&gt;(<span class="built_in">sqrt</span>(rotation(<span class="number">0</span>, <span class="number">0</span>) * rotation(<span class="number">0</span>, <span class="number">0</span>) + rotation(<span class="number">1</span>, <span class="number">0</span>) * rotation(<span class="number">1</span>, <span class="number">0</span>)));</span><br><span class="line">    <span class="keyword">bool</span> singular = sy &lt; <span class="number">1e-6</span>;</span><br><span class="line">    <span class="keyword">if</span> (!singular) &#123;</span><br><span class="line">        euler[<span class="number">0</span>] = <span class="built_in">atan2</span>(rotation(<span class="number">2</span>, <span class="number">1</span>) , rotation(<span class="number">2</span>, <span class="number">2</span>));</span><br><span class="line">        euler[<span class="number">1</span>] = <span class="built_in">atan2</span>(-rotation(<span class="number">2</span>, <span class="number">0</span>), sy);</span><br><span class="line">        euler[<span class="number">2</span>] = <span class="built_in">atan2</span>(rotation(<span class="number">1</span>, <span class="number">0</span>), rotation(<span class="number">0</span>, <span class="number">0</span>));</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        euler[<span class="number">0</span>] = <span class="built_in">atan2</span>(-rotation(<span class="number">1</span>, <span class="number">2</span>), rotation(<span class="number">1</span>, <span class="number">1</span>));</span><br><span class="line">        euler[<span class="number">1</span>] = <span class="built_in">atan2</span>(-rotation(<span class="number">2</span>, <span class="number">0</span>), sy);</span><br><span class="line">        euler[<span class="number">2</span>] = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">GetEulerAngles</span><span class="params">(<span class="keyword">const</span> ARFrame* frame, Eigen::Vector3d&amp; euler)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//first we get the quaternion from m00...m22</span></span><br><span class="line">    <span class="comment">//see http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.html</span></span><br><span class="line">    <span class="keyword">float</span> qw = <span class="built_in">sqrt</span>(<span class="number">1</span> + frame.camera.transform.columns[<span class="number">0</span>][<span class="number">0</span>] + frame.camera.transform.columns[<span class="number">1</span>][<span class="number">1</span>] + frame.camera.transform.columns[<span class="number">2</span>][<span class="number">2</span>]) / <span class="number">2.0</span>;</span><br><span class="line">    <span class="keyword">float</span> qx = (frame.camera.transform.columns[<span class="number">2</span>][<span class="number">1</span>] - frame.camera.transform.columns[<span class="number">1</span>][<span class="number">2</span>]) / (qw * <span class="number">4.0</span>);</span><br><span class="line">    <span class="keyword">float</span> qy = (frame.camera.transform.columns[<span class="number">0</span>][<span class="number">2</span>] - frame.camera.transform.columns[<span class="number">2</span>][<span class="number">0</span>]) / (qw * <span class="number">4.0</span>);</span><br><span class="line">    <span class="keyword">float</span> qz = (frame.camera.transform.columns[<span class="number">1</span>][<span class="number">0</span>] - frame.camera.transform.columns[<span class="number">0</span>][<span class="number">1</span>]) / (qw * <span class="number">4.0</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//then we deduce euler angles with some cosines</span></span><br><span class="line">    <span class="comment">//see https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles</span></span><br><span class="line">    <span class="comment">// roll (x-axis rotation)</span></span><br><span class="line">    <span class="keyword">float</span> sinr = +<span class="number">2.0</span> * (qw * qx + qy * qz);</span><br><span class="line">    <span class="keyword">float</span> cosr = +<span class="number">1.0</span> - <span class="number">2.0</span> * (qx * qx + qy * qy);</span><br><span class="line">    <span class="keyword">float</span> roll = <span class="built_in">atan2</span>(sinr, cosr);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// pitch (y-axis rotation)</span></span><br><span class="line">    <span class="keyword">float</span> sinp = +<span class="number">2.0</span> * (qw * qy - qz * qx);</span><br><span class="line">    <span class="keyword">float</span> pitch;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">fabs</span>(sinp) &gt;= <span class="number">1</span>) &#123;</span><br><span class="line">        pitch = copysign(M_PI/<span class="number">2</span>, sinp);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        pitch = <span class="built_in">asin</span>(sinp);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// yaw (z-axis rotation)</span></span><br><span class="line">    <span class="keyword">float</span> siny = +<span class="number">2.0</span> * (qw * qz + qx * qy);</span><br><span class="line">    <span class="keyword">float</span> cosy = +<span class="number">1.0</span> - <span class="number">2.0</span> * (qy * qy + qz * qz);</span><br><span class="line">    <span class="keyword">float</span> yaw = <span class="built_in">atan2</span>(siny, cosy);</span><br><span class="line">    euler[<span class="number">0</span>] = roll;</span><br><span class="line">    euler[<span class="number">1</span>] = pitch;</span><br><span class="line">    euler[<span class="number">2</span>] = yaw;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>python</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rotationToEuler</span><span class="params">(rotation)</span>:</span></span><br><span class="line">    euler = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(len(rotation)):</span><br><span class="line">        sy = math.sqrt(rotation[i][<span class="number">0</span>]*rotation[i][<span class="number">0</span>] + rotation[i][<span class="number">3</span>]*rotation[i][<span class="number">3</span>])</span><br><span class="line">        singular = sy &lt; <span class="number">1e-6</span></span><br><span class="line">        eulers = []</span><br><span class="line">        <span class="keyword">if</span> ~singular:</span><br><span class="line">            eulers.append(-math.atan2(rotation[i][<span class="number">7</span>], rotation[i][<span class="number">8</span>]))</span><br><span class="line">            eulers.append(-math.atan2(-rotation[i][<span class="number">6</span>], sy))</span><br><span class="line">            eulers.append(-math.atan2(rotation[i][<span class="number">3</span>], rotation[i][<span class="number">0</span>]))</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            eulers.append(-math.atan2(-rotation[i][<span class="number">5</span>], rotation[i][<span class="number">4</span>]))</span><br><span class="line">            eulers.append(-math.atan2(-rotation[i][<span class="number">6</span>], sy))</span><br><span class="line">            eulers.append(<span class="number">0</span>)</span><br><span class="line">        eulers = np.array(eulers)</span><br><span class="line">        euler.append(eulers)</span><br><span class="line">    euler = np.array(euler)</span><br><span class="line">    <span class="keyword">return</span> euler</span><br></pre></td></tr></table></figure>
+<h2 id="2-2-欧拉角转旋转矩阵"><a href="#2-2-欧拉角转旋转矩阵" class="headerlink" title="2.2 欧拉角转旋转矩阵"></a>2.2 欧拉角转旋转矩阵</h2><ul>
+<li>Python</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># yaw pitch roll</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">EularToRotationMatrix</span><span class="params">(angle)</span>:</span></span><br><span class="line">    y = angle[<span class="number">0</span>]</span><br><span class="line">    p = angle[<span class="number">1</span>]</span><br><span class="line">    r = angle[<span class="number">2</span>]</span><br><span class="line">    Rx = random.rand(<span class="number">3</span>, <span class="number">3</span>)</span><br><span class="line">    Ry = random.rand(<span class="number">3</span>, <span class="number">3</span>)</span><br><span class="line">    Rz = random.rand(<span class="number">3</span>, <span class="number">3</span>)</span><br><span class="line">    Rz[<span class="number">0</span>, <span class="number">0</span>] = math.cos(y)</span><br><span class="line">    Rz[<span class="number">0</span>, <span class="number">1</span>] = -math.sin(y)</span><br><span class="line">    Rz[<span class="number">0</span>, <span class="number">2</span>] = <span class="number">0.0</span></span><br><span class="line">    Rz[<span class="number">1</span>, <span class="number">0</span>] = math.sin(y)</span><br><span class="line">    Rz[<span class="number">1</span>, <span class="number">1</span>] = math.cos(y)</span><br><span class="line">    Rz[<span class="number">1</span>, <span class="number">2</span>] = <span class="number">0.0</span></span><br><span class="line">    Rz[<span class="number">2</span>, <span class="number">0</span>] = <span class="number">0.0</span></span><br><span class="line">    Rz[<span class="number">2</span>, <span class="number">1</span>] = <span class="number">0.0</span></span><br><span class="line">    Rz[<span class="number">2</span>, <span class="number">2</span>] = <span class="number">1.0</span></span><br><span class="line">    Ry[<span class="number">0</span>, <span class="number">0</span>] = math.cos(p)</span><br><span class="line">    Ry[<span class="number">0</span>, <span class="number">1</span>] = <span class="number">0.0</span></span><br><span class="line">    Ry[<span class="number">0</span>, <span class="number">2</span>] = math.sin(p)</span><br><span class="line">    Ry[<span class="number">1</span>, <span class="number">0</span>] = <span class="number">0.0</span></span><br><span class="line">    Ry[<span class="number">1</span>, <span class="number">1</span>] = <span class="number">1.0</span></span><br><span class="line">    Ry[<span class="number">1</span>, <span class="number">2</span>] = <span class="number">0.0</span></span><br><span class="line">    Ry[<span class="number">2</span>, <span class="number">0</span>] = -math.sin(p)</span><br><span class="line">    Ry[<span class="number">2</span>, <span class="number">1</span>] = <span class="number">0.0</span></span><br><span class="line">    Ry[<span class="number">2</span>, <span class="number">2</span>] = math.cos(p)</span><br><span class="line">    Rx[<span class="number">0</span>, <span class="number">0</span>] = <span class="number">1.0</span></span><br><span class="line">    Rx[<span class="number">0</span>, <span class="number">1</span>] = <span class="number">0.0</span></span><br><span class="line">    Rx[<span class="number">0</span>, <span class="number">2</span>] = <span class="number">0.0</span></span><br><span class="line">    Rx[<span class="number">1</span>, <span class="number">0</span>] = <span class="number">0.0</span></span><br><span class="line">    Rx[<span class="number">1</span>, <span class="number">1</span>] = math.cos(r)</span><br><span class="line">    Rx[<span class="number">1</span>, <span class="number">2</span>] = -math.sin(r)</span><br><span class="line">    Rx[<span class="number">2</span>, <span class="number">0</span>] = <span class="number">0.0</span></span><br><span class="line">    Rx[<span class="number">2</span>, <span class="number">1</span>] = math.sin(r)</span><br><span class="line">    Rx[<span class="number">2</span>, <span class="number">2</span>] = math.cos(r)</span><br><span class="line">    <span class="keyword">return</span> np.dot(np.dot(Rz, Ry), Rx)</span><br></pre></td></tr></table></figure>
+<h1 id="3-欧拉角与四元数相互转换"><a href="#3-欧拉角与四元数相互转换" class="headerlink" title="3. 欧拉角与四元数相互转换"></a>3. 欧拉角与四元数相互转换</h1><h2 id="3-1-欧拉角转四元数"><a href="#3-1-欧拉角转四元数" class="headerlink" title="3.1 欧拉角转四元数"></a>3.1 欧拉角转四元数</h2><ul>
+<li>C++</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// euler angles: roll pitch yaw</span></span><br><span class="line"><span class="keyword">void</span> Utility::EulerAngleToQuat(<span class="keyword">const</span> Eigen::Vector3d euler, Eigen::Quaterniond&amp; quat)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">float</span> fCosHRoll = <span class="built_in">cos</span>(euler[<span class="number">0</span>] * <span class="number">.5</span>f);</span><br><span class="line">    <span class="keyword">float</span> fSinHRoll = <span class="built_in">sin</span>(euler[<span class="number">0</span>] * <span class="number">.5</span>f);</span><br><span class="line">    <span class="keyword">float</span> fCosHPitch = <span class="built_in">cos</span>(euler[<span class="number">1</span>] * <span class="number">.5</span>f);</span><br><span class="line">    <span class="keyword">float</span> fSinHPitch = <span class="built_in">sin</span>(euler[<span class="number">1</span>] * <span class="number">.5</span>f);</span><br><span class="line">    <span class="keyword">float</span> fCosHYaw = <span class="built_in">cos</span>(euler[<span class="number">2</span>] * <span class="number">.5</span>f);</span><br><span class="line">    <span class="keyword">float</span> fSinHYaw = <span class="built_in">sin</span>(euler[<span class="number">2</span>] * <span class="number">.5</span>f);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/// Cartesian coordinate System</span></span><br><span class="line">    <span class="keyword">float</span> w = fCosHRoll * fCosHPitch * fCosHYaw + fSinHRoll * fSinHPitch * fSinHYaw;</span><br><span class="line">    <span class="keyword">float</span> x = fSinHRoll * fCosHPitch * fCosHYaw - fCosHRoll * fSinHPitch * fSinHYaw;</span><br><span class="line">    <span class="keyword">float</span> y = fCosHRoll * fSinHPitch * fCosHYaw + fSinHRoll * fCosHPitch * fSinHYaw;</span><br><span class="line">    <span class="keyword">float</span> z = fCosHRoll * fCosHPitch * fSinHYaw - fSinHRoll * fSinHPitch * fCosHYaw;</span><br><span class="line">    </span><br><span class="line"><span class="comment">//    float w = fCosHRoll * fCosHPitch * fCosHYaw + fSinHRoll * fSinHPitch * fSinHYaw;</span></span><br><span class="line"><span class="comment">//    float x = fCosHRoll * fSinHPitch * fCosHYaw + fSinHRoll * fCosHPitch * fSinHYaw;</span></span><br><span class="line"><span class="comment">//    float y = fCosHRoll * fCosHPitch * fSinHYaw - fSinHRoll * fSinHPitch * fCosHYaw;</span></span><br><span class="line"><span class="comment">//    float z = fSinHRoll * fCosHPitch * fCosHYaw - fCosHRoll * fSinHPitch * fSinHYaw;</span></span><br><span class="line">    </span><br><span class="line">    quat.coeffs().w() = w;</span><br><span class="line">    quat.coeffs().x() = x;</span><br><span class="line">    quat.coeffs().y() = y;</span><br><span class="line">    quat.coeffs().z() = z;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">EulerAngle Quaternion::GetEulerAngle() <span class="keyword">const</span></span><br><span class="line">&#123;</span><br><span class="line">	EulerAngle ea;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/// Cartesian coordinate System </span></span><br><span class="line">	<span class="comment">//ea.m_fRoll  = atan2(2 * (w * x + y * z) , 1 - 2 * (x * x + y * y));</span></span><br><span class="line">	<span class="comment">//ea.m_fPitch = asin(2 * (w * y - z * x));</span></span><br><span class="line">	<span class="comment">//ea.m_fYaw   = atan2(2 * (w * z + x * y) , 1 - 2 * (y * y + z * z));</span></span><br><span class="line"></span><br><span class="line">	ea.m_fRoll  = <span class="built_in">atan2</span>(<span class="number">2</span> * (w * z + x * y) , <span class="number">1</span> - <span class="number">2</span> * (z * z + x * x));</span><br><span class="line">	ea.m_fPitch = <span class="built_in">asin</span>(CLAMP(<span class="number">2</span> * (w * x - y * z) , <span class="number">-1.0f</span> , <span class="number">1.0f</span>));</span><br><span class="line">	ea.m_fYaw   = <span class="built_in">atan2</span>(<span class="number">2</span> * (w * y + z * x) , <span class="number">1</span> - <span class="number">2</span> * (x * x + y * y));</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> ea;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Java</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">    <span class="function"><span class="keyword">public</span> Quaternion <span class="title">eulerAngleToQuaternion</span><span class="params">(Vector3f euler, Quaternion quat)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">float</span> fCosHRoll = (<span class="keyword">float</span>) Math.cos(euler.getX() * .<span class="number">5f</span>);</span><br><span class="line">        <span class="keyword">float</span> fSinHRoll = (<span class="keyword">float</span>) Math.sin(euler.getX() * .<span class="number">5f</span>);</span><br><span class="line">        <span class="keyword">float</span> fCosHPitch = (<span class="keyword">float</span>) Math.cos(euler.getY() * .<span class="number">5f</span>);</span><br><span class="line">        <span class="keyword">float</span> fSinHPitch = (<span class="keyword">float</span>) Math.sin(euler.getY() * .<span class="number">5f</span>);</span><br><span class="line">        <span class="keyword">float</span> fCosHYaw = (<span class="keyword">float</span>) Math.cos(euler.getZ() * .<span class="number">5f</span>);</span><br><span class="line">        <span class="keyword">float</span> fSinHYaw = (<span class="keyword">float</span>) Math.sin(euler.getZ() * .<span class="number">5f</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">/// Cartesian coordinate System</span></span><br><span class="line">        <span class="keyword">float</span> w = fCosHRoll * fCosHPitch * fCosHYaw + fSinHRoll * fSinHPitch * fSinHYaw;</span><br><span class="line">        <span class="keyword">float</span> x = fSinHRoll * fCosHPitch * fCosHYaw - fCosHRoll * fSinHPitch * fSinHYaw;</span><br><span class="line">        <span class="keyword">float</span> y = fCosHRoll * fSinHPitch * fCosHYaw + fSinHRoll * fCosHPitch * fSinHYaw;</span><br><span class="line">        <span class="keyword">float</span> z = fCosHRoll * fCosHPitch * fSinHYaw - fSinHRoll * fSinHPitch * fCosHYaw;</span><br><span class="line"></span><br><span class="line"><span class="comment">//    float w = fCosHRoll * fCosHPitch * fCosHYaw + fSinHRoll * fSinHPitch * fSinHYaw;</span></span><br><span class="line"><span class="comment">//    float x = fCosHRoll * fSinHPitch * fCosHYaw + fSinHRoll * fCosHPitch * fSinHYaw;</span></span><br><span class="line"><span class="comment">//    float y = fCosHRoll * fCosHPitch * fSinHYaw - fSinHRoll * fSinHPitch * fCosHYaw;</span></span><br><span class="line"><span class="comment">//    float z = fSinHRoll * fCosHPitch * fCosHYaw - fCosHRoll * fSinHPitch * fSinHYaw;</span></span><br><span class="line"></span><br><span class="line">        quat.setW(w);</span><br><span class="line">        quat.setX(x);</span><br><span class="line">        quat.setY(y);</span><br><span class="line">        quat.setZ(z);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> quat;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Eigen</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Eigen::Vector3d euler;</span><br><span class="line">euler[<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">euler[<span class="number">1</span>] = <span class="number">0</span>;</span><br><span class="line">euler[<span class="number">2</span>] = M_PI/<span class="number">4.0f</span>;</span><br><span class="line"></span><br><span class="line">Eigen::<span class="function">AngleAxisd <span class="title">rollAngle</span><span class="params">(euler[<span class="number">0</span>], Eigen::Vector3d::UnitX())</span></span>;</span><br><span class="line">Eigen::<span class="function">AngleAxisd <span class="title">pitchAngle</span><span class="params">(euler[<span class="number">1</span>], Eigen::Vector3d::UnitY())</span></span>;</span><br><span class="line">Eigen::<span class="function">AngleAxisd <span class="title">yawAngle</span><span class="params">(euler[<span class="number">2</span>], Eigen::Vector3d::UnitZ())</span></span>;</span><br><span class="line">Eigen::Quaterniond q = yawAngle * pitchAngle * rollAngle;</span><br><span class="line"></span><br><span class="line"><span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"q = "</span> &lt;&lt; q.coeffs().w() &lt;&lt; <span class="string">" "</span> &lt;&lt; q.coeffs().x() &lt;&lt; <span class="string">" "</span> &lt;&lt; q.coeffs().y() &lt;&lt; <span class="string">" "</span> &lt;&lt; q.coeffs().z() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br></pre></td></tr></table></figure>
+<h3 id><a href="#" class="headerlink" title=" "></a> </h3><h1 id="4-四元数与旋转矩阵相互转换"><a href="#4-四元数与旋转矩阵相互转换" class="headerlink" title="4. 四元数与旋转矩阵相互转换"></a>4. 四元数与旋转矩阵相互转换</h1><h2 id="4-1-旋转矩阵转四元数"><a href="#4-1-旋转矩阵转四元数" class="headerlink" title="4.1 旋转矩阵转四元数"></a>4.1 旋转矩阵转四元数</h2><ul>
+<li>python</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rotation_matrix_to_quaternion</span><span class="params">(rotation)</span>:</span></span><br><span class="line">    quat = quaternion.quaternion(<span class="number">1</span>, *[<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>])</span><br><span class="line">    trace = rotation[<span class="number">0</span>, <span class="number">0</span>] + rotation[<span class="number">1</span>, <span class="number">1</span>] + rotation[<span class="number">2</span>, <span class="number">2</span>]</span><br><span class="line">    <span class="keyword">if</span> trace &gt; <span class="number">0</span>:</span><br><span class="line">        s = <span class="number">0.5</span> / math.sqrt(trace + <span class="number">1.0</span>)</span><br><span class="line">        quat.w = <span class="number">0.25</span> / s</span><br><span class="line">        quat.x = (rotation[<span class="number">2</span>, <span class="number">1</span>] - rotation[<span class="number">1</span>, <span class="number">2</span>]) * s</span><br><span class="line">        quat.y = (rotation[<span class="number">0</span>, <span class="number">2</span>] - rotation[<span class="number">2</span>, <span class="number">0</span>]) * s</span><br><span class="line">        quat.z = (rotation[<span class="number">1</span>, <span class="number">0</span>] - rotation[<span class="number">0</span>, <span class="number">1</span>]) * s</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">if</span> rotation[<span class="number">0</span>, <span class="number">0</span>] &gt; rotation[<span class="number">1</span>, <span class="number">1</span>] <span class="keyword">and</span> rotation[<span class="number">0</span>, <span class="number">0</span>] &gt; rotation[<span class="number">2</span>, <span class="number">2</span>]:</span><br><span class="line">            s = <span class="number">2.0</span> * math.sqrt(<span class="number">1.0</span> + rotation[<span class="number">0</span>, <span class="number">0</span>] - rotation[<span class="number">1</span>, <span class="number">1</span>] - rotation[<span class="number">2</span>, <span class="number">2</span>])</span><br><span class="line">            quat.w = (rotation[<span class="number">2</span>, <span class="number">1</span>] - rotation[<span class="number">1</span>, <span class="number">2</span>]) / s</span><br><span class="line">            quat.x = <span class="number">0.25</span> * s</span><br><span class="line">            quat.y = (rotation[<span class="number">0</span>, <span class="number">1</span>] + rotation[<span class="number">1</span>, <span class="number">0</span>]) / s</span><br><span class="line">            quat.z = (rotation[<span class="number">0</span>, <span class="number">2</span>] + rotation[<span class="number">2</span>, <span class="number">0</span>]) / s</span><br><span class="line">        <span class="keyword">elif</span> rotation[<span class="number">1</span>, <span class="number">1</span>] &gt; rotation[<span class="number">2</span>, <span class="number">2</span>]:</span><br><span class="line">            s = <span class="number">2.0</span> * math.sqrt(<span class="number">1.0</span> + rotation[<span class="number">1</span>, <span class="number">1</span>] - rotation[<span class="number">0</span>, <span class="number">0</span>] - rotation[<span class="number">2</span>, <span class="number">2</span>])</span><br><span class="line">            quat.w = (rotation[<span class="number">0</span>, <span class="number">2</span>] - rotation[<span class="number">2</span>, <span class="number">0</span>]) / s</span><br><span class="line">            quat.x = (rotation[<span class="number">0</span>, <span class="number">1</span>] + rotation[<span class="number">1</span>, <span class="number">0</span>]) / s</span><br><span class="line">            quat.y = <span class="number">0.25</span> * s</span><br><span class="line">            quat.z = (rotation[<span class="number">1</span>, <span class="number">2</span>] + rotation[<span class="number">2</span>, <span class="number">1</span>]) / s</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            s = <span class="number">2.0</span> * math.sqrt(<span class="number">1.0</span> + rotation[<span class="number">2</span>, <span class="number">2</span>] - rotation[<span class="number">0</span>, <span class="number">0</span>] - rotation[<span class="number">1</span>, <span class="number">1</span>])</span><br><span class="line">            quat.w = (rotation[<span class="number">1</span>, <span class="number">0</span>] - rotation[<span class="number">0</span>, <span class="number">1</span>]) / s</span><br><span class="line">            quat.x = (rotation[<span class="number">0</span>, <span class="number">2</span>] + rotation[<span class="number">2</span>, <span class="number">0</span>]) / s</span><br><span class="line">            quat.y = (rotation[<span class="number">1</span>, <span class="number">2</span>] + rotation[<span class="number">2</span>, <span class="number">1</span>]) / s</span><br><span class="line">            quat.z = <span class="number">0.25</span> * s</span><br><span class="line">    quat_array = [quat.w, quat.x, quat.y, quat.z]</span><br><span class="line">    <span class="keyword">return</span> np.array(quat_array)</span><br></pre></td></tr></table></figure>
+<h2 id="4-2-四元数转旋转矩阵"><a href="#4-2-四元数转旋转矩阵" class="headerlink" title="4.2 四元数转旋转矩阵"></a>4.2 四元数转旋转矩阵</h2><ul>
+<li>python</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># qw, qx, qy, qz</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">QuatToRotationMatrix</span><span class="params">(q)</span>:</span></span><br><span class="line">    R = np.eye(<span class="number">3</span>, <span class="number">3</span>)</span><br><span class="line">    w = q[<span class="number">0</span>]</span><br><span class="line">    x = q[<span class="number">1</span>]</span><br><span class="line">    y = q[<span class="number">2</span>]</span><br><span class="line">    z = q[<span class="number">3</span>]</span><br><span class="line">    x2 = x * x</span><br><span class="line">    y2 = y * y</span><br><span class="line">    z2 = z * z</span><br><span class="line">    xy = x * y</span><br><span class="line">    xz = x * z</span><br><span class="line">    yz = y * z</span><br><span class="line">    wx = w * x</span><br><span class="line">    wy = w * y</span><br><span class="line">    wz = w * z</span><br><span class="line">    R[<span class="number">0</span>, <span class="number">0</span>] = <span class="number">1.0</span> - <span class="number">2.0</span> * (y2 + z2)</span><br><span class="line">    R[<span class="number">0</span>, <span class="number">1</span>] = <span class="number">2.0</span> * (xy - wz)</span><br><span class="line">    R[<span class="number">0</span>, <span class="number">2</span>] = <span class="number">2.0</span> * (xz + wy)</span><br><span class="line">    R[<span class="number">1</span>, <span class="number">0</span>] = <span class="number">2.0</span> * (xy + wz)</span><br><span class="line">    R[<span class="number">1</span>, <span class="number">1</span>] = <span class="number">1.0</span> - <span class="number">2.0</span> * (x2 + z2)</span><br><span class="line">    R[<span class="number">1</span>, <span class="number">2</span>] = <span class="number">2.0</span> * (yz - wx)</span><br><span class="line">    R[<span class="number">2</span>, <span class="number">0</span>] = <span class="number">2.0</span> * (xz - wy)</span><br><span class="line">    R[<span class="number">2</span>, <span class="number">1</span>] = <span class="number">2.0</span> * (yz + wx)</span><br><span class="line">    R[<span class="number">2</span>, <span class="number">2</span>] = <span class="number">1.0</span> - <span class="number">2.0</span> * (x2 + y2)</span><br><span class="line">    <span class="keyword">return</span> R</span><br></pre></td></tr></table></figure>
+<h1 id="5-其他变换"><a href="#5-其他变换" class="headerlink" title="5. 其他变换"></a>5. 其他变换</h1><h2 id="5-1-静止检测"><a href="#5-1-静止检测" class="headerlink" title="5.1 静止检测"></a>5.1 静止检测</h2><ul>
+<li>Python</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">GetMotionState</span><span class="params">(values)</span>:</span></span><br><span class="line">    state = []</span><br><span class="line">    isMoving = false</span><br><span class="line">    moveBeg = false</span><br><span class="line">    xPositive = false</span><br><span class="line">    xNegative = false</span><br><span class="line">    yPositive = false</span><br><span class="line">    yNegative = false</span><br><span class="line">    zPositive = false</span><br><span class="line">    zNegative = false</span><br><span class="line">    userAccel = max(max(abs(values[<span class="number">0</span>]), abs(values[<span class="number">1</span>])), abs(values[<span class="number">2</span>]))</span><br><span class="line">    <span class="keyword">if</span> userAccel &gt; <span class="number">0.07</span>:</span><br><span class="line">        isMoving = <span class="keyword">True</span></span><br><span class="line">    <span class="keyword">if</span> isMoving :</span><br><span class="line">        moveBeg = <span class="keyword">True</span></span><br><span class="line">        <span class="keyword">if</span> userAccel == fabs(values[<span class="number">0</span>]):</span><br><span class="line">            <span class="keyword">if</span> values[<span class="number">0</span>] &gt; <span class="number">0</span>:</span><br><span class="line">                xPositive = <span class="keyword">True</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                xNegative = <span class="keyword">True</span></span><br><span class="line">        <span class="keyword">elif</span> userAccel == fabs(values[<span class="number">1</span>]):</span><br><span class="line">            <span class="keyword">if</span> values[<span class="number">1</span>] &gt; <span class="number">0</span>:</span><br><span class="line">                yPositive = <span class="keyword">True</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                yNegative = <span class="keyword">True</span></span><br><span class="line">        <span class="keyword">elif</span> userAccel == fabs(values[<span class="number">2</span>]):</span><br><span class="line">            <span class="keyword">if</span> values[<span class="number">2</span>] &gt; <span class="number">0</span>:</span><br><span class="line">                zPositive = <span class="keyword">True</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                zNegative = <span class="keyword">True</span></span><br><span class="line">        state = <span class="number">1</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">if</span> moveBeg:</span><br><span class="line">            changeSymbol = false</span><br><span class="line">            <span class="keyword">if</span> xPositive <span class="keyword">or</span> xNegative:</span><br><span class="line">                <span class="keyword">if</span> xPositive <span class="keyword">and</span> xNegative:</span><br><span class="line">                    changeSymbol = <span class="keyword">True</span></span><br><span class="line">            <span class="keyword">elif</span> yPositive <span class="keyword">or</span> yNegative:</span><br><span class="line">                <span class="keyword">if</span> yPositive <span class="keyword">and</span> yNegative:</span><br><span class="line">                    changeSymbol = <span class="keyword">True</span></span><br><span class="line">            <span class="keyword">elif</span> zPositive <span class="keyword">or</span> zNegative:</span><br><span class="line">                <span class="keyword">if</span> zPositive <span class="keyword">and</span> zNegative:</span><br><span class="line">                    changeSymbol = <span class="keyword">True</span></span><br><span class="line">            xPositive = false</span><br><span class="line">            xNegative = false</span><br><span class="line">            yPositive = false</span><br><span class="line">            yNegative = false</span><br><span class="line">            zPositive = false</span><br><span class="line">            zNegative = false</span><br><span class="line">            <span class="keyword">if</span> ~changeSymbol:</span><br><span class="line">                state = <span class="number">1</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                state = <span class="number">0</span></span><br><span class="line">            moveBeg = false</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            state = <span class="number">0</span></span><br><span class="line">    moveBeg = false</span><br><span class="line">    <span class="keyword">return</span> state</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">GetMotionStateVar</span><span class="params">(values)</span>:</span></span><br><span class="line">    state = <span class="number">-1</span></span><br><span class="line">    <span class="keyword">global</span> values_buf</span><br><span class="line">    value = sqrt(pow(values[<span class="number">0</span>], <span class="number">2</span>) + pow(values[<span class="number">1</span>], <span class="number">2</span>) + pow(values[<span class="number">2</span>], <span class="number">2</span>))</span><br><span class="line">    values_buf.append(value)</span><br><span class="line">    <span class="keyword">print</span> len(values_buf)</span><br><span class="line">    <span class="keyword">if</span> len(values_buf) &gt;= <span class="number">120</span>*<span class="number">0.3</span> <span class="keyword">and</span> len(values_buf) &lt;= <span class="number">120</span>*<span class="number">2</span>:</span><br><span class="line">        var = VarCalculation(values_buf)</span><br><span class="line">        <span class="keyword">print</span> var</span><br><span class="line">        <span class="keyword">if</span> var &gt;= <span class="number">0.0003</span>:</span><br><span class="line">            state = <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            state = <span class="number">0</span></span><br><span class="line">        <span class="keyword">del</span>(values_buf[<span class="number">0</span>])</span><br><span class="line">    <span class="keyword">elif</span> len(values_buf) &lt; <span class="number">120</span>*<span class="number">0.3</span>:</span><br><span class="line">        state = <span class="number">0</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">del</span>(values_buf[<span class="number">0</span>])</span><br><span class="line">        state = <span class="number">-1</span></span><br><span class="line">    <span class="keyword">return</span> state</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">VarCalculation</span><span class="params">(values_buf)</span>:</span></span><br><span class="line">    sum = <span class="number">0</span></span><br><span class="line">    m = len(values_buf)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(m):</span><br><span class="line">        sum += values_buf[i]</span><br><span class="line">    dAve = sum/m;</span><br><span class="line">    dVar = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(m):</span><br><span class="line">        dVar += (values_buf[i]-dAve)*(values_buf[i]-dAve);</span><br><span class="line">    <span class="keyword">return</span> dVar/m;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">LowPassFilter</span><span class="params">(values, time)</span>:</span></span><br><span class="line">    <span class="keyword">print</span> values</span><br><span class="line">    <span class="keyword">global</span> output</span><br><span class="line">    <span class="keyword">global</span> startTime</span><br><span class="line">    <span class="keyword">global</span> timestamp</span><br><span class="line">    <span class="keyword">global</span> dt</span><br><span class="line">    <span class="keyword">global</span> alpha</span><br><span class="line">    <span class="keyword">global</span> count</span><br><span class="line">    <span class="keyword">if</span> startTime == <span class="number">0</span>:</span><br><span class="line">        startTime = time*<span class="number">1000</span></span><br><span class="line">    timestamp = time*<span class="number">1000</span>+<span class="number">0.0000001</span></span><br><span class="line">    count += <span class="number">1</span></span><br><span class="line">    dt = <span class="number">1.0</span> / (count/(float((timestamp-startTime))/<span class="number">1000.0</span>))</span><br><span class="line">    alpha = <span class="number">0.05</span> / (<span class="number">0.05</span> + dt)</span><br><span class="line"><span class="comment">#     print(startTime, timestamp, count, dt, alpha)</span></span><br><span class="line">    <span class="keyword">if</span> count &gt; <span class="number">5</span>:</span><br><span class="line">        output[<span class="number">0</span>] = alpha * output[<span class="number">0</span>] + (<span class="number">1</span>-alpha)*values[<span class="number">0</span>]</span><br><span class="line">        output[<span class="number">1</span>] = alpha * output[<span class="number">1</span>] + (<span class="number">1</span>-alpha)*values[<span class="number">1</span>]</span><br><span class="line">        output[<span class="number">2</span>] = alpha * output[<span class="number">2</span>] + (<span class="number">1</span>-alpha)*values[<span class="number">2</span>]</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        output[<span class="number">0</span>] = values[<span class="number">0</span>]</span><br><span class="line">        output[<span class="number">1</span>] = values[<span class="number">1</span>]</span><br><span class="line">        output[<span class="number">2</span>] = values[<span class="number">2</span>]</span><br><span class="line">    <span class="keyword">print</span> output</span><br><span class="line">    <span class="keyword">return</span> output</span><br></pre></td></tr></table></figure>
+<h2 id="5-2-数据点对齐"><a href="#5-2-数据点对齐" class="headerlink" title="5.2 数据点对齐"></a>5.2 数据点对齐</h2><ul>
+<li>Python</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">searchInsert</span><span class="params">(nums, target)</span>:</span></span><br><span class="line">    start = <span class="number">0</span></span><br><span class="line">    end = len(nums) - <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> start &lt;= end:</span><br><span class="line">        mid = (start + end) // <span class="number">2</span></span><br><span class="line">        <span class="keyword">if</span> nums[mid] == target:</span><br><span class="line">            <span class="keyword">return</span> mid</span><br><span class="line">        <span class="keyword">elif</span> nums[mid] &lt; target:</span><br><span class="line">            start = mid + <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            end = mid - <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> end + <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 给定一个元素，在制定list中查找最相邻的元素</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rIndex</span><span class="params">(nums, target)</span>:</span></span><br><span class="line">    n = len(nums)</span><br><span class="line">    <span class="keyword">if</span> n == <span class="number">0</span>: <span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line">    mid = searchInsert(nums, target)</span><br><span class="line">    rlist = []  <span class="comment"># 保持索引</span></span><br><span class="line">    i, j = <span class="number">-1</span>, n</span><br><span class="line">    left, rigth = <span class="number">0</span>, <span class="number">0</span>  <span class="comment"># 左右扩展的标志</span></span><br><span class="line">    mxg = float(<span class="string">'-inf'</span>)</span><br><span class="line">    <span class="keyword">if</span> <span class="number">0</span> &lt; mid &lt; n:  <span class="comment"># 如果找到了</span></span><br><span class="line">        i, j = mid<span class="number">-1</span>, mid</span><br><span class="line">        mxg = min(abs(nums[i] - target), abs(nums[j] - target))</span><br><span class="line">        left, rigth = <span class="number">1</span>, <span class="number">1</span></span><br><span class="line">    <span class="keyword">elif</span> mid == <span class="number">0</span>:  <span class="comment"># 小于最左边的数字</span></span><br><span class="line">        j = mid</span><br><span class="line">        mxg = abs(nums[j] - target)</span><br><span class="line">        left, rigth = <span class="number">0</span>, <span class="number">1</span></span><br><span class="line">    <span class="keyword">elif</span> mid == n:  <span class="comment"># 大于最右边的数字</span></span><br><span class="line">        i = mid<span class="number">-1</span></span><br><span class="line">        mxg = abs(nums[i] - target)</span><br><span class="line">        left, rigth = <span class="number">1</span>, <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> left == <span class="number">1</span> <span class="keyword">or</span> rigth == <span class="number">1</span>:  <span class="comment"># 两边查找</span></span><br><span class="line">        <span class="keyword">if</span> i == <span class="number">-1</span>: left = <span class="number">0</span></span><br><span class="line">        <span class="keyword">if</span> j == n: rigth = <span class="number">0</span></span><br><span class="line">        <span class="keyword">if</span> left == <span class="number">1</span> <span class="keyword">and</span> i &gt;= <span class="number">0</span>:</span><br><span class="line">            le = abs(nums[i] - target)</span><br><span class="line">            <span class="keyword">if</span> le == mxg:</span><br><span class="line">                rlist = [i] + rlist</span><br><span class="line">                i -= <span class="number">1</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                left = <span class="number">0</span></span><br><span class="line">        <span class="keyword">if</span> rigth == <span class="number">1</span> <span class="keyword">and</span> j &lt; len(nums):</span><br><span class="line">            ri = abs(nums[j] - target)</span><br><span class="line">            <span class="keyword">if</span> mxg == ri:</span><br><span class="line">                rlist = rlist + [j]</span><br><span class="line">                j += <span class="number">1</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                rigth = <span class="number">0</span></span><br><span class="line">    <span class="keyword">return</span> rlist</span><br></pre></td></tr></table></figure>
+<h2 id="5-3-向量转四元数"><a href="#5-3-向量转四元数" class="headerlink" title="5.3 向量转四元数"></a>5.3 向量转四元数</h2><ul>
+<li>Python</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">quaternion_from_two_vectors</span><span class="params">(v1, v2)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Compute quaternion from two vectors. v1 and v2 need not be normalized.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    :param v1: starting vector</span></span><br><span class="line"><span class="string">    :param v2: ending vector</span></span><br><span class="line"><span class="string">    :return Quaternion representation of rotation that rotate v1 to v2.</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    v1n = v1 / np.linalg.norm(v1)</span><br><span class="line">    <span class="comment">#     print(v1n)</span></span><br><span class="line">    v2n = v2 / np.linalg.norm(v2)</span><br><span class="line">    <span class="comment">#     print(v2n)</span></span><br><span class="line">    w = np.cross(v1n, v2n)</span><br><span class="line">    <span class="comment">#     print("w = &#123;&#125;".format(w))</span></span><br><span class="line">    q = np.array([<span class="number">1.0</span> + np.dot(v1n, v2n), *w])</span><br><span class="line">    <span class="comment">#     print("q = &#123;&#125;".format(q))</span></span><br><span class="line">    q /= np.linalg.norm(q)</span><br><span class="line">    <span class="comment">#     print("q_normlizaed = &#123;&#125;".format(q))</span></span><br><span class="line">    <span class="keyword">return</span> quaternion.quaternion(*q)</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+        
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/理论/" rel="tag"># 理论</a>
+          
+            <a href="/tags/SLAM/" rel="tag"># SLAM</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/12/06/Linux实战技能（三）-系统管理/" rel="next" title="Linux实战技能（三）-系统管理">
+                <i class="fa fa-chevron-left"></i> Linux实战技能（三）-系统管理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/12/07/vSLAMNet（三）-数字图像处理-高斯滤波/" rel="prev" title="vSLAMNet（三）-数字图像处理-高斯滤波">
+                vSLAMNet（三）-数字图像处理-高斯滤波 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Xiaoqiang Teng</p>
+              <p class="site-description motion-element" itemprop="description">Remember what should be remembered, and forget what should be forgotten.Alter what is changeable, and accept what is mutable.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">65</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">44</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-概述"><span class="nav-text">1. 概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-欧拉角与旋转矩阵相互转换"><span class="nav-text">2. 欧拉角与旋转矩阵相互转换</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-旋转矩阵转欧拉角"><span class="nav-text">2.1 旋转矩阵转欧拉角</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-欧拉角转旋转矩阵"><span class="nav-text">2.2 欧拉角转旋转矩阵</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-欧拉角与四元数相互转换"><span class="nav-text">3. 欧拉角与四元数相互转换</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-欧拉角转四元数"><span class="nav-text">3.1 欧拉角转四元数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#"><span class="nav-text"> </span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-四元数与旋转矩阵相互转换"><span class="nav-text">4. 四元数与旋转矩阵相互转换</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-旋转矩阵转四元数"><span class="nav-text">4.1 旋转矩阵转四元数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-四元数转旋转矩阵"><span class="nav-text">4.2 四元数转旋转矩阵</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-其他变换"><span class="nav-text">5. 其他变换</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#5-1-静止检测"><span class="nav-text">5.1 静止检测</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-2-数据点对齐"><span class="nav-text">5.2 数据点对齐</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-3-向量转四元数"><span class="nav-text">5.3 向量转四元数</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiaoqiang Teng</span>
+
+  
+</div>
+
+
+
+<div class="powered-by">
+<i class="fa fa-user-md"></i><span id="busuanzi_container_site_uv">
+  本站访客数:<span id="busuanzi_value_site_uv"></span>
+</span>
+</div>
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+<div>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style="display:none">
+    本站总访问量 <span id="busuanzi_value_site_pv"></span> 次
+    <span class="post-meta-divider">|</span>
+</span>
+<span id="busuanzi_container_site_uv" style="display:none">
+    有<span id="busuanzi_value_site_uv"></span>人看过我的博客啦
+</span>
+</div>
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
