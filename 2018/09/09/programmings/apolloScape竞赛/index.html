@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="编程,竞赛,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="背景介绍百度ApolloScape重磅发布了自动驾驶开放数据集。自动驾驶开发测试中，海量、高质的真实数据是必不可缺的“原料”。但是，少有团队有能力开发并维持一个适用的自动驾驶平台，定期校准并收集新数据。 据介绍，Apollo开放平台此次发布的ApolloScape不仅开放了比Cityscapes等同类数据集大10倍以上的数据量，包括感知、仿真场景、路网数据等数十万帧逐像素语义分割标注的高分辨">
+<meta name="keywords" content="编程,竞赛">
+<meta property="og:type" content="article">
+<meta property="og:title" content="apolloScape竞赛">
+<meta property="og:url" content="http://yoursite.com/2018/09/09/programmings/apolloScape竞赛/index.html">
+<meta property="og:site_name" content="学步">
+<meta property="og:description" content="背景介绍百度ApolloScape重磅发布了自动驾驶开放数据集。自动驾驶开发测试中，海量、高质的真实数据是必不可缺的“原料”。但是，少有团队有能力开发并维持一个适用的自动驾驶平台，定期校准并收集新数据。 据介绍，Apollo开放平台此次发布的ApolloScape不仅开放了比Cityscapes等同类数据集大10倍以上的数据量，包括感知、仿真场景、路网数据等数十万帧逐像素语义分割标注的高分辨">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-02-18T16:19:05.803Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="apolloScape竞赛">
+<meta name="twitter:description" content="背景介绍百度ApolloScape重磅发布了自动驾驶开放数据集。自动驾驶开发测试中，海量、高质的真实数据是必不可缺的“原料”。但是，少有团队有能力开发并维持一个适用的自动驾驶平台，定期校准并收集新数据。 据介绍，Apollo开放平台此次发布的ApolloScape不仅开放了比Cityscapes等同类数据集大10倍以上的数据量，包括感知、仿真场景、路网数据等数十万帧逐像素语义分割标注的高分辨">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/09/09/programmings/apolloScape竞赛/">
+
+
+
+
+
+  <title>apolloScape竞赛 | 学步</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">学步</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-编程">
+          <a href="/categories/programming" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            编程
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-学术">
+          <a href="/categories/science" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            学术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-理论">
+          <a href="/categories/theory" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            理论
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-其他">
+          <a href="/categories/other" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            其他
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+    
+  
+  
+
+  <article class="post post-type-normal true" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/09/programmings/apolloScape竞赛/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Xiaoqiang Teng">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="学步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">apolloScape竞赛</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-09T11:48:32+08:00">
+                2018-09-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">编程</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/programming/竞赛/" itemprop="url" rel="index">
+                    <span itemprop="name">竞赛</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<h1 id="背景介绍"><a href="#背景介绍" class="headerlink" title="背景介绍"></a>背景介绍</h1><p>百度ApolloScape重磅发布了自动驾驶开放数据集。自动驾驶开发测试中，海量、高质的真实数据是必不可缺的“原料”。但是，少有团队有能力开发并维持一个适用的自动驾驶平台，定期校准并收集新数据。</p>
+<p>据介绍，Apollo开放平台此次发布的ApolloScape不仅开放了比Cityscapes等同类数据集大10倍以上的数据量，包括感知、仿真场景、路网数据等数十万帧逐像素语义分割标注的高分辨率图像数据，进一步涵盖更复杂的环境、天气和交通状况等。从数据难度上来看，ApolloScape数据集涵盖了更复杂的道路状况（例如，单张图像中多达162辆交通工具或80名行人），同时开放数据集采用了逐像素语义分割标注的方式，是目前环境最复杂、标注最精准、数据量最大的自动驾驶数据集。</p>
+<p>Apollo开放平台还将与加州大学伯克利分校在CVPR 2018（IEEE国际计算机视觉与模式识别会议）期间联合举办自动驾驶研讨会（Workshop on Autonomous Driving），并将基于ApolloScape的大规模数据集定义了多项任务挑战，为全球自动驾驶开发者和研究人员提供共同探索前沿领域技术突破及应用创新的平台。</p>
+<h1 id="参考一：PoseNet-implementation-for-self-driving-car-localization-using-Pytorch-on-Apolloscape-dataset"><a href="#参考一：PoseNet-implementation-for-self-driving-car-localization-using-Pytorch-on-Apolloscape-dataset" class="headerlink" title="参考一：PoseNet implementation for self-driving car localization using Pytorch on Apolloscape dataset"></a>参考一：<a href="https://capsulesbot.com/blog/2018/08/24/apolloscape-posenet-pytorch.html" target="_blank" rel="noopener">PoseNet implementation for self-driving car localization using Pytorch on Apolloscape dataset</a></h1><p>This article covers the very beginning of the journey and includes the reading and visualization of the Apolloscape dataset for localization task. Implement PoseNet [2] architecture for monocular image pose prediction and visualize results. I use Python and Pytorch for the task.</p>
+<p>NOTE: If you want to jump straight to the code here is the GitHub repo. It’s is still an ongoing work where I intend to implement Vidloc [7], Pose Graph Optimization [3,8] and Structure from Motion [9] pipelines for Apolloscape Dataset in the context of the localization task.</p>
+<h2 id="Apolloscape-Pytorch-Dataset"><a href="#Apolloscape-Pytorch-Dataset" class="headerlink" title="Apolloscape Pytorch Dataset"></a>Apolloscape Pytorch Dataset</h2><p>For Pytorch I need to have a Dataset object that prepares and feeds the data to the loader and then to the model. I want to have a robust dataset class that can:</p>
+<ul>
+<li>support stereo and mono images</li>
+<li>support train/validation splits that came along with data or generate a new one</li>
+<li>support pose normalization</li>
+<li>support different pose representations (needed mainly for visualization and experiments with loss functions)</li>
+<li>support filtering by record id</li>
+<li>support general Apolloscape folder structure layout</li>
+</ul>
+<p>I am not putting here the full listing of the Apolloscape dataset and concentrate solely on how to use it and what data we can get from it. For the full source code, please refer to the Github file datasets/apolloscape.py.</p>
+<p>Here how to create a dataset:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> datasets.apolloscape <span class="keyword">import</span> Apolloscape</span><br><span class="line"><span class="keyword">from</span> torchvision <span class="keyword">import</span> transforms</span><br><span class="line"></span><br><span class="line"><span class="comment"># Path to unpacked data folders</span></span><br><span class="line">APOLLO_PATH = <span class="string">"./data/apolloscape"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Resize transform that is applied on every image read</span></span><br><span class="line">transform = transforms.Compose([transforms.Resize(<span class="number">250</span>)])</span><br><span class="line"></span><br><span class="line">apollo_dataset = Apolloscape(root=os.path.join(APOLLO_PATH), road=<span class="string">"zpark-sample"</span>,</span><br><span class="line">                             transform=transform, train=<span class="keyword">True</span>, pose_format=<span class="string">'quat'</span>,</span><br><span class="line">                             stereo=<span class="keyword">True</span>)</span><br><span class="line">print(apollo_dataset)</span><br></pre></td></tr></table></figure>
+<p>output:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Dataset: Apolloscape</span><br><span class="line">    Road: zpark-sample</span><br><span class="line">    Record: <span class="keyword">None</span></span><br><span class="line">    Train: <span class="keyword">None</span></span><br><span class="line">    Normalize Poses: <span class="keyword">False</span></span><br><span class="line">    Stereo: <span class="keyword">True</span></span><br><span class="line">    Length: <span class="number">1499</span> of <span class="number">1499</span></span><br><span class="line">    Cameras: [<span class="string">'Camera_2'</span>, <span class="string">'Camera_1'</span>]</span><br><span class="line">    Records: [<span class="string">'Record001'</span>, <span class="string">'Record002'</span>, <span class="string">'Record003'</span>, <span class="string">'Record004'</span>, <span class="string">'Record006'</span>, <span class="string">'Record007'</span>, <span class="string">'Record008'</span>, <span class="string">'Record009'</span>, <span class="string">'Record010'</span>, <span class="string">'Record011'</span>, <span class="string">'Record012'</span>, <span class="string">'Record013'</span>, <span class="string">'Record014'</span>]</span><br></pre></td></tr></table></figure>
+<p>POLLO_PATH is a folder with unpacked Apolloscape datasets, e.g. $APOLLO_PATH/road02_seg or $APOLLO_PATH/zpark. Download data from Apolloscape page and unpack iot. Let’s assume that we’ve also created a symlink ./data/apolloscape that points to $APOLLO_PATH folder.</p>
+<p>We can view the list of available records with a number of data samples in each:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Show records with numbers of data points</span></span><br><span class="line">recs_num = apollo_dataset.get_records_counts()</span><br><span class="line">recs_num = sorted(recs_num.items(), key=<span class="keyword">lambda</span> kv: kv[<span class="number">1</span>], reverse=<span class="keyword">True</span>)</span><br><span class="line">print(<span class="string">"Records:"</span>)</span><br><span class="line">print(<span class="string">"\n"</span>.join([<span class="string">"\t&#123;&#125; - &#123;&#125;"</span>.format(r[<span class="number">0</span>], r[<span class="number">1</span>]) <span class="keyword">for</span> r <span class="keyword">in</span> recs_num ]))</span><br></pre></td></tr></table></figure>
+<p>output:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Records:</span><br><span class="line">	Record008 - <span class="number">122</span></span><br><span class="line">	Record007 - <span class="number">121</span></span><br><span class="line">	Record006 - <span class="number">121</span></span><br><span class="line">	Record012 - <span class="number">121</span></span><br><span class="line">	Record001 - <span class="number">121</span></span><br><span class="line">	Record009 - <span class="number">121</span></span><br><span class="line">	Record010 - <span class="number">121</span></span><br><span class="line">	Record003 - <span class="number">121</span></span><br><span class="line">	Record013 - <span class="number">120</span></span><br><span class="line">	Record004 - <span class="number">120</span></span><br><span class="line">	Record002 - <span class="number">120</span></span><br><span class="line">	Record011 - <span class="number">120</span></span><br><span class="line">	Record014 - <span class="number">50</span></span><br></pre></td></tr></table></figure>
+<p>We can draw a route for one record with a sampled camera image:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> utils.common <span class="keyword">import</span> draw_record</span><br><span class="line"></span><br><span class="line"><span class="comment"># Draw path of a record with a sampled datapoint</span></span><br><span class="line">record = <span class="string">'Record008'</span></span><br><span class="line">draw_record(apollo_dataset, record)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p>output:</p>
+<p>Alternatively, we can see all records at once in one chart:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Draw all records for current dataset</span></span><br><span class="line">draw_record(apollo_dataset)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p>output:</p>
+<p>Another option is to see it in a video:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> utils.common <span class="keyword">import</span> make_video</span><br><span class="line"></span><br><span class="line"><span class="comment"># Generate and save video for the record</span></span><br><span class="line">outfile = <span class="string">"./output_data/videos/video_&#123;&#125;_&#123;&#125;.mp4"</span>.format(apollo_dataset.road, apollo_dataset.record)</span><br><span class="line">make_video(apollo_dataset, outfile=outfile)</span><br></pre></td></tr></table></figure>
+<p>Output (cut gif version of the generated video):</p>
+<p>For the PoseNet training we will use mono images with zero-mean normalized poses and camera images center-cropped to 250px:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Resize and CenterCrop</span></span><br><span class="line">transform = transforms.Compose([</span><br><span class="line">    transforms.Resize(<span class="number">260</span>),</span><br><span class="line">    transforms.CenterCrop(<span class="number">250</span>)</span><br><span class="line">])</span><br><span class="line"></span><br><span class="line"><span class="comment"># Create train dataset with mono images, normalized poses, enabled cache_transform</span></span><br><span class="line">train_dataset = Apolloscape(root=os.path.join(APOLLO_PATH), road=<span class="string">"zpark-sample"</span>,</span><br><span class="line">                             transform=transform, train=<span class="keyword">True</span>, pose_format=<span class="string">'quat'</span>,</span><br><span class="line">                             normalize_poses=<span class="keyword">True</span>, cache_transform=<span class="keyword">True</span>,</span><br><span class="line">                             stereo=<span class="keyword">False</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Draw path of a single record (mono with normalized poses)</span></span><br><span class="line">record = <span class="string">'Record008'</span></span><br><span class="line">draw_record(apollo_dataset, record)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p>Output:</p>
+<p>Implemented Apolloscape Pytorch dataset also supports cache_transform option which is when enabled saves all transformed pickled images to a disk and retrieves it later for the subsequent epochs without the need to redo convert and transform operations every image read event. Cache saves up to 50% of the time during training time though it’s not working with image augmentation transforms like torchvision.transforms.ColorJitter.</p>
+<p>Also, we can get the mean and the standard deviation that we need later to recover true poses translations:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">poses_mean = train_dataset.poses_mean</span><br><span class="line">poses_std = train_dataset.poses_std</span><br><span class="line">print(<span class="string">'Translation poses_mean = &#123;&#125; in meters'</span>.format(poses_mean))</span><br><span class="line">print(<span class="string">'Translation poses_std  = &#123;&#125; in meters'</span>.format(poses_std))</span><br></pre></td></tr></table></figure>
+<p>Output:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Translation poses_mean = [  <span class="number">449.95782055</span> <span class="number">-2251.24771214</span>    <span class="number">40.17147932</span>] <span class="keyword">in</span> meters</span><br><span class="line">Translation poses_std  = [<span class="number">123.39589457</span> <span class="number">252.42350964</span>   <span class="number">0.28021513</span>] <span class="keyword">in</span> meters</span><br></pre></td></tr></table></figure>
+<p>You can find all mentioned examples in Apolloscape_View_Records.ipynb notebook.</p>
+<p>And now let’s turn to something useful and more interesting, for example, training PoseNet deep convolutional network to regress poses from camera images.</p>
+<h2 id="PoseNet-localization-task"><a href="#PoseNet-localization-task" class="headerlink" title="PoseNet localization task"></a>PoseNet localization task</h2><p>参考：<a href="https://capsulesbot.com/blog/2018/08/24/apolloscape-posenet-pytorch.html" target="_blank" rel="noopener">PoseNet implementation for self-driving car localization using Pytorch on Apolloscape dataset</a></p>
+<p>A Pytorch implementation of the PoseNet model using a mono image:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> torch.nn.functional <span class="keyword">as</span> F</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PoseNet</span><span class="params">(torch.nn.Module)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, feature_extractor, num_features=<span class="number">128</span>, dropout=<span class="number">0.5</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">                 track_running_stats=False, pretrained=False)</span>:</span></span><br><span class="line">        super(PoseNet, self).__init__()</span><br><span class="line">        self.dropout = dropout</span><br><span class="line">        self.feature_extractor = feature_extractor</span><br><span class="line">        self.feature_extractor.avgpool = torch.nn.AdaptiveAvgPool2d(<span class="number">1</span>)</span><br><span class="line">        fc_in_features = self.feature_extractor.fc.in_features</span><br><span class="line">        self.feature_extractor.fc = torch.nn.Linear(fc_in_features, num_features)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Translation</span></span><br><span class="line">        self.fc_xyz = torch.nn.Linear(num_features, <span class="number">3</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Rotation in quaternions</span></span><br><span class="line">        self.fc_quat = torch.nn.Linear(num_features, <span class="number">4</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">extract_features</span><span class="params">(self, x)</span>:</span></span><br><span class="line">        x_features = self.feature_extractor(x)</span><br><span class="line">        x_features = F.relu(x_features)</span><br><span class="line">        <span class="keyword">if</span> self.dropout &gt; <span class="number">0</span>:</span><br><span class="line">            x_features = F.dropout(x_features, p=self.dropout, training=self.training)</span><br><span class="line">        <span class="keyword">return</span> x_features</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self, x)</span>:</span></span><br><span class="line">        x_features = self.extract_features(x)</span><br><span class="line">        x_translations = self.fc_xyz(x_features)</span><br><span class="line">        x_rotations = self.fc_quat(x_features)</span><br><span class="line">        x_poses = torch.cat((x_translations, x_rotations), dim=<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">return</span> x_poses</span><br></pre></td></tr></table></figure>
+<p>For further experiments I’ve also implemented stereo version (currently it’s simply processes two images in parallel without any additional constraints), option to switch off stats tracking for BatchNorm layers and Kaiming He normal for weight initialization [4]. Full source code is here models/posenet.py</p>
+<h2 id="PoseNet-Loss-Functions"><a href="#PoseNet-Loss-Functions" class="headerlink" title="PoseNet Loss Functions"></a>PoseNet Loss Functions</h2><p>For more details on where it came from and intro to Bayesian Deep Learning (BDL) you can refer to an excellent post by Alex Kendall where he explains different types of uncertainties and its implications to the multi-task models. And even more results you can find in papers “Multi-task learning using uncertainty to weigh losses for scene geometry and semantics.” [5] and “What uncertainties do we need in Bayesian deep learning for computer vision?.” [6].</p>
+<p>Pytorch implementation for both versions of a loss function is the following:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PoseNetCriterion</span><span class="params">(torch.nn.Module)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, beta = <span class="number">512.0</span>, learn_beta=False, sx=<span class="number">0.0</span>, sq=<span class="number">-3.0</span>)</span>:</span></span><br><span class="line">        super(PoseNetCriterion, self).__init__()</span><br><span class="line">        self.loss_fn = torch.nn.L1Loss()</span><br><span class="line">        self.learn_beta = learn_beta</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> learn_beta:</span><br><span class="line">            self.beta = beta</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.beta = <span class="number">1.0</span></span><br><span class="line">        self.sx = torch.nn.Parameter(torch.Tensor([sx]), requires_grad=learn_beta)</span><br><span class="line">        self.sq = torch.nn.Parameter(torch.Tensor([sq]), requires_grad=learn_beta)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self, x, y)</span>:</span></span><br><span class="line">        <span class="comment"># Translation loss</span></span><br><span class="line">        loss = torch.exp(-self.sx) * self.loss_fn(x[:, :<span class="number">3</span>], y[:, :<span class="number">3</span>])</span><br><span class="line">        <span class="comment"># Rotation loss</span></span><br><span class="line">        loss += torch.exp(-self.sq) * self.beta * self.loss_fn(x[:, <span class="number">3</span>:], y[:, <span class="number">3</span>:]) + self.sq</span><br><span class="line">        <span class="keyword">return</span> loss</span><br></pre></td></tr></table></figure>
+<p>If learn_beta param is False it’s a simple weighted sum version of the loss and if learn_beta is True it’s using sx and sq params with enabled gradients that trains together with other network parameter with the same optimizer.</p>
+<h2 id="PoseNet-Training-Implementation-Details"><a href="#PoseNet-Training-Implementation-Details" class="headerlink" title="PoseNet Training Implementation Details"></a>PoseNet Training Implementation Details</h2><p>Now let’s combine it all to the training loop. I use torch.optim.Adam optimizer with learning rate 1e-5, ResNet34 pretrained on ImageNet as a feature extractor and 2048 features on the last FC layer before pose regressors.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> torchvision <span class="keyword">import</span> transforms, models</span><br><span class="line"><span class="keyword">import</span> torch.optim <span class="keyword">as</span> optim</span><br><span class="line"><span class="keyword">from</span> torch.utils.data <span class="keyword">import</span> Dataset, DataLoader</span><br><span class="line"><span class="keyword">from</span> datasets.apolloscape <span class="keyword">import</span> Apolloscape</span><br><span class="line"><span class="keyword">from</span> utils.common <span class="keyword">import</span> save_checkpoint</span><br><span class="line"><span class="keyword">from</span> models.posenet <span class="keyword">import</span> PoseNet, PoseNetCriterion</span><br><span class="line"></span><br><span class="line">APOLLO_PATH = <span class="string">"./data/apolloscape"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ImageNet normalization params because we are using pre-trained</span></span><br><span class="line"><span class="comment"># feature extractor</span></span><br><span class="line">normalize = transforms.Normalize(mean=[<span class="number">0.485</span>, <span class="number">0.456</span>, <span class="number">0.406</span>],</span><br><span class="line">                                     std=[<span class="number">0.229</span>, <span class="number">0.224</span>, <span class="number">0.225</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># Resize data before using</span></span><br><span class="line">transform = transforms.Compose([</span><br><span class="line">    transforms.Resize(<span class="number">260</span>),</span><br><span class="line">    transforms.CenterCrop(<span class="number">250</span>),</span><br><span class="line">    transforms.ToTensor(),</span><br><span class="line">    normalize</span><br><span class="line">])</span><br><span class="line"></span><br><span class="line"><span class="comment"># Create datasets</span></span><br><span class="line">train_dataset = Apolloscape(root=os.path.join(APOLLO_PATH), road=<span class="string">"zpark-sample"</span>,</span><br><span class="line">    transform=transform, normalize_poses=<span class="keyword">True</span>, pose_format=<span class="string">'quat'</span>, train=<span class="keyword">True</span>, cache_transform=<span class="keyword">True</span>, stereo=<span class="keyword">False</span>)</span><br><span class="line">val_dataset = Apolloscape(root=os.path.join(APOLLO_PATH), road=<span class="string">"zpark-sample"</span>,</span><br><span class="line">    transform=transform, normalize_poses=<span class="keyword">True</span>, pose_format=<span class="string">'quat'</span>, train=<span class="keyword">False</span>, cache_transform=<span class="keyword">True</span>, stereo=<span class="keyword">False</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Dataloaders</span></span><br><span class="line">train_dataloader = DataLoader(train_dataset, batch_size=<span class="number">80</span>, shuffle=<span class="keyword">True</span>)</span><br><span class="line">val_dataloader = DataLoader(val_dataset, batch_size=<span class="number">80</span>, shuffle=<span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Select primary device</span></span><br><span class="line"><span class="keyword">if</span> torch.cuda.is_available():</span><br><span class="line">    device = torch.device(<span class="string">'cuda'</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    device = torch.device(<span class="string">'cpu'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Create pretrained feature extractor</span></span><br><span class="line">feature_extractor = models.resnet34(pretrained=<span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Num features for the last layer before pose regressor</span></span><br><span class="line">num_features = <span class="number">2048</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Create model</span></span><br><span class="line">model = PoseNet(feature_extractor, num_features=num_features, pretrained=<span class="keyword">True</span>)</span><br><span class="line">model = model.to(device)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Criterion</span></span><br><span class="line">criterion = PoseNetCriterion(stereo=<span class="keyword">False</span>, learn_beta=<span class="keyword">True</span>)</span><br><span class="line">criterion = criterion.to(device)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Add all params for optimization</span></span><br><span class="line">param_list = [&#123;<span class="string">'params'</span>: model.parameters()&#125;]</span><br><span class="line"><span class="keyword">if</span> criterion.learn_beta:</span><br><span class="line">    <span class="comment"># Add sx and sq from loss function to optimizer params</span></span><br><span class="line">    param_list.append(&#123;<span class="string">'params'</span>: criterion.parameters()&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Create optimizer</span></span><br><span class="line">optimizer = optim.Adam(params=param_list, lr=<span class="number">1e-5</span>, weight_decay=<span class="number">0.0005</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Epochs to train</span></span><br><span class="line">n_epochs = <span class="number">2000</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Main training loop</span></span><br><span class="line">val_freq = <span class="number">200</span></span><br><span class="line"><span class="keyword">for</span> e <span class="keyword">in</span> range(<span class="number">0</span>, n_epochs):</span><br><span class="line">    train(train_dataloader, model, criterion, optimizer, e, n_epochs, log_freq=<span class="number">0</span>,</span><br><span class="line">         poses_mean=train_dataset.poses_mean, poses_std=train_dataset.poses_std,</span><br><span class="line">         stereo=<span class="keyword">False</span>)</span><br><span class="line">    <span class="keyword">if</span> e % val_freq == <span class="number">0</span>:</span><br><span class="line">        validate(val_dataloader, model, criterion, e, log_freq=<span class="number">0</span>,</span><br><span class="line">            stereo=<span class="keyword">False</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Save checkpoint</span></span><br><span class="line">save_checkpoint(model, optimizer, criterion, <span class="string">'zpark_experiment'</span>, n_epochs)</span><br></pre></td></tr></table></figure>
+<p>A little bit simplified train function below with error calculation that is used solely for logging purposes:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">train</span><span class="params">(train_loader, model, criterion, optimizer, epoch, max_epoch,</span></span></span><br><span class="line"><span class="function"><span class="params">          log_freq=<span class="number">1</span>, print_sum=True, poses_mean=None, poses_std=None,</span></span></span><br><span class="line"><span class="function"><span class="params">          stereo=True)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># switch model to training</span></span><br><span class="line">    model.train()</span><br><span class="line"></span><br><span class="line">    losses = AverageMeter()</span><br><span class="line"></span><br><span class="line">    epoch_time = time.time()</span><br><span class="line"></span><br><span class="line">    gt_poses = np.empty((<span class="number">0</span>, <span class="number">7</span>))</span><br><span class="line">    pred_poses = np.empty((<span class="number">0</span>, <span class="number">7</span>))</span><br><span class="line"></span><br><span class="line">    end = time.time()</span><br><span class="line">    <span class="keyword">for</span> idx, (batch_images, batch_poses) <span class="keyword">in</span> enumerate(train_loader):</span><br><span class="line">        data_time = (time.time() - end)</span><br><span class="line"></span><br><span class="line">        batch_images = batch_images.to(device)</span><br><span class="line">        batch_poses = batch_poses.to(device)</span><br><span class="line"></span><br><span class="line">        out = model(batch_images)</span><br><span class="line">        loss = criterion(out, batch_poses)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Training step</span></span><br><span class="line">        optimizer.zero_grad()</span><br><span class="line">        loss.backward()</span><br><span class="line">        optimizer.step()</span><br><span class="line"></span><br><span class="line">        losses.update(loss.data[<span class="number">0</span>], len(batch_images) * batch_images[<span class="number">0</span>].size(<span class="number">0</span>) <span class="keyword">if</span> stereo</span><br><span class="line">                <span class="keyword">else</span> batch_images.size(<span class="number">0</span>))</span><br><span class="line"></span><br><span class="line">        <span class="comment"># move data to cpu &amp; numpy</span></span><br><span class="line">        bp = batch_poses.detach().cpu().numpy()</span><br><span class="line">        outp = out.detach().cpu().numpy()</span><br><span class="line">        gt_poses = np.vstack((gt_poses, bp))</span><br><span class="line">        pred_poses = np.vstack((pred_poses, outp))</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Get final times</span></span><br><span class="line">        batch_time = (time.time() - end)</span><br><span class="line">        end = time.time()</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> log_freq != <span class="number">0</span> <span class="keyword">and</span> idx % log_freq == <span class="number">0</span>:</span><br><span class="line">            print(<span class="string">'Epoch: [&#123;&#125;/&#123;&#125;]\tBatch: [&#123;&#125;/&#123;&#125;]\t'</span></span><br><span class="line">                  <span class="string">'Time: &#123;batch_time:.3f&#125;\t'</span></span><br><span class="line">                  <span class="string">'Data Time: &#123;data_time:.3f&#125;\t'</span></span><br><span class="line">                  <span class="string">'Loss: &#123;losses.val:.3f&#125;\t'</span></span><br><span class="line">                  <span class="string">'Avg Loss: &#123;losses.avg:.3f&#125;\t'</span>.format(</span><br><span class="line">                   epoch, max_epoch - <span class="number">1</span>, idx, len(train_loader) - <span class="number">1</span>,</span><br><span class="line">                   batch_time=batch_time, data_time=data_time, losses=losses))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment"># un-normalize translation</span></span><br><span class="line">    unnorm = (poses_mean <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>) <span class="keyword">and</span> (poses_std <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>)</span><br><span class="line">    <span class="keyword">if</span> unnorm:</span><br><span class="line">        gt_poses[:, :<span class="number">3</span>] = gt_poses[:, :<span class="number">3</span>] * poses_std + poses_mean</span><br><span class="line">        pred_poses[:, :<span class="number">3</span>] = pred_poses[:, :<span class="number">3</span>] * poses_std + poses_mean</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Translation error</span></span><br><span class="line">    t_loss = np.asarray([np.linalg.norm(p - t) <span class="keyword">for</span> p, t <span class="keyword">in</span> zip(pred_poses[:, :<span class="number">3</span>], gt_poses[:, :<span class="number">3</span>])])</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Rotation error</span></span><br><span class="line">    q_loss = np.asarray([quaternion_angular_error(p, t) <span class="keyword">for</span> p, t <span class="keyword">in</span> zip(pred_poses[:, <span class="number">3</span>:], gt_poses[:, <span class="number">3</span>:])])</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> print_sum:</span><br><span class="line">        print(<span class="string">'Ep: [&#123;&#125;/&#123;&#125;]\tTrain Loss: &#123;:.3f&#125;\tTe: &#123;:.3f&#125;\tRe: &#123;:.3f&#125;\t Et: &#123;:.2f&#125;s\t&#123;criterion_sx:.5f&#125;:&#123;criterion_sq:.5f&#125;'</span>.format(</span><br><span class="line">            epoch, max_epoch - <span class="number">1</span>, losses.avg, np.mean(t_loss), np.mean(q_loss),</span><br><span class="line">            (time.time() - epoch_time), criterion_sx=criterion.sx.data[<span class="number">0</span>], criterion_sq=criterion.sq.data[<span class="number">0</span>]))</span><br></pre></td></tr></table></figure>
+<p>validate function is similar to train except model.eval()/model.train() modes, logging and error calculations. Please refer to /utils/training.py on GitHub for full-versions of train and validate functions.</p>
+<p>The training converges after about 1-2k epochs. On my machine, with GTX 1080 Ti it takes about 22 seconds per epoch on ZPark sample train dataset with 2242 images pre-processed and scaled to 250x250 pixels. Total training time – 6-12 hours.</p>
+<h2 id="PoseNet-Results-on-Apolloscape-dataset-ZPark-sample-road"><a href="#PoseNet-Results-on-Apolloscape-dataset-ZPark-sample-road" class="headerlink" title="PoseNet Results on Apolloscape dataset. ZPark sample road."></a>PoseNet Results on Apolloscape dataset. ZPark sample road.</h2><p>After 2k epochs of training, the model was managed to get a prediction of pose translation with a mean 40.6 meters and rotation with a mean 1.69 degrees.</p>
+<h2 id="Further-development"><a href="#Further-development" class="headerlink" title="Further development"></a>Further development</h2><p>Established results are far from one that can be used in autonomous navigation where a system needs to now its location within accuracy of 15cm. Such precision is vital for a car to act safely, correctly predict the behaviors of others and plan actions accordingly. In any case, it’s a good baseline and building blocks of the pipeline to work with Apolloscape dataset that I can develop and improve further.</p>
+<p>There many things to try next:</p>
+<ul>
+<li>Use temporal nature of a video.</li>
+<li>Rely on geometrical features of stereo cameras.</li>
+<li>Pose graph optimization techniques.</li>
+<li>Loss based on 3D reprojection errors.</li>
+<li>Structure from motion methods to build 3D map representation.</li>
+</ul>
+<p>And what’s more importantly, all above-mentioned methods need no additional information but that we already have in ZPark sample road from Apolloscape dataset.</p>
+<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><ul>
+<li><ol>
+<li>Kendall, Alex, and Roberto Cipolla. “Geometric loss functions for camera pose regression with deep learning.” (2017).</li>
+</ol>
+</li>
+<li><ol>
+<li>Kendall, Alex, Matthew Grimes, and Roberto Cipolla. “Posenet: A convolutional network for real-time 6-dof camera relocalization.” (2015).</li>
+</ol>
+</li>
+<li><ol>
+<li>Brahmbhatt, Samarth, et al. “Mapnet: Geometry-aware learning of maps for camera localization.” (2017).</li>
+</ol>
+</li>
+<li><ol>
+<li>He, Kaiming, et al. “Delving deep into rectifiers: Surpassing human-level performance on imagenet classification.” (2015).</li>
+</ol>
+</li>
+<li><ol>
+<li>Kendall, Alex, Yarin Gal, and Roberto Cipolla. “Multi-task learning using uncertainty to weigh losses for scene geometry and semantics.” (2017).</li>
+</ol>
+</li>
+<li><ol>
+<li>Kendall, Alex, and Yarin Gal. “What uncertainties do we need in bayesian deep learning for computer vision?.” (2017).</li>
+</ol>
+</li>
+<li><ol>
+<li>Clark, Ronald, et al. “VidLoc: A deep spatio-temporal model for 6-dof video-clip relocalization.” (2017).</li>
+</ol>
+</li>
+<li><ol>
+<li>Calafiore, Giuseppe, Luca Carlone, and Frank Dellaert. “Pose graph optimization in the complex domain: Lagrangian duality, conditions for zero duality gap, and optimal solutions.” (2015).</li>
+</ol>
+</li>
+<li><ol>
+<li>Martinec, Daniel, and Tomas Pajdla. “Robust rotation and translation estimation in multiview reconstruction.” (2007).</li>
+</ol>
+</li>
+</ul>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li><a href="https://capsulesbot.com/blog/2018/08/24/apolloscape-posenet-pytorch.html" target="_blank" rel="noopener">PoseNet implementation for self-driving car localization using Pytorch on Apolloscape dataset</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+        
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/编程/" rel="tag"># 编程</a>
+          
+            <a href="/tags/竞赛/" rel="tag"># 竞赛</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/09/programmings/C-回调机制教程/" rel="next" title="C++回调机制教程">
+                <i class="fa fa-chevron-left"></i> C++回调机制教程
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/11/data_structure_algorithm/算法-元素最近邻快速查找/" rel="prev" title="算法-元素最近邻快速查找">
+                算法-元素最近邻快速查找 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Xiaoqiang Teng</p>
+              <p class="site-description motion-element" itemprop="description">Remember what should be remembered, and forget what should be forgotten.Alter what is changeable, and accept what is mutable.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">44</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#背景介绍"><span class="nav-text">背景介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考一：PoseNet-implementation-for-self-driving-car-localization-using-Pytorch-on-Apolloscape-dataset"><span class="nav-text">参考一：PoseNet implementation for self-driving car localization using Pytorch on Apolloscape dataset</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Apolloscape-Pytorch-Dataset"><span class="nav-text">Apolloscape Pytorch Dataset</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PoseNet-localization-task"><span class="nav-text">PoseNet localization task</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PoseNet-Loss-Functions"><span class="nav-text">PoseNet Loss Functions</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PoseNet-Training-Implementation-Details"><span class="nav-text">PoseNet Training Implementation Details</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PoseNet-Results-on-Apolloscape-dataset-ZPark-sample-road"><span class="nav-text">PoseNet Results on Apolloscape dataset. ZPark sample road.</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Further-development"><span class="nav-text">Further development</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#References"><span class="nav-text">References</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiaoqiang Teng</span>
+
+  
+</div>
+
+
+
+<div class="powered-by">
+<i class="fa fa-user-md"></i><span id="busuanzi_container_site_uv">
+  本站访客数:<span id="busuanzi_value_site_uv"></span>
+</span>
+</div>
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+<div>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style="display:none">
+    本站总访问量 <span id="busuanzi_value_site_pv"></span> 次
+    <span class="post-meta-divider">|</span>
+</span>
+<span id="busuanzi_container_site_uv" style="display:none">
+    有<span id="busuanzi_value_site_uv"></span>人看过我的博客啦
+</span>
+</div>
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>
