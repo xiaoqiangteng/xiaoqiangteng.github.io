@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="编程,深度学习,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="下载imageNet2015数据集image-net官网下载：image-net.org VOC2007数据格式介绍12345678910111213├── Annotations│   ├── 000001.xml│   └── 000002.xml|   |__ ...├── ImageSets│   └── Main│       ├── test.txt│       ├── train.">
+<meta name="keywords" content="编程,深度学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ILSVRC2015数据集转VOC2007数据集格式">
+<meta property="og:url" content="http://yoursite.com/2018/04/05/ILSVRC2015数据集转VOC2007数据集格式/index.html">
+<meta property="og:site_name" content="学步">
+<meta property="og:description" content="下载imageNet2015数据集image-net官网下载：image-net.org VOC2007数据格式介绍12345678910111213├── Annotations│   ├── 000001.xml│   └── 000002.xml|   |__ ...├── ImageSets│   └── Main│       ├── test.txt│       ├── train.">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-02-18T16:19:05.800Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ILSVRC2015数据集转VOC2007数据集格式">
+<meta name="twitter:description" content="下载imageNet2015数据集image-net官网下载：image-net.org VOC2007数据格式介绍12345678910111213├── Annotations│   ├── 000001.xml│   └── 000002.xml|   |__ ...├── ImageSets│   └── Main│       ├── test.txt│       ├── train.">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/04/05/ILSVRC2015数据集转VOC2007数据集格式/">
+
+
+
+
+
+  <title>ILSVRC2015数据集转VOC2007数据集格式 | 学步</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">学步</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-编程">
+          <a href="/categories/programming" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            编程
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-学术">
+          <a href="/categories/science" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            学术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-理论">
+          <a href="/categories/theory" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            理论
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-其他">
+          <a href="/categories/other" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            其他
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+    
+  
+  
+
+  <article class="post post-type-normal true" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/05/ILSVRC2015数据集转VOC2007数据集格式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Xiaoqiang Teng">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="学步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ILSVRC2015数据集转VOC2007数据集格式</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-05T15:48:06+08:00">
+                2018-04-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">编程</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/programming/深度学习/" itemprop="url" rel="index">
+                    <span itemprop="name">深度学习</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/programming/深度学习/数据集制作/" itemprop="url" rel="index">
+                    <span itemprop="name">数据集制作</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="下载imageNet2015数据集"><a href="#下载imageNet2015数据集" class="headerlink" title="下载imageNet2015数据集"></a>下载imageNet2015数据集</h1><p>image-net官网下载：image-net.org</p>
+<h1 id="VOC2007数据格式介绍"><a href="#VOC2007数据格式介绍" class="headerlink" title="VOC2007数据格式介绍"></a>VOC2007数据格式介绍</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">├── Annotations</span><br><span class="line">│   ├── 000001.xml</span><br><span class="line">│   └── 000002.xml</span><br><span class="line">|   |__ ...</span><br><span class="line">├── ImageSets</span><br><span class="line">│   └── Main</span><br><span class="line">│       ├── test.txt</span><br><span class="line">│       ├── train.txt</span><br><span class="line">│       └── val.txt</span><br><span class="line">└── JPEGImages</span><br><span class="line">    ├── 000001.jpg</span><br><span class="line">    └── 000002.jpg</span><br><span class="line">    |__ ...</span><br></pre></td></tr></table></figure>
+<p>JPEGImages文件夹中包含了PASCAL VOC所提供的所有的图片信息，包括了训练图片和测试图片。</p>
+<p>Annotations文件夹中存放的是xml格式的标签文件，每一个xml文件都对应于JPEGImages文件夹中的一张图片。</p>
+<p>xml文件的具体格式如下：（对于2007_000392.jpg）:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">annotation</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">folder</span>&gt;</span>VOC2012<span class="tag">&lt;/<span class="name">folder</span>&gt;</span>                           </span><br><span class="line">	<span class="tag">&lt;<span class="name">filename</span>&gt;</span>2007_000392.jpg<span class="tag">&lt;/<span class="name">filename</span>&gt;</span>                               //文件名</span><br><span class="line">	<span class="tag">&lt;<span class="name">source</span>&gt;</span>                                                           //图像来源（不重要）</span><br><span class="line">		<span class="tag">&lt;<span class="name">database</span>&gt;</span>The VOC2007 Database<span class="tag">&lt;/<span class="name">database</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">annotation</span>&gt;</span>PASCAL VOC2007<span class="tag">&lt;/<span class="name">annotation</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">image</span>&gt;</span>flickr<span class="tag">&lt;/<span class="name">image</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">source</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">size</span>&gt;</span>					                           //图像尺寸（长宽以及通道数）						</span><br><span class="line">		<span class="tag">&lt;<span class="name">width</span>&gt;</span>500<span class="tag">&lt;/<span class="name">width</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">height</span>&gt;</span>332<span class="tag">&lt;/<span class="name">height</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">depth</span>&gt;</span>3<span class="tag">&lt;/<span class="name">depth</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">size</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">segmented</span>&gt;</span>1<span class="tag">&lt;/<span class="name">segmented</span>&gt;</span>		                           //是否用于分割（在图像物体识别中01无所谓）</span><br><span class="line">	<span class="tag">&lt;<span class="name">object</span>&gt;</span>                                                           //检测到的物体</span><br><span class="line">		<span class="tag">&lt;<span class="name">name</span>&gt;</span>horse<span class="tag">&lt;/<span class="name">name</span>&gt;</span>                                         //物体类别</span><br><span class="line">		<span class="tag">&lt;<span class="name">pose</span>&gt;</span>Right<span class="tag">&lt;/<span class="name">pose</span>&gt;</span>                                         //拍摄角度</span><br><span class="line">		<span class="tag">&lt;<span class="name">truncated</span>&gt;</span>0<span class="tag">&lt;/<span class="name">truncated</span>&gt;</span>                                   //是否被截断（0表示完整）</span><br><span class="line">		<span class="tag">&lt;<span class="name">difficult</span>&gt;</span>0<span class="tag">&lt;/<span class="name">difficult</span>&gt;</span>                                   //目标是否难以识别（0表示容易识别）</span><br><span class="line">		<span class="tag">&lt;<span class="name">bndbox</span>&gt;</span>                                                   //bounding-box（包含左下角和右上角xy坐标）</span><br><span class="line">			<span class="tag">&lt;<span class="name">xmin</span>&gt;</span>100<span class="tag">&lt;/<span class="name">xmin</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">ymin</span>&gt;</span>96<span class="tag">&lt;/<span class="name">ymin</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">xmax</span>&gt;</span>355<span class="tag">&lt;/<span class="name">xmax</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">ymax</span>&gt;</span>324<span class="tag">&lt;/<span class="name">ymax</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">bndbox</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">object</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">object</span>&gt;</span>                                                           //检测到多个物体</span><br><span class="line">		<span class="tag">&lt;<span class="name">name</span>&gt;</span>person<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">pose</span>&gt;</span>Unspecified<span class="tag">&lt;/<span class="name">pose</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">truncated</span>&gt;</span>0<span class="tag">&lt;/<span class="name">truncated</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">difficult</span>&gt;</span>0<span class="tag">&lt;/<span class="name">difficult</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">bndbox</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">xmin</span>&gt;</span>198<span class="tag">&lt;/<span class="name">xmin</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">ymin</span>&gt;</span>58<span class="tag">&lt;/<span class="name">ymin</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">xmax</span>&gt;</span>286<span class="tag">&lt;/<span class="name">xmax</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">ymax</span>&gt;</span>197<span class="tag">&lt;/<span class="name">ymax</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">bndbox</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">object</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">annotation</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>ImageSets存放的是每一种类型的challenge对应的图像数据。<br>在ImageSets下有四个文件夹：</p>
+<p>其中Action下存放的是人的动作（例如running、jumping等等，这也是VOC challenge的一部分）</p>
+<p>Layout下存放的是具有人体部位的数据（人的head、hand、feet等等，这也是VOC challenge的一部分）</p>
+<p>Main下存放的是图像物体识别的数据，总共分为20类。</p>
+<p>Segmentation下存放的是可用于分割的数据。</p>
+<p>在这里主要考察Main文件夹。</p>
+<p>Main文件夹下包含了20个分类的***_train.txt、***_val.txt和***_trainval.txt。</p>
+<p>这些txt中的内容都差不多如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">000012</span><br><span class="line">000017</span><br><span class="line">000023</span><br><span class="line">000026</span><br><span class="line">000032</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>表示图像的name。</p>
+<h1 id="ILSVRC2015数据集介绍"><a href="#ILSVRC2015数据集介绍" class="headerlink" title="ILSVRC2015数据集介绍"></a>ILSVRC2015数据集介绍</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">├── Annotations</span><br><span class="line">│   └── CLS-LOC</span><br><span class="line">│       └── train</span><br><span class="line">│           ├── n01440764</span><br><span class="line">│           │   ├── n01440764_18.xml</span><br><span class="line">│           │   └── n01440764_37.xml</span><br><span class="line">|           |   |__ ...</span><br><span class="line">│           └── n01443537</span><br><span class="line">│               ├── n01443537_16.xml</span><br><span class="line">│               └── n01443537_2.xml</span><br><span class="line">|               |__ ...</span><br><span class="line">├── Data</span><br><span class="line">│   └── CLS-LOC</span><br><span class="line">│       ├── <span class="built_in">test</span></span><br><span class="line">│       ├── train</span><br><span class="line">│       │   ├── n01440764</span><br><span class="line">│       │   │   ├── n01440764_36.JPEG</span><br><span class="line">│       │   │   └── n01440764_37.JPEG</span><br><span class="line">|       |       |__ ...</span><br><span class="line">│       │   └── n01443537</span><br><span class="line">│       │       ├── n01443537_16.JPEG</span><br><span class="line">│       │       └── n01443537_2.JPEG</span><br><span class="line">|       |       |__ ...</span><br><span class="line">│       └── val</span><br><span class="line">├── ImageSets</span><br><span class="line">│   └── CLS-LOC</span><br><span class="line">│       ├── test.txt</span><br><span class="line">│       ├── train_cls.txt</span><br><span class="line">│       ├── train_loc.txt</span><br><span class="line">│       └── val.txt</span><br><span class="line">└── devkit</span><br><span class="line">    ├── COPYING</span><br><span class="line">    ├── data</span><br><span class="line">    │   └── map_clsloc.txt</span><br><span class="line">    |   |__ ...</span><br><span class="line">    ├── evaluation</span><br><span class="line">    │   └── VOCreadxml.m</span><br><span class="line">    |   |__ ...</span><br><span class="line">    └── readme.txt</span><br></pre></td></tr></table></figure>
+<p>ILSVRC2015_devkit\devkit\data\map_clsloc.txt文件描述了类别对应关系。</p>
+<h1 id="转换方法"><a href="#转换方法" class="headerlink" title="转换方法"></a>转换方法</h1><h2 id="图片JPEG转jpg格式"><a href="#图片JPEG转jpg格式" class="headerlink" title="图片JPEG转jpg格式"></a>图片JPEG转jpg格式</h2><p>VOC2007中的原图片的数据格式为.jpg格式，而ILSVRC2015数据集中的原始图片为.JPEG格式。考虑到有些深度神经网络只支持.jpg格式的图片。因此，首先将.JPEG格式图片转换为.jpg格式的图片。转换代码可参考如下：</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">clc;</span><br><span class="line">clear all;</span><br><span class="line"> </span><br><span class="line">maindir = <span class="string">'/Users/xiaoqiangteng/Downloads/imageset/JPEGImages1/'</span>;</span><br><span class="line">subdir =  dir( maindir ); <span class="comment">% 遍历所有子文件夹</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">1</span> : <span class="built_in">length</span>( subdir )</span><br><span class="line">    <span class="keyword">if</span>( <span class="built_in">isequal</span>( subdir( <span class="built_in">i</span> ).name, <span class="string">'.'</span> ) || ...</span><br><span class="line">        <span class="built_in">isequal</span>( subdir( <span class="built_in">i</span> ).name, <span class="string">'..'</span> ) || ...</span><br><span class="line">        ~subdir( <span class="built_in">i</span> ).isdir )   <span class="comment">% 过滤空文件夹</span></span><br><span class="line">        <span class="keyword">continue</span>;</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">     </span><br><span class="line">    subdirpath = fullfile( maindir, subdir( <span class="built_in">i</span> ).name, <span class="string">'*.JPEG'</span> ); <span class="comment">%subdir( i ).name = 'n00007846'; subdirpath = S:\ImageNet\JPEGImages1\n00007846\*.JPEG;</span></span><br><span class="line">    images = dir( subdirpath );</span><br><span class="line">     </span><br><span class="line">    <span class="keyword">for</span> <span class="built_in">j</span> = <span class="number">1</span> : <span class="built_in">length</span>( images )</span><br><span class="line">        imagepath = fullfile(maindir, subdir( <span class="built_in">i</span> ).name, images( <span class="built_in">j</span> ).name);</span><br><span class="line">        imgdata = imread( imagepath);</span><br><span class="line">        subdirpath1 = strcat(maindir, subdir( <span class="built_in">i</span> ).name);</span><br><span class="line">        subdirpath = strcat(subdirpath1, <span class="string">'/'</span>);</span><br><span class="line">        jpgPath = [subdirpath, images( <span class="built_in">j</span> ).name(<span class="number">1</span>:<span class="keyword">end</span><span class="number">-5</span>), <span class="string">'.jpg'</span>];</span><br><span class="line">        imwrite(imgdata, jpgPath, <span class="string">'mode'</span>,<span class="string">'lossless'</span>);</span><br><span class="line">        delete(imagepath, images( <span class="built_in">j</span> ).name);</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>待解决的问题：</p>
+<p>函数imwrite(imgdata, jpgPath);默认参数会改变图片大小。</p>
+<p>imwrite(imgdata, jpgPath, ‘mode’,’lossless’);加入特定模式后，图片损坏。</p>
+<h2 id="转换XML文件"><a href="#转换XML文件" class="headerlink" title="转换XML文件"></a>转换XML文件</h2><p>参考这篇<a href="http://blog.csdn.net/samylee/article/details/51201744，他是将每个图片的数据写成了一个txt文件，然后用txt转化为xml文件。我模仿这种方法，那么我得先获得txt文件，所以现在的第一步是要将我的imageNet的annotation，即xml文件转化为参考博客所提到的txt文件。" target="_blank" rel="noopener">http://blog.csdn.net/samylee/article/details/51201744，他是将每个图片的数据写成了一个txt文件，然后用txt转化为xml文件。我模仿这种方法，那么我得先获得txt文件，所以现在的第一步是要将我的imageNet的annotation，即xml文件转化为参考博客所提到的txt文件。</a></p>
+<h3 id="XML文件转txt文件"><a href="#XML文件转txt文件" class="headerlink" title="XML文件转txt文件"></a>XML文件转txt文件</h3><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">%createtxt.m</span></span><br><span class="line">clc;</span><br><span class="line">clear all;</span><br><span class="line"> </span><br><span class="line">RootPath = <span class="string">'/Users/xiaoqiangteng/Downloads/imageset/'</span>;</span><br><span class="line">[dir_name, count, label] = importDataFiles(RootPath);</span><br><span class="line"></span><br><span class="line">path_image = <span class="string">'/Users/xiaoqiangteng/Downloads/imageset/JPEGImages2/'</span>;<span class="comment">%原始图片文件夹</span></span><br><span class="line">path_xml = <span class="string">'/Users/xiaoqiangteng/Downloads/imageset/Annotations1/'</span>;</span><br><span class="line">path_label = <span class="string">'/Users/xiaoqiangteng/Downloads/imageset/labels/'</span>;<span class="comment">%生成的txt文件夹</span></span><br><span class="line">subdir = dir(path_xml);</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">3</span> : <span class="built_in">length</span>( subdir )</span><br><span class="line">    <span class="keyword">if</span>( <span class="built_in">isequal</span>( subdir( <span class="built_in">i</span> ).name, <span class="string">'.'</span> ) || ...</span><br><span class="line">        <span class="built_in">isequal</span>( subdir( <span class="built_in">i</span> ).name, <span class="string">'..'</span> ) || ...</span><br><span class="line">        ~subdir( <span class="built_in">i</span> ).isdir )   <span class="comment">% 过滤空文件夹</span></span><br><span class="line">        <span class="keyword">continue</span>;</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">      </span><br><span class="line">    subdirpath = fullfile(path_xml, subdir( <span class="built_in">i</span> ).name, <span class="string">'*.xml'</span>);</span><br><span class="line">    xml_files1 = dir( subdirpath );</span><br><span class="line">    </span><br><span class="line">    <span class="comment">%XML文件排序</span></span><br><span class="line">    xml_files2 = [];</span><br><span class="line">    int_xml_files = [];</span><br><span class="line">    int_xml = [];</span><br><span class="line">    xml_files = [];</span><br><span class="line">    length_xml = <span class="built_in">length</span>(xml_files1);</span><br><span class="line">    <span class="keyword">for</span> k = <span class="number">1</span>:<span class="built_in">length</span>(xml_files1)</span><br><span class="line">        xml_files2(k).name = xml_files1(k).name(<span class="number">11</span>:<span class="keyword">end</span><span class="number">-4</span>);</span><br><span class="line">        int_xml_files(k) = str2num(xml_files2(k).name);</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    int_xml = <span class="built_in">sort</span>(int_xml_files);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> ii = <span class="number">1</span>:<span class="built_in">length</span>(xml_files1)</span><br><span class="line">        xml_files3 = strcat(subdir( <span class="built_in">i</span> ).name, <span class="string">'_'</span>);</span><br><span class="line">        xml_files4 = strcat(xml_files3, num2str(int_xml(ii)));</span><br><span class="line">        xml_files(ii).name = strcat(xml_files4, <span class="string">'.xml'</span>);</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    </span><br><span class="line">    mkdir(path_label, subdir( <span class="built_in">i</span> ).name);</span><br><span class="line">    pathtxt1 = strcat(path_label, subdir( <span class="built_in">i</span> ).name);</span><br><span class="line">    pathtxt2 = strcat(pathtxt1, <span class="string">'/'</span>);</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    <span class="comment">% 遍历XML文件</span></span><br><span class="line">    <span class="keyword">for</span> <span class="built_in">j</span> = <span class="number">1</span> : <span class="built_in">length</span>(xml_files)</span><br><span class="line">        <span class="built_in">disp</span>(<span class="built_in">j</span>);</span><br><span class="line">         <span class="keyword">try</span></span><br><span class="line">            pathtxt = [pathtxt2 xml_files( <span class="built_in">j</span> ).name(<span class="number">1</span>:<span class="keyword">end</span><span class="number">-4</span>) <span class="string">'.txt'</span>];</span><br><span class="line">            subdir_xml = fullfile(path_xml, subdir( <span class="built_in">i</span> ).name, xml_files( <span class="built_in">j</span> ).name);</span><br><span class="line">            str = fileread(subdir_xml);</span><br><span class="line">            v = xml_parse( str );</span><br><span class="line">            xmin = v.object.bndbox.xmin;</span><br><span class="line">            ymin = v.object.bndbox.ymin;</span><br><span class="line">            xmax = v.object.bndbox.xmax;</span><br><span class="line">            ymax = v.object.bndbox.ymax;</span><br><span class="line">            filename = v.filename;</span><br><span class="line">            fid = fopen(pathtxt,<span class="string">'wt'</span>);</span><br><span class="line">            fprintf(fid,<span class="string">'%s%s'</span>,filename,<span class="string">'.JPEG'</span>);</span><br><span class="line">            fprintf(fid,<span class="string">'%c'</span>,<span class="string">' '</span>);</span><br><span class="line">            fprintf(fid,<span class="string">'%s'</span>, label&#123;<span class="built_in">i</span><span class="number">-2</span>&#125;);</span><br><span class="line">            fprintf(fid,<span class="string">'%c'</span>,<span class="string">' '</span>);</span><br><span class="line">            fprintf(fid,<span class="string">'%c'</span>,xmin);</span><br><span class="line">            fprintf(fid,<span class="string">'%c'</span>,<span class="string">' '</span>);</span><br><span class="line">            fprintf(fid,<span class="string">'%c'</span>,ymin);</span><br><span class="line">            fprintf(fid,<span class="string">'%c'</span>,<span class="string">' '</span>);</span><br><span class="line">            fprintf(fid,<span class="string">'%c'</span>,xmax);</span><br><span class="line">            fprintf(fid,<span class="string">'%c'</span>,<span class="string">' '</span>);</span><br><span class="line">            fprintf(fid,<span class="string">'%c'</span>,ymax);</span><br><span class="line">            fclose(fid);</span><br><span class="line">         <span class="keyword">catch</span></span><br><span class="line"><span class="comment">%             delete_image1 = strcat(path_image, subdir( i ).name);</span></span><br><span class="line"><span class="comment">%             delete_image2 = strcat(delete_image1, '/');</span></span><br><span class="line"><span class="comment">%             delete_image = [delete_image2, xml_files( j ).name(1:end-4), '.JPEG'];</span></span><br><span class="line"><span class="comment">%             delete(delete_image);</span></span><br><span class="line">             delete_xml1 = strcat(path_xml, subdir( <span class="built_in">i</span> ).name);</span><br><span class="line">             delete_xml2 = strcat(delete_xml1, <span class="string">'/'</span>);</span><br><span class="line">             delete_xml = [delete_xml2, xml_files( <span class="built_in">j</span> ).name(<span class="number">1</span>:<span class="keyword">end</span><span class="number">-4</span>), <span class="string">'.xml'</span>];</span><br><span class="line">             delete(delete_xml);</span><br><span class="line">             <span class="built_in">disp</span>(<span class="string">'Wrong'</span>);</span><br><span class="line">         <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>importDataFiles(RootPath)函数：</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="params">[dir_name, count, label]</span>=<span class="title">importDataFiles</span><span class="params">(RootPath)</span></span></span><br><span class="line">DirOutput = dir(fullfile(RootPath));</span><br><span class="line">SimpleName = &#123;DirOutput(<span class="number">3</span>:<span class="keyword">end</span>).name&#125;';</span><br><span class="line">LenSimFile = <span class="built_in">length</span>(SimpleName);</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> <span class="built_in">i</span>=<span class="number">1</span>:LenSimFile</span><br><span class="line">    fileName = fullfile(RootPath,SimpleName&#123;<span class="built_in">i</span>&#125;);</span><br><span class="line">    <span class="keyword">switch</span> SimpleName&#123;<span class="built_in">i</span>&#125;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">'map_clsloc.txt'</span></span><br><span class="line">            [dir_name, count, label] = textread(fileName,<span class="string">'%s%d%s'</span>);</span><br><span class="line">    <span class="keyword">end</span>    </span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>改代码通过遍历xml文件来生成txt文件。原因在于原始图片文件夹内的图片多余对应的xml文件。</p>
+<p>可能存在的问题：</p>
+<p>（1）以上matlab代码通过使用XML 函数来解析XML文件，即xml_parse()函数。需要先下载该函数的工具包，下载地址：<a href="https://cn.mathworks.com/matlabcentral/fileexchange/4278-xml-toolbox?focused=5055046&amp;tab=function" target="_blank" rel="noopener">https://cn.mathworks.com/matlabcentral/fileexchange/4278-xml-toolbox?focused=5055046&amp;tab=function</a></p>
+<p>但是该工具包在高版本的matlab已不支持，请尝试低版本的Matlab。楼主使用matlab 2014a版本，可运行。</p>
+<p>（2）待解决的问题</p>
+<p>以上代码仅仅支持XML中存在一个object对象。若存在多个object对象，即会报错，运行catch语句块，将不能够读取的xml文件从原文件夹中删除，以此来保证xml文件的数量同txt文件的数量相同。但是，该问题应该很好能够解决。</p>
+<h3 id="TXT转XML"><a href="#TXT转XML" class="headerlink" title="TXT转XML"></a>TXT转XML</h3><p>接下来就可以进行将txt转化为pascal voc格式的xml文件了，在当前目录下创建一个Annotations的文件夹，代码如下：</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">%writeanno.m</span></span><br><span class="line">clc;</span><br><span class="line">clear all;</span><br><span class="line"> </span><br><span class="line">path_image = <span class="string">'/home/teng/programmings/datasets/imagenet/imagenet/JPEGImages/'</span>;</span><br><span class="line">path_label = <span class="string">'/home/teng/programmings/datasets/imagenet/imagenet/labels/'</span>;</span><br><span class="line">path_xml = <span class="string">'/home/teng/programmings/datasets/imagenet/imagenet/Annotations/'</span>;</span><br><span class="line">subdir = dir(path_label);</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">3</span> : <span class="built_in">length</span>( subdir )</span><br><span class="line">    <span class="keyword">if</span>( <span class="built_in">isequal</span>( subdir( <span class="built_in">i</span> ).name, <span class="string">'.'</span> ) || ...</span><br><span class="line">        <span class="built_in">isequal</span>( subdir( <span class="built_in">i</span> ).name, <span class="string">'..'</span> ) || ...</span><br><span class="line">        ~subdir( <span class="built_in">i</span> ).isdir )</span><br><span class="line">        <span class="keyword">continue</span>;</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">      </span><br><span class="line">    subdirpath = fullfile(path_label, subdir( <span class="built_in">i</span> ).name, <span class="string">'*.txt'</span>);</span><br><span class="line">    txt_files = dir( subdirpath );</span><br><span class="line">    </span><br><span class="line">    mkdir(path_xml, subdir( <span class="built_in">i</span> ).name);</span><br><span class="line">    <span class="keyword">for</span> <span class="built_in">j</span> = <span class="number">1</span>:<span class="built_in">length</span>(txt_files)</span><br><span class="line">        <span class="built_in">disp</span>(<span class="built_in">i</span>, <span class="built_in">j</span>)</span><br><span class="line">        path_label_dir1 = strcat(path_label, subdir( <span class="built_in">i</span> ).name);</span><br><span class="line">        path_label_dir = strcat(path_label_dir1, <span class="string">'/'</span>);</span><br><span class="line">        msg = textread(strcat(path_label_dir, txt_files(<span class="built_in">j</span>).name(<span class="number">1</span>:<span class="keyword">end</span><span class="number">-4</span>),<span class="string">'.txt'</span>),<span class="string">'%s'</span>);</span><br><span class="line">        clear rec;</span><br><span class="line">        path_xml_subdir1 = strcat(path_xml, subdir( <span class="built_in">i</span> ).name);</span><br><span class="line">        path_xml_subdir = strcat(path_xml_subdir1, <span class="string">'/'</span>);</span><br><span class="line">        path = [path_xml_subdir txt_files(<span class="built_in">j</span>).name(<span class="number">1</span>:<span class="keyword">end</span><span class="number">-4</span>) <span class="string">'.xml'</span>];</span><br><span class="line">        fid=fopen(path,<span class="string">'w'</span>);</span><br><span class="line">        rec.annotation.folder = <span class="string">'VOC2007'</span>;<span class="comment">%数据集名</span></span><br><span class="line">        rec.annotation.filename = strcat(txt_files(<span class="built_in">j</span>).name(<span class="number">1</span>:<span class="keyword">end</span><span class="number">-4</span>), <span class="string">'.JPEG'</span>);</span><br><span class="line">        rec.annotation.source.database = <span class="string">'The VOC2007 Database'</span>;    </span><br><span class="line">        rec.annotation.source.annotation = <span class="string">'PASCAL VOC2007'</span>;    </span><br><span class="line">        rec.annotation.source.image = <span class="string">'flickr'</span>;</span><br><span class="line">        rec.annotation.source.flickrid = <span class="string">'0'</span>;</span><br><span class="line">        rec.annotation.owner.flickrid = <span class="string">'I do not know'</span>;    </span><br><span class="line">        rec.annotation.owner.name = <span class="string">'I do not know'</span>;</span><br><span class="line"></span><br><span class="line">        path_image_subdir1 = strcat(path_image, subdir( <span class="built_in">i</span> ).name);</span><br><span class="line">        path_image_subdir = strcat(path_image_subdir1, <span class="string">'/'</span>);</span><br><span class="line">        img = imread([path_image_subdir txt_files(<span class="built_in">j</span>).name(<span class="number">1</span>:<span class="keyword">end</span><span class="number">-4</span>) <span class="string">'.JPEG'</span>]);</span><br><span class="line">        rec.annotation.<span class="built_in">size</span>.width = int2str(<span class="built_in">size</span>(img,<span class="number">2</span>));</span><br><span class="line">        rec.annotation.<span class="built_in">size</span>.height = int2str(<span class="built_in">size</span>(img,<span class="number">1</span>));</span><br><span class="line">        rec.annotation.<span class="built_in">size</span>.depth = int2str(<span class="built_in">size</span>(img,<span class="number">3</span>));</span><br><span class="line"></span><br><span class="line">        rec.annotation.segmented = <span class="string">'0'</span>;  </span><br><span class="line">        rec.annotation.object.name = msg&#123;<span class="number">2</span>&#125;;   </span><br><span class="line">        rec.annotation.object.pose = <span class="string">'Left'</span>;    </span><br><span class="line">        rec.annotation.object.truncated = <span class="string">'1'</span>;    </span><br><span class="line">        rec.annotation.object.difficult = <span class="string">'0'</span>;    </span><br><span class="line">        rec.annotation.object.bndbox.xmin = msg&#123;<span class="number">3</span>&#125;;<span class="comment">%坐标x1</span></span><br><span class="line">        rec.annotation.object.bndbox.ymin = msg&#123;<span class="number">4</span>&#125;;<span class="comment">%坐标y1</span></span><br><span class="line">        rec.annotation.object.bndbox.xmax = msg&#123;<span class="number">5</span>&#125;;<span class="comment">%坐标x2</span></span><br><span class="line">        rec.annotation.object.bndbox.ymax = msg&#123;<span class="number">6</span>&#125;;<span class="comment">%坐标y2</span></span><br><span class="line">        writexml(fid,rec,<span class="number">0</span>);</span><br><span class="line">        fclose(fid);</span><br><span class="line">    <span class="keyword">end</span>   </span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>writexml函数：</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">%writexml.m</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">xml</span> = <span class="title">writexml</span><span class="params">(fid,rec,depth)</span></span></span><br><span class="line"></span><br><span class="line">fn=fieldnames(rec);</span><br><span class="line"><span class="keyword">for</span> <span class="built_in">i</span>=<span class="number">1</span>:<span class="built_in">length</span>(fn)</span><br><span class="line">    f=rec.(fn&#123;<span class="built_in">i</span>&#125;);</span><br><span class="line">    <span class="keyword">if</span> ~<span class="built_in">isempty</span>(f)</span><br><span class="line">        <span class="keyword">if</span> isstruct(f)</span><br><span class="line">            <span class="keyword">for</span> <span class="built_in">j</span>=<span class="number">1</span>:<span class="built_in">length</span>(f)            </span><br><span class="line">                fprintf(fid,<span class="string">'%s'</span>,<span class="built_in">repmat</span>(char(<span class="number">9</span>),<span class="number">1</span>,depth));</span><br><span class="line">                a=<span class="built_in">repmat</span>(char(<span class="number">9</span>),<span class="number">1</span>,depth);</span><br><span class="line">                fprintf(fid,<span class="string">'&lt;%s&gt;\n'</span>,fn&#123;<span class="built_in">i</span>&#125;);</span><br><span class="line">                writexml(fid,rec.(fn&#123;<span class="built_in">i</span>&#125;)(<span class="built_in">j</span>),depth+<span class="number">1</span>);</span><br><span class="line">                fprintf(fid,<span class="string">'%s'</span>,<span class="built_in">repmat</span>(char(<span class="number">9</span>),<span class="number">1</span>,depth));</span><br><span class="line">                fprintf(fid,<span class="string">'&lt;/%s&gt;\n'</span>,fn&#123;<span class="built_in">i</span>&#125;);</span><br><span class="line">            <span class="keyword">end</span></span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="keyword">if</span> ~iscell(f)</span><br><span class="line">                f=&#123;f&#125;;</span><br><span class="line">            <span class="keyword">end</span>       </span><br><span class="line">            <span class="keyword">for</span> <span class="built_in">j</span>=<span class="number">1</span>:<span class="built_in">length</span>(f)</span><br><span class="line">                fprintf(fid,<span class="string">'%s'</span>,<span class="built_in">repmat</span>(char(<span class="number">9</span>),<span class="number">1</span>,depth));</span><br><span class="line">                fprintf(fid,<span class="string">'&lt;%s&gt;'</span>,fn&#123;<span class="built_in">i</span>&#125;);</span><br><span class="line">                <span class="keyword">if</span> ischar(f&#123;<span class="built_in">j</span>&#125;)</span><br><span class="line">                    fprintf(fid,<span class="string">'%s'</span>,f&#123;<span class="built_in">j</span>&#125;);</span><br><span class="line">                <span class="keyword">elseif</span> isnumeric(f&#123;<span class="built_in">j</span>&#125;)&amp;&amp;<span class="built_in">numel</span>(f&#123;<span class="built_in">j</span>&#125;)==<span class="number">1</span></span><br><span class="line">                    fprintf(fid,<span class="string">'%s'</span>,num2str(f&#123;<span class="built_in">j</span>&#125;));</span><br><span class="line">                <span class="keyword">else</span></span><br><span class="line">                    error(<span class="string">'unsupported type'</span>);</span><br><span class="line">                <span class="keyword">end</span></span><br><span class="line">                fprintf(fid,<span class="string">'&lt;/%s&gt;\n'</span>,fn&#123;<span class="built_in">i</span>&#125;);</span><br><span class="line">            <span class="keyword">end</span></span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<h2 id="移动目录内所有文件夹内的文件至上层目录"><a href="#移动目录内所有文件夹内的文件至上层目录" class="headerlink" title="移动目录内所有文件夹内的文件至上层目录"></a>移动目录内所有文件夹内的文件至上层目录</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#! /bin/bash</span></span><br><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">read_dir</span></span>()&#123;</span><br><span class="line"><span class="keyword">for</span> file <span class="keyword">in</span> `ls <span class="variable">$1</span>`       <span class="comment">#注意此处这是两个反引号，表示运行系统命令</span></span><br><span class="line"><span class="keyword">do</span></span><br><span class="line"><span class="keyword">if</span> [ -d <span class="variable">$1</span><span class="string">"/"</span><span class="variable">$file</span> ]  <span class="comment">#注意此处之间一定要加上空格，否则会报错</span></span><br><span class="line"><span class="keyword">then</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$1</span><span class="variable">$file</span></span><br><span class="line">read_dir <span class="variable">$1</span><span class="string">"/"</span><span class="variable">$file</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">mv <span class="variable">$1</span><span class="string">"/"</span><span class="variable">$file</span> /home/teng/programmings/datasets/imagenet/imagenet/Annotations</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line">&#125;   </span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">delete_dir</span></span>()&#123;</span><br><span class="line"><span class="keyword">for</span> file <span class="keyword">in</span> `ls <span class="variable">$1</span>`</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line"><span class="keyword">if</span> [ -d <span class="variable">$1</span><span class="string">"/"</span><span class="variable">$file</span> ]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$1</span>$<span class="string">"/"</span>file</span><br><span class="line">rm -rf <span class="variable">$1</span><span class="string">"/"</span><span class="variable">$file</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">#读取第一个参数</span></span><br><span class="line">read_dir <span class="variable">$1</span></span><br><span class="line">delete_dir <span class="variable">$1</span></span><br></pre></td></tr></table></figure>
+<p>这一步的目的在于将Annotations文件夹内的所有xml文件置于一个目录下。</p>
+<h2 id="imageSets文件夹"><a href="#imageSets文件夹" class="headerlink" title="imageSets文件夹"></a>imageSets文件夹</h2><p>代码如下：</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">%createimagesets.m</span></span><br><span class="line">clc;</span><br><span class="line">clear all;</span><br><span class="line">  </span><br><span class="line">file = dir(<span class="string">'/home/teng/programmings/datasets/imagenet/imagenet/Annotations/'</span>);</span><br><span class="line">len = <span class="built_in">length</span>(file)<span class="number">-2</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">num_trainval=<span class="built_in">sort</span>(randperm(len, <span class="built_in">floor</span>(<span class="number">9</span>*len/<span class="number">10</span>)));<span class="comment">%trainval集占所有数据的9/10，可以根据需要设置</span></span><br><span class="line">num_train=<span class="built_in">sort</span>(num_trainval(randperm(<span class="built_in">length</span>(num_trainval), <span class="built_in">floor</span>(<span class="number">5</span>*<span class="built_in">length</span>(num_trainval)/<span class="number">6</span>))));<span class="comment">%train集占trainval集的5/6，可以根据需要设置</span></span><br><span class="line">num_val=setdiff(num_trainval,num_train);<span class="comment">%trainval集剩下的作为val集</span></span><br><span class="line">num_test=setdiff(<span class="number">1</span>:len,num_trainval);<span class="comment">%所有数据中剩下的作为test集</span></span><br><span class="line">path = <span class="string">'/home/teng/programmings/datasets/imagenet/imagenet/ImageSets/Main/'</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">fid=fopen(strcat(path, <span class="string">'trainval.txt'</span>),<span class="string">'a+'</span>);</span><br><span class="line"><span class="keyword">for</span> <span class="built_in">i</span>=<span class="number">1</span>:<span class="built_in">length</span>(num_trainval)</span><br><span class="line">    s = sprintf(<span class="string">'%s'</span>,file(num_trainval(<span class="built_in">i</span>)+<span class="number">2</span>).name);</span><br><span class="line">    fprintf(fid,[s(<span class="number">1</span>:<span class="built_in">length</span>(s)<span class="number">-4</span>) <span class="string">'\r\n'</span>]);</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line">fclose(fid);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">fid=fopen(strcat(path, <span class="string">'train.txt'</span>),<span class="string">'a+'</span>);</span><br><span class="line"><span class="keyword">for</span> <span class="built_in">i</span>=<span class="number">1</span>:<span class="built_in">length</span>(num_train)</span><br><span class="line">    s = sprintf(<span class="string">'%s'</span>,file(num_train(<span class="built_in">i</span>)+<span class="number">2</span>).name);</span><br><span class="line">    fprintf(fid,[s(<span class="number">1</span>:<span class="built_in">length</span>(s)<span class="number">-4</span>) <span class="string">'\r\n'</span>]);</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line">fclose(fid);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">fid=fopen(strcat(path, <span class="string">'val.txt'</span>),<span class="string">'a+'</span>);</span><br><span class="line"><span class="keyword">for</span> <span class="built_in">i</span>=<span class="number">1</span>:<span class="built_in">length</span>(num_val)</span><br><span class="line">    s = sprintf(<span class="string">'%s'</span>,file(num_val(<span class="built_in">i</span>)+<span class="number">2</span>).name);</span><br><span class="line">    fprintf(fid,[s(<span class="number">1</span>:<span class="built_in">length</span>(s)<span class="number">-4</span>) <span class="string">'\r\n'</span>]);</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line">fclose(fid);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">fid=fopen(strcat(path, <span class="string">'test.txt'</span>),<span class="string">'a+'</span>);</span><br><span class="line"><span class="keyword">for</span> <span class="built_in">i</span>=<span class="number">1</span>:<span class="built_in">length</span>(num_test)</span><br><span class="line">    s = sprintf(<span class="string">'%s'</span>,file(num_test(<span class="built_in">i</span>)+<span class="number">2</span>).name);</span><br><span class="line">    fprintf(fid,[s(<span class="number">1</span>:<span class="built_in">length</span>(s)<span class="number">-4</span>) <span class="string">'\r\n'</span>]);</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line">fclose(fid);</span><br></pre></td></tr></table></figure>
+<p>这样所需的文件夹我们都已备齐，将imageSets，Annotations和JPEGiImage文件夹分别放入voc数据集的对应位置，在这之前先将其原来的文件夹删除。</p>
+<h1 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h1><ol>
+<li><a href="https://blog.csdn.net/xbcReal/article/details/51259558" target="_blank" rel="noopener">https://blog.csdn.net/xbcReal/article/details/51259558</a></li>
+<li><a href="https://blog.csdn.net/samylee/article/details/51201744" target="_blank" rel="noopener">https://blog.csdn.net/samylee/article/details/51201744</a></li>
+<li><a href="https://blog.csdn.net/sinat_30071459/article/details/50723212" target="_blank" rel="noopener">https://blog.csdn.net/sinat_30071459/article/details/50723212</a></li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+        
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/编程/" rel="tag"># 编程</a>
+          
+            <a href="/tags/深度学习/" rel="tag"># 深度学习</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/03/CMake教程/" rel="next" title="CMake教程">
+                <i class="fa fa-chevron-left"></i> CMake教程
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/04/06/git教程/" rel="prev" title="git教程">
+                git教程 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Xiaoqiang Teng</p>
+              <p class="site-description motion-element" itemprop="description">Remember what should be remembered, and forget what should be forgotten.Alter what is changeable, and accept what is mutable.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">64</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">44</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#下载imageNet2015数据集"><span class="nav-text">下载imageNet2015数据集</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#VOC2007数据格式介绍"><span class="nav-text">VOC2007数据格式介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ILSVRC2015数据集介绍"><span class="nav-text">ILSVRC2015数据集介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#转换方法"><span class="nav-text">转换方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#图片JPEG转jpg格式"><span class="nav-text">图片JPEG转jpg格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#转换XML文件"><span class="nav-text">转换XML文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#XML文件转txt文件"><span class="nav-text">XML文件转txt文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TXT转XML"><span class="nav-text">TXT转XML</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#移动目录内所有文件夹内的文件至上层目录"><span class="nav-text">移动目录内所有文件夹内的文件至上层目录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#imageSets文件夹"><span class="nav-text">imageSets文件夹</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考："><span class="nav-text">参考：</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiaoqiang Teng</span>
+
+  
+</div>
+
+
+
+<div class="powered-by">
+<i class="fa fa-user-md"></i><span id="busuanzi_container_site_uv">
+  本站访客数:<span id="busuanzi_value_site_uv"></span>
+</span>
+</div>
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+<div>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style="display:none">
+    本站总访问量 <span id="busuanzi_value_site_pv"></span> 次
+    <span class="post-meta-divider">|</span>
+</span>
+<span id="busuanzi_container_site_uv" style="display:none">
+    有<span id="busuanzi_value_site_uv"></span>人看过我的博客啦
+</span>
+</div>
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>

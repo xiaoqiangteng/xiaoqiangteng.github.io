@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="编程,深度学习,yolo,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="环境设置darknet版本： 2018年6月 yolov3 系统配置： 12ubuntu 16.0412GB Titan GPU 数据集：ILSVRC2015 (ILSVRC2015转VOC数据格式详见：http://mapstec.com/2018/04/05/ILSVRC2015%E6%95%B0%E6%8D%AE%E9%9B%86%E8%BD%ACVOC2007%E6%95%B0%E6%8D">
+<meta name="keywords" content="编程,深度学习,yolo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[darknet系列]yolov3训练自己的数据集">
+<meta property="og:url" content="http://yoursite.com/2018/06/09/darknet系列-yolov3训练自己的数据集/index.html">
+<meta property="og:site_name" content="学步">
+<meta property="og:description" content="环境设置darknet版本： 2018年6月 yolov3 系统配置： 12ubuntu 16.0412GB Titan GPU 数据集：ILSVRC2015 (ILSVRC2015转VOC数据格式详见：http://mapstec.com/2018/04/05/ILSVRC2015%E6%95%B0%E6%8D%AE%E9%9B%86%E8%BD%ACVOC2007%E6%95%B0%E6%8D">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-07-27T16:57:37.903Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="[darknet系列]yolov3训练自己的数据集">
+<meta name="twitter:description" content="环境设置darknet版本： 2018年6月 yolov3 系统配置： 12ubuntu 16.0412GB Titan GPU 数据集：ILSVRC2015 (ILSVRC2015转VOC数据格式详见：http://mapstec.com/2018/04/05/ILSVRC2015%E6%95%B0%E6%8D%AE%E9%9B%86%E8%BD%ACVOC2007%E6%95%B0%E6%8D">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/06/09/darknet系列-yolov3训练自己的数据集/">
+
+
+
+
+
+  <title>[darknet系列]yolov3训练自己的数据集 | 学步</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">学步</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-编程">
+          <a href="/categories/programming" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            编程
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-学术">
+          <a href="/categories/science" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            学术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-理论">
+          <a href="/categories/theory" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            理论
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-其他">
+          <a href="/categories/other" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            其他
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+    
+  
+  
+
+  <article class="post post-type-normal true" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/09/darknet系列-yolov3训练自己的数据集/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Xiaoqiang Teng">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="学步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">[darknet系列]yolov3训练自己的数据集</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-09T11:55:39+08:00">
+                2018-06-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">编程</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/programming/深度学习/" itemprop="url" rel="index">
+                    <span itemprop="name">深度学习</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/programming/深度学习/yolo/" itemprop="url" rel="index">
+                    <span itemprop="name">yolo</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="环境设置"><a href="#环境设置" class="headerlink" title="环境设置"></a>环境设置</h1><p>darknet版本： 2018年6月 <a href="https://pjreddie.com/darknet/yolo/" target="_blank" rel="noopener">yolov3</a></p>
+<p>系统配置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ubuntu 16.04</span><br><span class="line">12GB Titan GPU</span><br></pre></td></tr></table></figure>
+<p>数据集：ILSVRC2015 (ILSVRC2015转VOC数据格式详见：<a href="http://mapstec.com/2018/04/05/ILSVRC2015%E6%95%B0%E6%8D%AE%E9%9B%86%E8%BD%ACVOC2007%E6%95%B0%E6%8D%AE%E9%9B%86%E6%A0%BC%E5%BC%8F/" target="_blank" rel="noopener">http://mapstec.com/2018/04/05/ILSVRC2015%E6%95%B0%E6%8D%AE%E9%9B%86%E8%BD%ACVOC2007%E6%95%B0%E6%8D%AE%E9%9B%86%E6%A0%BC%E5%BC%8F/</a>)</p>
+<h1 id="darknet配置"><a href="#darknet配置" class="headerlink" title="darknet配置"></a>darknet配置</h1><p>下载工程:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/pjreddie/darknet</span><br></pre></td></tr></table></figure>
+<p>修改Makefile,参考我的makefile文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br></pre></td><td class="code"><pre><span class="line">GPU=1</span><br><span class="line">CUDNN=0</span><br><span class="line">OPENCV=1</span><br><span class="line">OPENMP=0</span><br><span class="line">DEBUG=0</span><br><span class="line"></span><br><span class="line">ARCH= -gencode arch=compute_30,code=sm_30 \</span><br><span class="line">      -gencode arch=compute_35,code=sm_35 \</span><br><span class="line">      -gencode arch=compute_50,code=[sm_50,compute_50] \</span><br><span class="line">      -gencode arch=compute_52,code=[sm_52,compute_52]</span><br><span class="line"><span class="comment">#      -gencode arch=compute_20,code=[sm_20,sm_21] \ This one is deprecated?</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># This is what I use, uncomment if you know your arch and want to specify</span></span><br><span class="line"><span class="comment"># ARCH= -gencode arch=compute_52,code=compute_52</span></span><br><span class="line"></span><br><span class="line">VPATH=./src/:./examples</span><br><span class="line">SLIB=libdarknet.so</span><br><span class="line">ALIB=libdarknet.a</span><br><span class="line">EXEC=darknet</span><br><span class="line">OBJDIR=./obj/</span><br><span class="line"></span><br><span class="line">CC=gcc</span><br><span class="line">NVCC=/usr/<span class="built_in">local</span>/cuda-8.0/bin/nvcc </span><br><span class="line">AR=ar</span><br><span class="line">ARFLAGS=rcs</span><br><span class="line">OPTS=-Ofast</span><br><span class="line">LDFLAGS= -lm -pthread </span><br><span class="line">COMMON= -Iinclude/ -Isrc/</span><br><span class="line">CFLAGS=-Wall -Wno-unused-result -Wno-unknown-pragmas -Wfatal-errors -fPIC</span><br><span class="line"></span><br><span class="line">ifeq ($(OPENMP), 1) </span><br><span class="line">CFLAGS+= -fopenmp</span><br><span class="line">endif</span><br><span class="line"></span><br><span class="line">ifeq ($(DEBUG), 1) </span><br><span class="line">OPTS=-O0 -g</span><br><span class="line">endif</span><br><span class="line"></span><br><span class="line">CFLAGS+=$(OPTS)</span><br><span class="line"></span><br><span class="line">ifeq ($(OPENCV), 1) </span><br><span class="line">COMMON+= -DOPENCV</span><br><span class="line">CFLAGS+= -DOPENCV</span><br><span class="line">LDFLAGS+= `pkg-config --libs opencv` </span><br><span class="line">COMMON+= `pkg-config --cflags opencv` </span><br><span class="line">endif</span><br><span class="line"></span><br><span class="line">ifeq ($(GPU), 1) </span><br><span class="line">COMMON+= -DGPU -I/usr/<span class="built_in">local</span>/cuda/include/</span><br><span class="line">CFLAGS+= -DGPU</span><br><span class="line">LDFLAGS+= -L/usr/<span class="built_in">local</span>/cuda/lib64 -lcuda -lcudart -lcublas -lcurand</span><br><span class="line">endif</span><br><span class="line"></span><br><span class="line">ifeq ($(CUDNN), 1) </span><br><span class="line">COMMON+= -DCUDNN </span><br><span class="line">CFLAGS+= -DCUDNN</span><br><span class="line">LDFLAGS+= -lcudnn</span><br><span class="line">endif</span><br><span class="line"></span><br><span class="line">OBJ=gemm.o utils.o cuda.o deconvolutional_layer.o convolutional_layer.o list.o image.o activations.o im2col.o col2im.o blas.o crop_layer.o dropout_layer.o maxpool_layer.o softmax_layer.o data.o matrix.o network.o connected_layer.o cost_layer.o parser.o option_list.o detection_layer.o route_layer.o upsample_layer.o box.o normalization_layer.o avgpool_layer.o layer.o local_layer.o shortcut_layer.o logistic_layer.o activation_layer.o rnn_layer.o gru_layer.o crnn_layer.o demo.o batchnorm_layer.o region_layer.o reorg_layer.o tree.o  lstm_layer.o l2norm_layer.o yolo_layer.o</span><br><span class="line">EXECOBJA=captcha.o lsd.o super.o art.o tag.o cifar.o go.o rnn.o segmenter.o regressor.o classifier.o coco.o yolo.o detector.o nightmare.o darknet.o</span><br><span class="line">ifeq ($(GPU), 1) </span><br><span class="line">LDFLAGS+= -lstdc++ </span><br><span class="line">OBJ+=convolutional_kernels.o deconvolutional_kernels.o activation_kernels.o im2col_kernels.o col2im_kernels.o blas_kernels.o crop_layer_kernels.o dropout_layer_kernels.o maxpool_layer_kernels.o avgpool_layer_kernels.o</span><br><span class="line">endif</span><br><span class="line"></span><br><span class="line">EXECOBJ = $(addprefix $(OBJDIR), $(EXECOBJA))</span><br><span class="line">OBJS = $(addprefix $(OBJDIR), $(OBJ))</span><br><span class="line">DEPS = $(wildcard src/*.h) Makefile include/darknet.h</span><br><span class="line"></span><br><span class="line"><span class="comment">#all: obj backup results $(SLIB) $(ALIB) $(EXEC)</span></span><br><span class="line">all: obj  results $(SLIB) $(ALIB) $(EXEC)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">$(EXEC): $(EXECOBJ) $(ALIB)</span><br><span class="line">	$(CC) $(COMMON) $(CFLAGS) $^ -o <span class="variable">$@</span> $(LDFLAGS) $(ALIB)</span><br><span class="line"></span><br><span class="line">$(ALIB): $(OBJS)</span><br><span class="line">	$(AR) $(ARFLAGS) <span class="variable">$@</span> $^</span><br><span class="line"></span><br><span class="line">$(SLIB): $(OBJS)</span><br><span class="line">	$(CC) $(CFLAGS) -shared $^ -o <span class="variable">$@</span> $(LDFLAGS)</span><br><span class="line"></span><br><span class="line">$(OBJDIR)%.o: %.c $(DEPS)</span><br><span class="line">	$(CC) $(COMMON) $(CFLAGS) -c $&lt; -o <span class="variable">$@</span></span><br><span class="line"></span><br><span class="line">$(OBJDIR)%.o: %.cu $(DEPS)</span><br><span class="line">	$(NVCC) $(ARCH) $(COMMON) --compiler-options <span class="string">"<span class="variable">$(CFLAGS)</span>"</span> -c $&lt; -o <span class="variable">$@</span></span><br><span class="line"></span><br><span class="line">obj:</span><br><span class="line">	mkdir -p obj</span><br><span class="line">backup:</span><br><span class="line">	mkdir -p backup</span><br><span class="line">results:</span><br><span class="line">	mkdir -p results</span><br><span class="line"></span><br><span class="line">.PHONY: clean</span><br><span class="line"></span><br><span class="line">clean:</span><br><span class="line">	rm -rf $(OBJS) $(SLIB) $(ALIB) $(EXEC) $(EXECOBJ) $(OBJDIR)/*</span><br></pre></td></tr></table></figure>
+<p>编译darknet：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make</span><br></pre></td></tr></table></figure>
+<p>配置完以后可以下载作者的预训练模型测试一下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https://pjreddie.com/media/files/yolov3.weights</span><br></pre></td></tr></table></figure>
+<p>下载之后用图片进行测试：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./darknet detect cfg/yolov3.cfg yolov3.weights data/dog.jpg</span><br></pre></td></tr></table></figure>
+<h1 id="制作自己的数据集"><a href="#制作自己的数据集" class="headerlink" title="制作自己的数据集"></a>制作自己的数据集</h1><p>本教授使用Imagenet数据集作为训练数据集，详细制作过程参考：<a href="http://mapstec.com/2018/04/05/ILSVRC2015%E6%95%B0%E6%8D%AE%E9%9B%86%E8%BD%ACVOC2007%E6%95%B0%E6%8D%AE%E9%9B%86%E6%A0%BC%E5%BC%8F/" target="_blank" rel="noopener">http://mapstec.com/2018/04/05/ILSVRC2015%E6%95%B0%E6%8D%AE%E9%9B%86%E8%BD%ACVOC2007%E6%95%B0%E6%8D%AE%E9%9B%86%E6%A0%BC%E5%BC%8F/</a></p>
+<h1 id="数据处理"><a href="#数据处理" class="headerlink" title="数据处理"></a>数据处理</h1><p>按darknet的说明编译好后，接下来在darknet-master/scripts文件夹中新建文件夹VOCdevkit，然后将整个VOC2007文件夹都拷到VOCdevkit文件夹下。</p>
+<p>然后，需要利用scripts文件夹中的voc_label.py文件生成一系列训练文件和label，具体操作如下：</p>
+<p>首先需要修改voc_label.py中的代码，这里主要修改数据集名，以及类别信息，我的是VOC2007，并且所有样本用来训练，没有val或test，有1000类目标，因此按如下设置：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> xml.etree.ElementTree <span class="keyword">as</span> ET</span><br><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">from</span> os <span class="keyword">import</span> listdir, getcwd</span><br><span class="line"><span class="keyword">from</span> os.path <span class="keyword">import</span> join</span><br><span class="line"></span><br><span class="line"><span class="comment">#sets=[('2012', 'train'), ('2012', 'val'), ('2007', 'train'), ('2007', 'val'), ('2007', 'test')]</span></span><br><span class="line">sets = [(<span class="string">'2007'</span>, <span class="string">'train'</span>)]</span><br><span class="line"></span><br><span class="line"><span class="comment"># classes = ["aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", "cat", "chair", "cow", "diningtable", "dog", "horse", "motorbike", "person", "pottedplant", "sheep", "sofa", "train", "tvmonitor"]</span></span><br><span class="line">classes = [<span class="string">"tench"</span>,<span class="string">"goldfish"</span>,<span class="string">"great_white_shark"</span>,<span class="string">"tiger_shark"</span>,<span class="string">"hammerhead"</span>,<span class="string">"electric_ray"</span>,<span class="string">"stingray"</span>,<span class="string">"cock"</span>,<span class="string">"hen"</span>,<span class="string">"ostrich"</span>,<span class="string">"brambling"</span>,<span class="string">"goldfinch"</span>,<span class="string">"house_finch"</span>,<span class="string">"junco"</span>,<span class="string">"indigo_bunting"</span>,<span class="string">"robin"</span>,<span class="string">"bulbul"</span>,<span class="string">"jay"</span>,<span class="string">"magpie"</span>,<span class="string">"chickadee"</span>,<span class="string">"water_ouzel"</span>,<span class="string">"kite"</span>,<span class="string">"bald_eagle"</span>,<span class="string">"vulture"</span>,<span class="string">"great_grey_owl"</span>,<span class="string">"European_fire_salamander"</span>,<span class="string">"common_newt"</span>,<span class="string">"eft"</span>,<span class="string">"spotted_salamander"</span>,<span class="string">"axolotl"</span>,<span class="string">"bullfrog"</span>,<span class="string">"tree_frog"</span>,<span class="string">"tailed_frog"</span>,<span class="string">"loggerhead"</span>,<span class="string">"leatherback_turtle"</span>,<span class="string">"mud_turtle"</span>,<span class="string">"terrapin"</span>,<span class="string">"box_turtle"</span>,<span class="string">"banded_gecko"</span>,<span class="string">"common_iguana"</span>,<span class="string">"American_chameleon"</span>,<span class="string">"whiptail"</span>,<span class="string">"agama"</span>,<span class="string">"frilled_lizard"</span>,<span class="string">"alligator_lizard"</span>,<span class="string">"Gila_monster"</span>,<span class="string">"green_lizard"</span>,<span class="string">"African_chameleon"</span>,<span class="string">"Komodo_dragon"</span>,<span class="string">"African_crocodile"</span>,<span class="string">"American_alligator"</span>,<span class="string">"triceratops"</span>,<span class="string">"thunder_snake"</span>,<span class="string">"ringneck_snake"</span>,<span class="string">"hognose_snake"</span>,<span class="string">"green_snake"</span>,<span class="string">"king_snake"</span>,<span class="string">"garter_snake"</span>,<span class="string">"water_snake"</span>,<span class="string">"vine_snake"</span>,<span class="string">"night_snake"</span>,<span class="string">"boa_constrictor"</span>,<span class="string">"rock_python"</span>,<span class="string">"Indian_cobra"</span>,<span class="string">"green_mamba"</span>,<span class="string">"sea_snake"</span>,<span class="string">"horned_viper"</span>,<span class="string">"diamondback"</span>,<span class="string">"sidewinder"</span>,<span class="string">"trilobite"</span>,<span class="string">"harvestman"</span>,<span class="string">"scorpion"</span>,<span class="string">"black_and_gold_garden_spider"</span>,<span class="string">"barn_spider"</span>,<span class="string">"garden_spider"</span>,<span class="string">"black_widow"</span>,<span class="string">"tarantula"</span>,<span class="string">"wolf_spider"</span>,<span class="string">"tick"</span>,<span class="string">"centipede"</span>,<span class="string">"black_grouse"</span>,<span class="string">"ptarmigan"</span>,<span class="string">"ruffed_grouse"</span>,<span class="string">"prairie_chicken"</span>,<span class="string">"peacock"</span>,<span class="string">"quail"</span>,<span class="string">"partridge"</span>,<span class="string">"African_grey"</span>,<span class="string">"macaw"</span>,<span class="string">"sulphur-crested_cockatoo"</span>,<span class="string">"lorikeet"</span>,<span class="string">"coucal"</span>,<span class="string">"bee_eater"</span>,<span class="string">"hornbill"</span>,<span class="string">"hummingbird"</span>,<span class="string">"jacamar"</span>,<span class="string">"toucan"</span>,<span class="string">"drake"</span>,<span class="string">"red-breasted_merganser"</span>,<span class="string">"goose"</span>,<span class="string">"black_swan"</span>,<span class="string">"tusker"</span>,<span class="string">"echidna"</span>,<span class="string">"platypus"</span>,<span class="string">"wallaby"</span>,<span class="string">"koala"</span>,<span class="string">"wombat"</span>,<span class="string">"jellyfish"</span>,<span class="string">"sea_anemone"</span>,<span class="string">"brain_coral"</span>,<span class="string">"flatworm"</span>,<span class="string">"nematode"</span>,<span class="string">"conch"</span>,<span class="string">"snail"</span>,<span class="string">"slug"</span>,<span class="string">"sea_slug"</span>,<span class="string">"chiton"</span>,<span class="string">"chambered_nautilus"</span>,<span class="string">"Dungeness_crab"</span>,<span class="string">"rock_crab"</span>,<span class="string">"fiddler_crab"</span>,<span class="string">"king_crab"</span>,<span class="string">"American_lobster"</span>,<span class="string">"spiny_lobster"</span>,<span class="string">"crayfish"</span>,<span class="string">"hermit_crab"</span>,<span class="string">"isopod"</span>,<span class="string">"white_stork"</span>,<span class="string">"black_stork"</span>,<span class="string">"spoonbill"</span>,<span class="string">"flamingo"</span>,<span class="string">"little_blue_heron"</span>,<span class="string">"American_egret"</span>,<span class="string">"bittern"</span>,<span class="string">"crane"</span>,<span class="string">"limpkin"</span>,<span class="string">"European_gallinule"</span>,<span class="string">"American_coot"</span>,<span class="string">"bustard"</span>,<span class="string">"ruddy_turnstone"</span>,<span class="string">"red-backed_sandpiper"</span>,<span class="string">"redshank"</span>,<span class="string">"dowitcher"</span>,<span class="string">"oystercatcher"</span>,<span class="string">"pelican"</span>,<span class="string">"king_penguin"</span>,<span class="string">"albatross"</span>,<span class="string">"grey_whale"</span>,<span class="string">"killer_whale"</span>,<span class="string">"dugong"</span>,<span class="string">"sea_lion"</span>,<span class="string">"Chihuahua"</span>,<span class="string">"Japanese_spaniel"</span>,<span class="string">"Maltese_dog"</span>,<span class="string">"Pekinese"</span>,<span class="string">"Shih-Tzu"</span>,<span class="string">"Blenheim_spaniel"</span>,<span class="string">"papillon"</span>,<span class="string">"toy_terrier"</span>,<span class="string">"Rhodesian_ridgeback"</span>,<span class="string">"Afghan_hound"</span>,<span class="string">"basset"</span>,<span class="string">"beagle"</span>,<span class="string">"bloodhound"</span>,<span class="string">"bluetick"</span>,<span class="string">"black-and-tan_coonhound"</span>,<span class="string">"Walker_hound"</span>,<span class="string">"English_foxhound"</span>,<span class="string">"redbone"</span>,<span class="string">"borzoi"</span>,<span class="string">"Irish_wolfhound"</span>,<span class="string">"Italian_greyhound"</span>,<span class="string">"whippet"</span>,<span class="string">"Ibizan_hound"</span>,<span class="string">"Norwegian_elkhound"</span>,<span class="string">"otterhound"</span>,<span class="string">"Saluki"</span>,<span class="string">"Scottish_deerhound"</span>,<span class="string">"Weimaraner"</span>,<span class="string">"Staffordshire_bullterrier"</span>,<span class="string">"American_Staffordshire_terrier"</span>,<span class="string">"Bedlington_terrier"</span>,<span class="string">"Border_terrier"</span>,<span class="string">"Kerry_blue_terrier"</span>,<span class="string">"Irish_terrier"</span>,<span class="string">"Norfolk_terrier"</span>,<span class="string">"Norwich_terrier"</span>,<span class="string">"Yorkshire_terrier"</span>,<span class="string">"wire-haired_fox_terrier"</span>,<span class="string">"Lakeland_terrier"</span>,<span class="string">"Sealyham_terrier"</span>,<span class="string">"Airedale"</span>,<span class="string">"cairn"</span>,<span class="string">"Australian_terrier"</span>,<span class="string">"Dandie_Dinmont"</span>,<span class="string">"Boston_bull"</span>,<span class="string">"miniature_schnauzer"</span>,<span class="string">"giant_schnauzer"</span>,<span class="string">"standard_schnauzer"</span>,<span class="string">"Scotch_terrier"</span>,<span class="string">"Tibetan_terrier"</span>,<span class="string">"silky_terrier"</span>,<span class="string">"soft-coated_wheaten_terrier"</span>,<span class="string">"West_Highland_white_terrier"</span>,<span class="string">"Lhasa"</span>,<span class="string">"flat-coated_retriever"</span>,<span class="string">"curly-coated_retriever"</span>,<span class="string">"golden_retriever"</span>,<span class="string">"Labrador_retriever"</span>,<span class="string">"Chesapeake_Bay_retriever"</span>,<span class="string">"German_short-haired_pointer"</span>,<span class="string">"vizsla"</span>,<span class="string">"English_setter"</span>,<span class="string">"Irish_setter"</span>,<span class="string">"Gordon_setter"</span>,<span class="string">"Brittany_spaniel"</span>,<span class="string">"clumber"</span>,<span class="string">"English_springer"</span>,<span class="string">"Welsh_springer_spaniel"</span>,<span class="string">"cocker_spaniel"</span>,<span class="string">"Sussex_spaniel"</span>,<span class="string">"Irish_water_spaniel"</span>,<span class="string">"kuvasz"</span>,<span class="string">"schipperke"</span>,<span class="string">"groenendael"</span>,<span class="string">"malinois"</span>,<span class="string">"briard"</span>,<span class="string">"kelpie"</span>,<span class="string">"komondor"</span>,<span class="string">"Old_English_sheepdog"</span>,<span class="string">"Shetland_sheepdog"</span>,<span class="string">"collie"</span>,<span class="string">"Border_collie"</span>,<span class="string">"Bouvier_des_Flandres"</span>,<span class="string">"Rottweiler"</span>,<span class="string">"German_shepherd"</span>,<span class="string">"Doberman"</span>,<span class="string">"miniature_pinscher"</span>,<span class="string">"Greater_Swiss_Mountain_dog"</span>,<span class="string">"Bernese_mountain_dog"</span>,<span class="string">"Appenzeller"</span>,<span class="string">"EntleBucher"</span>,<span class="string">"boxer"</span>,<span class="string">"bull_mastiff"</span>,<span class="string">"Tibetan_mastiff"</span>,<span class="string">"French_bulldog"</span>,<span class="string">"Great_Dane"</span>,<span class="string">"Saint_Bernard"</span>,<span class="string">"Eskimo_dog"</span>,<span class="string">"malamute"</span>,<span class="string">"Siberian_husky"</span>,<span class="string">"dalmatian"</span>,<span class="string">"affenpinscher"</span>,<span class="string">"basenji"</span>,<span class="string">"pug"</span>,<span class="string">"Leonberg"</span>,<span class="string">"Newfoundland"</span>,<span class="string">"Great_Pyrenees"</span>,<span class="string">"Samoyed"</span>,<span class="string">"Pomeranian"</span>,<span class="string">"chow"</span>,<span class="string">"keeshond"</span>,<span class="string">"Brabancon_griffon"</span>,<span class="string">"Pembroke"</span>,<span class="string">"Cardigan"</span>,<span class="string">"toy_poodle"</span>,<span class="string">"miniature_poodle"</span>,<span class="string">"standard_poodle"</span>,<span class="string">"Mexican_hairless"</span>,<span class="string">"timber_wolf"</span>,<span class="string">"white_wolf"</span>,<span class="string">"red_wolf"</span>,<span class="string">"coyote"</span>,<span class="string">"dingo"</span>,<span class="string">"dhole"</span>,<span class="string">"African_hunting_dog"</span>,<span class="string">"hyena"</span>,<span class="string">"red_fox"</span>,<span class="string">"kit_fox"</span>,<span class="string">"Arctic_fox"</span>,<span class="string">"grey_fox"</span>,<span class="string">"tabby"</span>,<span class="string">"tiger_cat"</span>,<span class="string">"Persian_cat"</span>,<span class="string">"Siamese_cat"</span>,<span class="string">"Egyptian_cat"</span>,<span class="string">"cougar"</span>,<span class="string">"lynx"</span>,<span class="string">"leopard"</span>,<span class="string">"snow_leopard"</span>,<span class="string">"jaguar"</span>,<span class="string">"lion"</span>,<span class="string">"tiger"</span>,<span class="string">"cheetah"</span>,<span class="string">"brown_bear"</span>,<span class="string">"American_black_bear"</span>,<span class="string">"ice_bear"</span>,<span class="string">"sloth_bear"</span>,<span class="string">"mongoose"</span>,<span class="string">"meerkat"</span>,<span class="string">"tiger_beetle"</span>,<span class="string">"ladybug"</span>,<span class="string">"ground_beetle"</span>,<span class="string">"long-horned_beetle"</span>,<span class="string">"leaf_beetle"</span>,<span class="string">"dung_beetle"</span>,<span class="string">"rhinoceros_beetle"</span>,<span class="string">"weevil"</span>,<span class="string">"fly"</span>,<span class="string">"bee"</span>,<span class="string">"ant"</span>,<span class="string">"grasshopper"</span>,<span class="string">"cricket"</span>,<span class="string">"walking_stick"</span>,<span class="string">"cockroach"</span>,<span class="string">"mantis"</span>,<span class="string">"cicada"</span>,<span class="string">"leafhopper"</span>,<span class="string">"lacewing"</span>,<span class="string">"dragonfly"</span>,<span class="string">"damselfly"</span>,<span class="string">"admiral"</span>,<span class="string">"ringlet"</span>,<span class="string">"monarch"</span>,<span class="string">"cabbage_butterfly"</span>,<span class="string">"sulphur_butterfly"</span>,<span class="string">"lycaenid"</span>,<span class="string">"starfish"</span>,<span class="string">"sea_urchin"</span>,<span class="string">"sea_cucumber"</span>,<span class="string">"wood_rabbit"</span>,<span class="string">"hare"</span>,<span class="string">"Angora"</span>,<span class="string">"hamster"</span>,<span class="string">"porcupine"</span>,<span class="string">"fox_squirrel"</span>,<span class="string">"marmot"</span>,<span class="string">"beaver"</span>,<span class="string">"guinea_pig"</span>,<span class="string">"sorrel"</span>,<span class="string">"zebra"</span>,<span class="string">"hog"</span>,<span class="string">"wild_boar"</span>,<span class="string">"warthog"</span>,<span class="string">"hippopotamus"</span>,<span class="string">"ox"</span>,<span class="string">"water_buffalo"</span>,<span class="string">"bison"</span>,<span class="string">"ram"</span>,<span class="string">"bighorn"</span>,<span class="string">"ibex"</span>,<span class="string">"hartebeest"</span>,<span class="string">"impala"</span>,<span class="string">"gazelle"</span>,<span class="string">"Arabian_camel"</span>,<span class="string">"llama"</span>,<span class="string">"weasel"</span>,<span class="string">"mink"</span>,<span class="string">"polecat"</span>,<span class="string">"black-footed_ferret"</span>,<span class="string">"otter"</span>,<span class="string">"skunk"</span>,<span class="string">"badger"</span>,<span class="string">"armadillo"</span>,<span class="string">"three-toed_sloth"</span>,<span class="string">"orangutan"</span>,<span class="string">"gorilla"</span>,<span class="string">"chimpanzee"</span>,<span class="string">"gibbon"</span>,<span class="string">"siamang"</span>,<span class="string">"guenon"</span>,<span class="string">"patas"</span>,<span class="string">"baboon"</span>,<span class="string">"macaque"</span>,<span class="string">"langur"</span>,<span class="string">"colobus"</span>,<span class="string">"proboscis_monkey"</span>,<span class="string">"marmoset"</span>,<span class="string">"capuchin"</span>,<span class="string">"howler_monkey"</span>,<span class="string">"titi"</span>,<span class="string">"spider_monkey"</span>,<span class="string">"squirrel_monkey"</span>,<span class="string">"Madagascar_cat"</span>,<span class="string">"indri"</span>,<span class="string">"Indian_elephant"</span>,<span class="string">"African_elephant"</span>,<span class="string">"lesser_panda"</span>,<span class="string">"giant_panda"</span>,<span class="string">"barracouta"</span>,<span class="string">"eel"</span>,<span class="string">"coho"</span>,<span class="string">"rock_beauty"</span>,<span class="string">"anemone_fish"</span>,<span class="string">"sturgeon"</span>,<span class="string">"gar"</span>,<span class="string">"lionfish"</span>,<span class="string">"puffer"</span>,<span class="string">"abacus"</span>,<span class="string">"abaya"</span>,<span class="string">"academic_gown"</span>,<span class="string">"accordion"</span>,<span class="string">"acoustic_guitar"</span>,<span class="string">"aircraft_carrier"</span>,<span class="string">"airliner"</span>,<span class="string">"airship"</span>,<span class="string">"altar"</span>,<span class="string">"ambulance"</span>,<span class="string">"amphibian"</span>,<span class="string">"analog_clock"</span>,<span class="string">"apiary"</span>,<span class="string">"apron"</span>,<span class="string">"ashcan"</span>,<span class="string">"assault_rifle"</span>,<span class="string">"backpack"</span>,<span class="string">"bakery"</span>,<span class="string">"balance_beam"</span>,<span class="string">"balloon"</span>,<span class="string">"ballpoint"</span>,<span class="string">"Band_Aid"</span>,<span class="string">"banjo"</span>,<span class="string">"bannister"</span>,<span class="string">"barbell"</span>,<span class="string">"barber_chair"</span>,<span class="string">"barbershop"</span>,<span class="string">"barn"</span>,<span class="string">"barometer"</span>,<span class="string">"barrel"</span>,<span class="string">"barrow"</span>,<span class="string">"baseball"</span>,<span class="string">"basketball"</span>,<span class="string">"bassinet"</span>,<span class="string">"bassoon"</span>,<span class="string">"bathing_cap"</span>,<span class="string">"bath_towel"</span>,<span class="string">"bathtub"</span>,<span class="string">"beach_wagon"</span>,<span class="string">"beacon"</span>,<span class="string">"beaker"</span>,<span class="string">"bearskin"</span>,<span class="string">"beer_bottle"</span>,<span class="string">"beer_glass"</span>,<span class="string">"bell_cote"</span>,<span class="string">"bib"</span>,<span class="string">"bicycle-built-for-two"</span>,<span class="string">"bikini"</span>,<span class="string">"binder"</span>,<span class="string">"binoculars"</span>,<span class="string">"birdhouse"</span>,<span class="string">"boathouse"</span>,<span class="string">"bobsled"</span>,<span class="string">"bolo_tie"</span>,<span class="string">"bonnet"</span>,<span class="string">"bookcase"</span>,<span class="string">"bookshop"</span>,<span class="string">"bottlecap"</span>,<span class="string">"bow"</span>,<span class="string">"bow_tie"</span>,<span class="string">"brass"</span>,<span class="string">"brassiere"</span>,<span class="string">"breakwater"</span>,<span class="string">"breastplate"</span>,<span class="string">"broom"</span>,<span class="string">"bucket"</span>,<span class="string">"buckle"</span>,<span class="string">"bulletproof_vest"</span>,<span class="string">"bullet_train"</span>,<span class="string">"butcher_shop"</span>,<span class="string">"cab"</span>,<span class="string">"caldron"</span>,<span class="string">"candle"</span>,<span class="string">"cannon"</span>,<span class="string">"canoe"</span>,<span class="string">"can_opener"</span>,<span class="string">"cardigan"</span>,<span class="string">"car_mirror"</span>,<span class="string">"carousel"</span>,<span class="string">"carpenters_kit"</span>,<span class="string">"carton"</span>,<span class="string">"car_wheel"</span>,<span class="string">"cash_machine"</span>,<span class="string">"cassette"</span>,<span class="string">"cassette_player"</span>,<span class="string">"castle"</span>,<span class="string">"catamaran"</span>,<span class="string">"CD_player"</span>,<span class="string">"cello"</span>,<span class="string">"cellular_telephone"</span>,<span class="string">"chain"</span>,<span class="string">"chainlink_fence"</span>,<span class="string">"chain_mail"</span>,<span class="string">"chain_saw"</span>,<span class="string">"chest"</span>,<span class="string">"chiffonier"</span>,<span class="string">"chime"</span>,<span class="string">"china_cabinet"</span>,<span class="string">"Christmas_stocking"</span>,<span class="string">"church"</span>,<span class="string">"cinema"</span>,<span class="string">"cleaver"</span>,<span class="string">"cliff_dwelling"</span>,<span class="string">"cloak"</span>,<span class="string">"clog"</span>,<span class="string">"cocktail_shaker"</span>,<span class="string">"coffee_mug"</span>,<span class="string">"coffeepot"</span>,<span class="string">"coil"</span>,<span class="string">"combination_lock"</span>,<span class="string">"computer_keyboard"</span>,<span class="string">"confectionery"</span>,<span class="string">"container_ship"</span>,<span class="string">"convertible"</span>,<span class="string">"corkscrew"</span>,<span class="string">"cornet"</span>,<span class="string">"cowboy_boot"</span>,<span class="string">"cowboy_hat"</span>,<span class="string">"cradle"</span>,<span class="string">"crane"</span>,<span class="string">"crash_helmet"</span>,<span class="string">"crate"</span>,<span class="string">"crib"</span>,<span class="string">"Crock_Pot"</span>,<span class="string">"croquet_ball"</span>,<span class="string">"crutch"</span>,<span class="string">"cuirass"</span>,<span class="string">"dam"</span>,<span class="string">"desk"</span>,<span class="string">"desktop_computer"</span>,<span class="string">"dial_telephone"</span>,<span class="string">"diaper"</span>,<span class="string">"digital_clock"</span>,<span class="string">"digital_watch"</span>,<span class="string">"dining_table"</span>,<span class="string">"dishrag"</span>,<span class="string">"dishwasher"</span>,<span class="string">"disk_brake"</span>,<span class="string">"dock"</span>,<span class="string">"dogsled"</span>,<span class="string">"dome"</span>,<span class="string">"doormat"</span>,<span class="string">"drilling_platform"</span>,<span class="string">"drum"</span>,<span class="string">"drumstick"</span>,<span class="string">"dumbbell"</span>,<span class="string">"Dutch_oven"</span>,<span class="string">"electric_fan"</span>,<span class="string">"electric_guitar"</span>,<span class="string">"electric_locomotive"</span>,<span class="string">"entertainment_center"</span>,<span class="string">"envelope"</span>,<span class="string">"espresso_maker"</span>,<span class="string">"face_powder"</span>,<span class="string">"feather_boa"</span>,<span class="string">"file"</span>,<span class="string">"fireboat"</span>,<span class="string">"fire_engine"</span>,<span class="string">"fire_screen"</span>,<span class="string">"flagpole"</span>,<span class="string">"flute"</span>,<span class="string">"folding_chair"</span>,<span class="string">"football_helmet"</span>,<span class="string">"forklift"</span>,<span class="string">"fountain"</span>,<span class="string">"fountain_pen"</span>,<span class="string">"four-poster"</span>,<span class="string">"freight_car"</span>,<span class="string">"French_horn"</span>,<span class="string">"frying_pan"</span>,<span class="string">"fur_coat"</span>,<span class="string">"garbage_truck"</span>,<span class="string">"gasmask"</span>,<span class="string">"gas_pump"</span>,<span class="string">"goblet"</span>,<span class="string">"go-kart"</span>,<span class="string">"golf_ball"</span>,<span class="string">"golfcart"</span>,<span class="string">"gondola"</span>,<span class="string">"gong"</span>,<span class="string">"gown"</span>,<span class="string">"grand_piano"</span>,<span class="string">"greenhouse"</span>,<span class="string">"grille"</span>,<span class="string">"grocery_store"</span>,<span class="string">"guillotine"</span>,<span class="string">"hair_slide"</span>,<span class="string">"hair_spray"</span>,<span class="string">"half_track"</span>,<span class="string">"hammer"</span>,<span class="string">"hamper"</span>,<span class="string">"hand_blower"</span>,<span class="string">"hand-held_computer"</span>,<span class="string">"handkerchief"</span>,<span class="string">"hard_disc"</span>,<span class="string">"harmonica"</span>,<span class="string">"harp"</span>,<span class="string">"harvester"</span>,<span class="string">"hatchet"</span>,<span class="string">"holster"</span>,<span class="string">"home_theater"</span>,<span class="string">"honeycomb"</span>,<span class="string">"hook"</span>,<span class="string">"hoopskirt"</span>,<span class="string">"horizontal_bar"</span>,<span class="string">"horse_cart"</span>,<span class="string">"hourglass"</span>,<span class="string">"iPod"</span>,<span class="string">"iron"</span>,<span class="string">"jack-o-lantern"</span>,<span class="string">"jean"</span>,<span class="string">"jeep"</span>,<span class="string">"jersey"</span>,<span class="string">"jigsaw_puzzle"</span>,<span class="string">"jinrikisha"</span>,<span class="string">"joystick"</span>,<span class="string">"kimono"</span>,<span class="string">"knee_pad"</span>,<span class="string">"knot"</span>,<span class="string">"lab_coat"</span>,<span class="string">"ladle"</span>,<span class="string">"lampshade"</span>,<span class="string">"laptop"</span>,<span class="string">"lawn_mower"</span>,<span class="string">"lens_cap"</span>,<span class="string">"letter_opener"</span>,<span class="string">"library"</span>,<span class="string">"lifeboat"</span>,<span class="string">"lighter"</span>,<span class="string">"limousine"</span>,<span class="string">"liner"</span>,<span class="string">"lipstick"</span>,<span class="string">"Loafer"</span>,<span class="string">"lotion"</span>,<span class="string">"loudspeaker"</span>,<span class="string">"loupe"</span>,<span class="string">"lumbermill"</span>,<span class="string">"magnetic_compass"</span>,<span class="string">"mailbag"</span>,<span class="string">"mailbox"</span>,<span class="string">"maillot"</span>,<span class="string">"maillot"</span>,<span class="string">"manhole_cover"</span>,<span class="string">"maraca"</span>,<span class="string">"marimba"</span>,<span class="string">"mask"</span>,<span class="string">"matchstick"</span>,<span class="string">"maypole"</span>,<span class="string">"maze"</span>,<span class="string">"measuring_cup"</span>,<span class="string">"medicine_chest"</span>,<span class="string">"megalith"</span>,<span class="string">"microphone"</span>,<span class="string">"microwave"</span>,<span class="string">"military_uniform"</span>,<span class="string">"milk_can"</span>,<span class="string">"minibus"</span>,<span class="string">"miniskirt"</span>,<span class="string">"minivan"</span>,<span class="string">"missile"</span>,<span class="string">"mitten"</span>,<span class="string">"mixing_bowl"</span>,<span class="string">"mobile_home"</span>,<span class="string">"Model_T"</span>,<span class="string">"modem"</span>,<span class="string">"monastery"</span>,<span class="string">"monitor"</span>,<span class="string">"moped"</span>,<span class="string">"mortar"</span>,<span class="string">"mortarboard"</span>,<span class="string">"mosque"</span>,<span class="string">"mosquito_net"</span>,<span class="string">"motor_scooter"</span>,<span class="string">"mountain_bike"</span>,<span class="string">"mountain_tent"</span>,<span class="string">"mouse"</span>,<span class="string">"mousetrap"</span>,<span class="string">"moving_van"</span>,<span class="string">"muzzle"</span>,<span class="string">"nail"</span>,<span class="string">"neck_brace"</span>,<span class="string">"necklace"</span>,<span class="string">"nipple"</span>,<span class="string">"notebook"</span>,<span class="string">"obelisk"</span>,<span class="string">"oboe"</span>,<span class="string">"ocarina"</span>,<span class="string">"odometer"</span>,<span class="string">"oil_filter"</span>,<span class="string">"organ"</span>,<span class="string">"oscilloscope"</span>,<span class="string">"overskirt"</span>,<span class="string">"oxcart"</span>,<span class="string">"oxygen_mask"</span>,<span class="string">"packet"</span>,<span class="string">"paddle"</span>,<span class="string">"paddlewheel"</span>,<span class="string">"padlock"</span>,<span class="string">"paintbrush"</span>,<span class="string">"pajama"</span>,<span class="string">"palace"</span>,<span class="string">"panpipe"</span>,<span class="string">"paper_towel"</span>,<span class="string">"parachute"</span>,<span class="string">"parallel_bars"</span>,<span class="string">"park_bench"</span>,<span class="string">"parking_meter"</span>,<span class="string">"passenger_car"</span>,<span class="string">"patio"</span>,<span class="string">"pay-phone"</span>,<span class="string">"pedestal"</span>,<span class="string">"pencil_box"</span>,<span class="string">"pencil_sharpener"</span>,<span class="string">"perfume"</span>,<span class="string">"Petri_dish"</span>,<span class="string">"photocopier"</span>,<span class="string">"pick"</span>,<span class="string">"pickelhaube"</span>,<span class="string">"picket_fence"</span>,<span class="string">"pickup"</span>,<span class="string">"pier"</span>,<span class="string">"piggy_bank"</span>,<span class="string">"pill_bottle"</span>,<span class="string">"pillow"</span>,<span class="string">"ping-pong_ball"</span>,<span class="string">"pinwheel"</span>,<span class="string">"pirate"</span>,<span class="string">"pitcher"</span>,<span class="string">"plane"</span>,<span class="string">"planetarium"</span>,<span class="string">"plastic_bag"</span>,<span class="string">"plate_rack"</span>,<span class="string">"plow"</span>,<span class="string">"plunger"</span>,<span class="string">"Polaroid_camera"</span>,<span class="string">"pole"</span>,<span class="string">"police_van"</span>,<span class="string">"poncho"</span>,<span class="string">"pool_table"</span>,<span class="string">"pop_bottle"</span>,<span class="string">"pot"</span>,<span class="string">"potters_wheel"</span>,<span class="string">"power_drill"</span>,<span class="string">"prayer_rug"</span>,<span class="string">"printer"</span>,<span class="string">"prison"</span>,<span class="string">"projectile"</span>,<span class="string">"projector"</span>,<span class="string">"puck"</span>,<span class="string">"punching_bag"</span>,<span class="string">"purse"</span>,<span class="string">"quill"</span>,<span class="string">"quilt"</span>,<span class="string">"racer"</span>,<span class="string">"racket"</span>,<span class="string">"radiator"</span>,<span class="string">"radio"</span>,<span class="string">"radio_telescope"</span>,<span class="string">"rain_barrel"</span>,<span class="string">"recreational_vehicle"</span>,<span class="string">"reel"</span>,<span class="string">"reflex_camera"</span>,<span class="string">"refrigerator"</span>,<span class="string">"remote_control"</span>,<span class="string">"restaurant"</span>,<span class="string">"revolver"</span>,<span class="string">"rifle"</span>,<span class="string">"rocking_chair"</span>,<span class="string">"rotisserie"</span>,<span class="string">"rubber_eraser"</span>,<span class="string">"rugby_ball"</span>,<span class="string">"rule"</span>,<span class="string">"running_shoe"</span>,<span class="string">"safe"</span>,<span class="string">"safety_pin"</span>,<span class="string">"saltshaker"</span>,<span class="string">"sandal"</span>,<span class="string">"sarong"</span>,<span class="string">"sax"</span>,<span class="string">"scabbard"</span>,<span class="string">"scale"</span>,<span class="string">"school_bus"</span>,<span class="string">"schooner"</span>,<span class="string">"scoreboard"</span>,<span class="string">"screen"</span>,<span class="string">"screw"</span>,<span class="string">"screwdriver"</span>,<span class="string">"seat_belt"</span>,<span class="string">"sewing_machine"</span>,<span class="string">"shield"</span>,<span class="string">"shoe_shop"</span>,<span class="string">"shoji"</span>,<span class="string">"shopping_basket"</span>,<span class="string">"shopping_cart"</span>,<span class="string">"shovel"</span>,<span class="string">"shower_cap"</span>,<span class="string">"shower_curtain"</span>,<span class="string">"ski"</span>,<span class="string">"ski_mask"</span>,<span class="string">"sleeping_bag"</span>,<span class="string">"slide_rule"</span>,<span class="string">"sliding_door"</span>,<span class="string">"slot"</span>,<span class="string">"snorkel"</span>,<span class="string">"snowmobile"</span>,<span class="string">"snowplow"</span>,<span class="string">"soap_dispenser"</span>,<span class="string">"soccer_ball"</span>,<span class="string">"sock"</span>,<span class="string">"solar_dish"</span>,<span class="string">"sombrero"</span>,<span class="string">"soup_bowl"</span>,<span class="string">"space_bar"</span>,<span class="string">"space_heater"</span>,<span class="string">"space_shuttle"</span>,<span class="string">"spatula"</span>,<span class="string">"speedboat"</span>,<span class="string">"spider_web"</span>,<span class="string">"spindle"</span>,<span class="string">"sports_car"</span>,<span class="string">"spotlight"</span>,<span class="string">"stage"</span>,<span class="string">"steam_locomotive"</span>,<span class="string">"steel_arch_bridge"</span>,<span class="string">"steel_drum"</span>,<span class="string">"stethoscope"</span>,<span class="string">"stole"</span>,<span class="string">"stone_wall"</span>,<span class="string">"stopwatch"</span>,<span class="string">"stove"</span>,<span class="string">"strainer"</span>,<span class="string">"streetcar"</span>,<span class="string">"stretcher"</span>,<span class="string">"studio_couch"</span>,<span class="string">"stupa"</span>,<span class="string">"submarine"</span>,<span class="string">"suit"</span>,<span class="string">"sundial"</span>,<span class="string">"sunglass"</span>,<span class="string">"sunglasses"</span>,<span class="string">"sunscreen"</span>,<span class="string">"suspension_bridge"</span>,<span class="string">"swab"</span>,<span class="string">"sweatshirt"</span>,<span class="string">"swimming_trunks"</span>,<span class="string">"swing"</span>,<span class="string">"switch"</span>,<span class="string">"syringe"</span>,<span class="string">"table_lamp"</span>,<span class="string">"tank"</span>,<span class="string">"tape_player"</span>,<span class="string">"teapot"</span>,<span class="string">"teddy"</span>,<span class="string">"television"</span>,<span class="string">"tennis_ball"</span>,<span class="string">"thatch"</span>,<span class="string">"theater_curtain"</span>,<span class="string">"thimble"</span>,<span class="string">"thresher"</span>,<span class="string">"throne"</span>,<span class="string">"tile_roof"</span>,<span class="string">"toaster"</span>,<span class="string">"tobacco_shop"</span>,<span class="string">"toilet_seat"</span>,<span class="string">"torch"</span>,<span class="string">"totem_pole"</span>,<span class="string">"tow_truck"</span>,<span class="string">"toyshop"</span>,<span class="string">"tractor"</span>,<span class="string">"trailer_truck"</span>,<span class="string">"tray"</span>,<span class="string">"trench_coat"</span>,<span class="string">"tricycle"</span>,<span class="string">"trimaran"</span>,<span class="string">"tripod"</span>,<span class="string">"triumphal_arch"</span>,<span class="string">"trolleybus"</span>,<span class="string">"trombone"</span>,<span class="string">"tub"</span>,<span class="string">"turnstile"</span>,<span class="string">"typewriter_keyboard"</span>,<span class="string">"umbrella"</span>,<span class="string">"unicycle"</span>,<span class="string">"upright"</span>,<span class="string">"vacuum"</span>,<span class="string">"vase"</span>,<span class="string">"vault"</span>,<span class="string">"velvet"</span>,<span class="string">"vending_machine"</span>,<span class="string">"vestment"</span>,<span class="string">"viaduct"</span>,<span class="string">"violin"</span>,<span class="string">"volleyball"</span>,<span class="string">"waffle_iron"</span>,<span class="string">"wall_clock"</span>,<span class="string">"wallet"</span>,<span class="string">"wardrobe"</span>,<span class="string">"warplane"</span>,<span class="string">"washbasin"</span>,<span class="string">"washer"</span>,<span class="string">"water_bottle"</span>,<span class="string">"water_jug"</span>,<span class="string">"water_tower"</span>,<span class="string">"whiskey_jug"</span>,<span class="string">"whistle"</span>,<span class="string">"wig"</span>,<span class="string">"window_screen"</span>,<span class="string">"window_shade"</span>,<span class="string">"Windsor_tie"</span>,<span class="string">"wine_bottle"</span>,<span class="string">"wing"</span>,<span class="string">"wok"</span>,<span class="string">"wooden_spoon"</span>,<span class="string">"wool"</span>,<span class="string">"worm_fence"</span>,<span class="string">"wreck"</span>,<span class="string">"yawl"</span>,<span class="string">"yurt"</span>,<span class="string">"web_site"</span>,<span class="string">"comic_book"</span>,<span class="string">"crossword_puzzle"</span>,<span class="string">"street_sign"</span>,<span class="string">"traffic_light"</span>,<span class="string">"book_jacket"</span>,<span class="string">"menu"</span>,<span class="string">"plate"</span>,<span class="string">"guacamole"</span>,<span class="string">"consomme"</span>,<span class="string">"hot_pot"</span>,<span class="string">"trifle"</span>,<span class="string">"ice_cream"</span>,<span class="string">"ice_lolly"</span>,<span class="string">"French_loaf"</span>,<span class="string">"bagel"</span>,<span class="string">"pretzel"</span>,<span class="string">"cheeseburger"</span>,<span class="string">"hotdog"</span>,<span class="string">"mashed_potato"</span>,<span class="string">"head_cabbage"</span>,<span class="string">"broccoli"</span>,<span class="string">"cauliflower"</span>,<span class="string">"zucchini"</span>,<span class="string">"spaghetti_squash"</span>,<span class="string">"acorn_squash"</span>,<span class="string">"butternut_squash"</span>,<span class="string">"cucumber"</span>,<span class="string">"artichoke"</span>,<span class="string">"bell_pepper"</span>,<span class="string">"cardoon"</span>,<span class="string">"mushroom"</span>,<span class="string">"Granny_Smith"</span>,<span class="string">"strawberry"</span>,<span class="string">"orange"</span>,<span class="string">"lemon"</span>,<span class="string">"fig"</span>,<span class="string">"pineapple"</span>,<span class="string">"banana"</span>,<span class="string">"jackfruit"</span>,<span class="string">"custard_apple"</span>,<span class="string">"pomegranate"</span>,<span class="string">"hay"</span>,<span class="string">"carbonara"</span>,<span class="string">"chocolate_sauce"</span>,<span class="string">"dough"</span>,<span class="string">"meat_loaf"</span>,<span class="string">"pizza"</span>,<span class="string">"potpie"</span>,<span class="string">"burrito"</span>,<span class="string">"red_wine"</span>,<span class="string">"espresso"</span>,<span class="string">"cup"</span>,<span class="string">"eggnog"</span>,<span class="string">"alp"</span>,<span class="string">"bubble"</span>,<span class="string">"cliff"</span>,<span class="string">"coral_reef"</span>,<span class="string">"geyser"</span>,<span class="string">"lakeside"</span>,<span class="string">"promontory"</span>,<span class="string">"sandbar"</span>,<span class="string">"seashore"</span>,<span class="string">"valley"</span>,<span class="string">"volcano"</span>,<span class="string">"ballplayer"</span>,<span class="string">"groom"</span>,<span class="string">"scuba_diver"</span>,<span class="string">"rapeseed"</span>,<span class="string">"daisy"</span>,<span class="string">"yellow_ladys_slipper"</span>,<span class="string">"corn"</span>,<span class="string">"acorn"</span>,<span class="string">"hip"</span>,<span class="string">"buckeye"</span>,<span class="string">"coral_fungus"</span>,<span class="string">"agaric"</span>,<span class="string">"gyromitra"</span>,<span class="string">"stinkhorn"</span>,<span class="string">"earthstar"</span>,<span class="string">"hen-of-the-woods"</span>,<span class="string">"bolete"</span>,<span class="string">"ear"</span>,<span class="string">"toilet_tissue"</span>]</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">convert</span><span class="params">(size, box)</span>:</span></span><br><span class="line">    dw = <span class="number">1.</span>/(size[<span class="number">0</span>])</span><br><span class="line">    dh = <span class="number">1.</span>/(size[<span class="number">1</span>])</span><br><span class="line">    x = (box[<span class="number">0</span>] + box[<span class="number">1</span>])/<span class="number">2.0</span> - <span class="number">1</span></span><br><span class="line">    y = (box[<span class="number">2</span>] + box[<span class="number">3</span>])/<span class="number">2.0</span> - <span class="number">1</span></span><br><span class="line">    w = box[<span class="number">1</span>] - box[<span class="number">0</span>]</span><br><span class="line">    h = box[<span class="number">3</span>] - box[<span class="number">2</span>]</span><br><span class="line">    x = x*dw</span><br><span class="line">    w = w*dw</span><br><span class="line">    y = y*dh</span><br><span class="line">    h = h*dh</span><br><span class="line">    <span class="keyword">return</span> (x,y,w,h)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">convert_annotation</span><span class="params">(year, image_id)</span>:</span></span><br><span class="line">    in_file = open(<span class="string">'VOCdevkit/VOC%s/Annotations/%s.xml'</span>%(year, image_id))</span><br><span class="line">    out_file = open(<span class="string">'VOCdevkit/VOC%s/labels/%s.txt'</span>%(year, image_id), <span class="string">'w'</span>)</span><br><span class="line">    tree=ET.parse(in_file)</span><br><span class="line">    root = tree.getroot()</span><br><span class="line">    size = root.find(<span class="string">'size'</span>)</span><br><span class="line">    w = int(size.find(<span class="string">'width'</span>).text)</span><br><span class="line">    h = int(size.find(<span class="string">'height'</span>).text)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> obj <span class="keyword">in</span> root.iter(<span class="string">'object'</span>):</span><br><span class="line">        difficult = obj.find(<span class="string">'difficult'</span>).text</span><br><span class="line">        cls = obj.find(<span class="string">'name'</span>).text</span><br><span class="line">        <span class="keyword">if</span> cls <span class="keyword">not</span> <span class="keyword">in</span> classes <span class="keyword">or</span> int(difficult)==<span class="number">1</span>:</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        cls_id = classes.index(cls)</span><br><span class="line">        xmlbox = obj.find(<span class="string">'bndbox'</span>)</span><br><span class="line">        b = (float(xmlbox.find(<span class="string">'xmin'</span>).text), float(xmlbox.find(<span class="string">'xmax'</span>).text), float(xmlbox.find(<span class="string">'ymin'</span>).text), float(xmlbox.find(<span class="string">'ymax'</span>).text))</span><br><span class="line">        bb = convert((w,h), b)</span><br><span class="line">        out_file.write(str(cls_id) + <span class="string">" "</span> + <span class="string">" "</span>.join([str(a) <span class="keyword">for</span> a <span class="keyword">in</span> bb]) + <span class="string">'\n'</span>)</span><br><span class="line"></span><br><span class="line">wd = getcwd()</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> year, image_set <span class="keyword">in</span> sets:</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(<span class="string">'VOCdevkit/VOC%s/labels/'</span>%(year)):</span><br><span class="line">        os.makedirs(<span class="string">'VOCdevkit/VOC%s/labels/'</span>%(year))</span><br><span class="line">    image_ids = open(<span class="string">'VOCdevkit/VOC%s/ImageSets/Main/%s.txt'</span>%(year, image_set)).read().strip().split()</span><br><span class="line">    list_file = open(<span class="string">'%s_%s.txt'</span>%(year, image_set), <span class="string">'w'</span>)</span><br><span class="line">    <span class="keyword">for</span> image_id <span class="keyword">in</span> image_ids:</span><br><span class="line">        list_file.write(<span class="string">'%s/VOCdevkit/VOC%s/JPEGImages/%s.JPEG\n'</span>%(wd, year, image_id))</span><br><span class="line">        convert_annotation(year, image_id)</span><br><span class="line">    list_file.close()</span><br><span class="line"></span><br><span class="line"><span class="comment">#os.system("cat 2007_train.txt 2007_val.txt 2012_train.txt 2012_val.txt &gt; train.txt")</span></span><br><span class="line"><span class="comment">#os.system("cat 2007_train.txt 2007_val.txt 2007_test.txt 2012_train.txt 2012_val.txt &gt; train.all.txt")</span></span><br></pre></td></tr></table></figure>
+<p>修改好后在该目录下运行命令：python voc_label.py，之后则在文件夹scripts\VOCdevkit\VOC2007下生成了文件夹lable。这里包含了类别和对应归一化后的位置（i guess，如有错请指正）。同时在scripts\下应该也生成了train_2007.txt这个文件，里面包含了所有训练样本的绝对路径。</p>
+<p>修改.data文件，以cfg/voc.data为例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1 classes= 20</span><br><span class="line">2 train  = &lt;path-to-voc&gt;/train.txt</span><br><span class="line">3 valid  = &lt;path-to-voc&gt;2007_test.txt</span><br><span class="line">4 names = data/voc.names</span><br><span class="line">5 backup = backup</span><br></pre></td></tr></table></figure>
+<p>使用自己的路径替换<path-to-voc>，例如我的配置如下：</path-to-voc></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">classes= 1000</span><br><span class="line">train  = /home/teng/programmings/semap/darknet/scripts/2007_train.txt</span><br><span class="line">names = /home/teng/programmings/semap/darknet/data/voc.names</span><br><span class="line">backup = /home/teng/programmings/semap/darknet/backup</span><br></pre></td></tr></table></figure>
+<p>修改.names文件，即训练的label：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">tench</span><br><span class="line">goldfish</span><br><span class="line">great_white_shark</span><br><span class="line">...</span><br><span class="line">bolete</span><br><span class="line">ear</span><br><span class="line">toilet_tissue</span><br></pre></td></tr></table></figure>
+<h1 id="配置文件修改"><a href="#配置文件修改" class="headerlink" title="配置文件修改"></a>配置文件修改</h1><p>做好了上述准备，就可以根据不同的网络设置（cfg文件）来训练了。在文件夹cfg中有很多cfg文件，应该跟caffe中的prototxt文件是一个意思。这里以yolo-voc.cfg为例，主要修改参数如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">[net]</span><br><span class="line"><span class="comment"># Testing</span></span><br><span class="line"><span class="comment"># batch=1</span></span><br><span class="line"><span class="comment"># subdivisions=1    #训练时候把上面Testing的参数注释</span></span><br><span class="line"><span class="comment"># Training</span></span><br><span class="line">batch=64</span><br><span class="line">subdivisions=32     <span class="comment">#这个参数根据自己GPU的显存进行修改，显存不够就改大一些</span></span><br><span class="line">...                 <span class="comment">#因为训练时每批的数量 = batch/subdivisions</span></span><br><span class="line">...</span><br><span class="line">...</span><br><span class="line">learning_rate=0.001  <span class="comment">#根据自己的需求还有训练速度学习率可以调整一下</span></span><br><span class="line">burn_in=1000</span><br><span class="line">max_batches = 30000  <span class="comment">#根据自己的需求还有训练速度max_batches可以调整一下</span></span><br><span class="line">policy=steps</span><br><span class="line">steps=10000,20000    <span class="comment">#跟着max_batches做相应调整</span></span><br><span class="line">...</span><br><span class="line">...</span><br><span class="line">...</span><br><span class="line">[convolutional]</span><br><span class="line">size=1</span><br><span class="line">stride=1</span><br><span class="line">pad=1</span><br><span class="line">filters=30         <span class="comment">#filters = 3*(classes + 5)</span></span><br><span class="line">activation=linear</span><br><span class="line"></span><br><span class="line">[yolo]</span><br><span class="line">mask = 0,1,2</span><br><span class="line">anchors = 10,13,  16,30,  33,23,  30,61,  62,45,  59,119,  116,90,  156,198,  373,326</span><br><span class="line">classes=5          <span class="comment">#修改类别数</span></span><br><span class="line">num=9</span><br><span class="line">jitter=.3</span><br><span class="line">ignore_thresh = .5</span><br><span class="line">truth_thresh = 1</span><br><span class="line">random=1           <span class="comment">#显存小的话 =0</span></span><br><span class="line"><span class="comment">#这个文件的最下面有3个YOLO层，这里我才放上来了一个，这三个地方的classes做相应修改</span></span><br><span class="line"><span class="comment">#每个YOLO层的上一层的convolutional层的filters也要修改</span></span><br></pre></td></tr></table></figure>
+<h1 id="开始训练"><a href="#开始训练" class="headerlink" title="开始训练"></a>开始训练</h1><p>下载预训练模型（权重）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https://pjreddie.com/media/files/darknet53.conv.74</span><br></pre></td></tr></table></figure>
+<p>训练：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./darknet detector train cfg/voc.data cfg/yolov3-voc.cfg darknet53.conv.74</span><br></pre></td></tr></table></figure>
+<h1 id="训练过程参数详解"><a href="#训练过程参数详解" class="headerlink" title="训练过程参数详解"></a>训练过程参数详解</h1><p>Region xx: cfg文件中yolo-layer的索引；</p>
+<p>Avg IOU:当前迭代中，预测的box与标注的box的平均交并比，越大越好，期望数值为1；</p>
+<p>Class: 标注物体的分类准确率，越大越好，期望数值为1；</p>
+<p>obj: 越大越好，期望数值为1；</p>
+<p>No obj: 越小越好；</p>
+<p>.5R: 以IOU=0.5为阈值时候的recall; recall = 检出的正样本/实际的正样本</p>
+<p>0.75R: 以IOU=0.75为阈值时候的recall;</p>
+<p>count:正样本数目。</p>
+<h1 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h1><ul>
+<li><a href="https://pjreddie.com/darknet/yolo/" target="_blank" rel="noopener">https://pjreddie.com/darknet/yolo/</a></li>
+<li><a href="https://blog.csdn.net/lilai619/article/details/79695109" target="_blank" rel="noopener">https://blog.csdn.net/lilai619/article/details/79695109</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/35490655" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/35490655</a></li>
+<li><a href="https://blog.csdn.net/ch_liu23/article/details/53558549" target="_blank" rel="noopener">https://blog.csdn.net/ch_liu23/article/details/53558549</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+        
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/编程/" rel="tag"># 编程</a>
+          
+            <a href="/tags/深度学习/" rel="tag"># 深度学习</a>
+          
+            <a href="/tags/yolo/" rel="tag"># yolo</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/05/Shell-批量重命名的方法总览/" rel="next" title="Shell-批量重命名的方法总览">
+                <i class="fa fa-chevron-left"></i> Shell-批量重命名的方法总览
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/11/AWS免费搭建ss教程/" rel="prev" title="AWS免费搭建ss教程">
+                AWS免费搭建ss教程 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Xiaoqiang Teng</p>
+              <p class="site-description motion-element" itemprop="description">Remember what should be remembered, and forget what should be forgotten.Alter what is changeable, and accept what is mutable.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">64</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">44</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#环境设置"><span class="nav-text">环境设置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#darknet配置"><span class="nav-text">darknet配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#制作自己的数据集"><span class="nav-text">制作自己的数据集</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据处理"><span class="nav-text">数据处理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置文件修改"><span class="nav-text">配置文件修改</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#开始训练"><span class="nav-text">开始训练</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#训练过程参数详解"><span class="nav-text">训练过程参数详解</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考："><span class="nav-text">参考：</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiaoqiang Teng</span>
+
+  
+</div>
+
+
+
+<div class="powered-by">
+<i class="fa fa-user-md"></i><span id="busuanzi_container_site_uv">
+  本站访客数:<span id="busuanzi_value_site_uv"></span>
+</span>
+</div>
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+<div>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style="display:none">
+    本站总访问量 <span id="busuanzi_value_site_pv"></span> 次
+    <span class="post-meta-divider">|</span>
+</span>
+<span id="busuanzi_container_site_uv" style="display:none">
+    有<span id="busuanzi_value_site_uv"></span>人看过我的博客啦
+</span>
+</div>
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
