@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="理论,姿态估计,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="1. 概述 Madgwick S. An efficient orientation filter for inertial and inertial/magnetic sensor arrays[J]. Report x-io and University of Bristol (UK), 2010, 25: 113-118. Madgwick S O H, Harrison A J L, Va">
+<meta name="keywords" content="理论,姿态估计">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vSLAMNet（五）-姿态估计-Madgwick算法">
+<meta property="og:url" content="http://yoursite.com/2019/12/07/vSLAMNet（五）-姿态估计-Madgwick算法/index.html">
+<meta property="og:site_name" content="学步">
+<meta property="og:description" content="1. 概述 Madgwick S. An efficient orientation filter for inertial and inertial/magnetic sensor arrays[J]. Report x-io and University of Bristol (UK), 2010, 25: 113-118. Madgwick S O H, Harrison A J L, Va">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-12-08-081943.png">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-12-08-125136.png">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-12-08-125811.png">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-12-08-125832.png">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-12-08-130056.png">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-12-08-130351.png">
+<meta property="og:updated_time" content="2019-12-08T13:35:51.603Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="vSLAMNet（五）-姿态估计-Madgwick算法">
+<meta name="twitter:description" content="1. 概述 Madgwick S. An efficient orientation filter for inertial and inertial/magnetic sensor arrays[J]. Report x-io and University of Bristol (UK), 2010, 25: 113-118. Madgwick S O H, Harrison A J L, Va">
+<meta name="twitter:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-12-08-081943.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/12/07/vSLAMNet（五）-姿态估计-Madgwick算法/">
+
+
+
+
+
+  <title>vSLAMNet（五）-姿态估计-Madgwick算法 | 学步</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">学步</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-编程">
+          <a href="/categories/programming" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            编程
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-学术">
+          <a href="/categories/science" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            学术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-理论">
+          <a href="/categories/theory" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            理论
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-其他">
+          <a href="/categories/other" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            其他
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+    
+  
+  
+
+  <article class="post post-type-normal true" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/07/vSLAMNet（五）-姿态估计-Madgwick算法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Xiaoqiang Teng">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="学步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">vSLAMNet（五）-姿态估计-Madgwick算法</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-07T22:37:52+08:00">
+                2019-12-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/theory/" itemprop="url" rel="index">
+                    <span itemprop="name">理论</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/theory/姿态估计/" itemprop="url" rel="index">
+                    <span itemprop="name">姿态估计</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h1><ul>
+<li>Madgwick S. An efficient orientation filter for inertial and inertial/magnetic sensor arrays[J]. Report x-io and University of Bristol (UK), 2010, 25: 113-118.</li>
+<li>Madgwick S O H, Harrison A J L, Vaidyanathan R. Estimation of IMU and MARG orientation using a gradient descent algorithm[C]//2011 IEEE international conference on rehabilitation robotics. IEEE, 2011: 1-7.</li>
+<li>位姿估计</li>
+<li>传感器<ul>
+<li>陀螺仪 + 加速度计</li>
+<li>陀螺仪 + 加速度计 + 磁力计</li>
+</ul>
+</li>
+<li>优点<ul>
+<li>计算量低，适用于轻量级设备</li>
+<li>适用于低采样频率</li>
+<li>仅有2个需要调的参数</li>
+</ul>
+</li>
+<li>核心思想<ul>
+<li>首先，通过陀螺仪的角速度初步计算传感器方向偏移$^{E}_{S}q_{w,t}$；然后，通过对重力加速度和地磁这两个恒定量在传感器坐标系下的投影计算传感器方向偏移$^{E}_{S}q_{\nabla,t}$；最后通过互补滤波器融合$^{E}_{S}q_{w,t}$和$^{E}_{S}q_{\nabla,t}$来得到一个更加可信的结果。除此之外还需要校正地磁计数据畸变和陀螺仪零点漂移。</li>
+</ul>
+</li>
+</ul>
+<h1 id="2-算法详解"><a href="#2-算法详解" class="headerlink" title="2. 算法详解"></a>2. 算法详解</h1><h2 id="2-1-陀螺仪姿态解算"><a href="#2-1-陀螺仪姿态解算" class="headerlink" title="2.1 陀螺仪姿态解算"></a>2.1 陀螺仪姿态解算</h2><ul>
+<li><p>主要思想</p>
+<ul>
+<li>建立四元数和陀螺仪读数之间的微分方程</li>
+<li>欧拉中值积分</li>
+</ul>
+</li>
+<li><p>坐标系定义</p>
+<ul>
+<li>世界坐标系E</li>
+<li>传感器坐标系S</li>
+<li>$^{S}_{E}q$表示坐标系E相对于坐标系S的单位旋转四元数</li>
+</ul>
+</li>
+<li>陀螺仪数据输出<ul>
+<li>$^{S}w = [0 w_x w_y w_z]$</li>
+</ul>
+</li>
+<li>地面参考系（Earth）相对于传感器参考系（Sensor）的旋转可以由其四元数的导数对时间的积分获得，$^{S}_{E}q_{w,t} = ^{S}_{E}\hat{q}_{est.t-1} + ^{S}_{E}q_{w,t}\Delta t$，其中$^{S}_{E}\dot{q} = \frac{1}{2}^{S}_{E}\hat{q} \otimes ^{S}w$，$^{S}_{E}\dot{q}$表示姿态四元数变化的速度。该公式中的角速度可以直接从传感器读出，上一时刻的位姿也是已知，时间间隔也可以从传感器芯片中的获得。可以轻松的计算出结果，下面推导下该公式</li>
+</ul>
+<p>已知t时刻的四元数$^{S}_{E}q_{t-1}$和角速度$^{S}w_{t-1}$、t时刻的加速度$^{S}w_t$，系统采样间隔为$\Delta t$，求t时刻的四元数$^{S}_{E}q_{t}$。</p>
+<p>基于常微分方程，套用中值积分公式，得到$^{S}_{E}q_t = ^{S}_{E}q_{t-1} + \frac{\Delta t}{2}(K_1 + K_2)$，其中，$K_1 = \frac{1}{2}^{S}_{E}q_{t-1}\otimes ^{S}w_{t-1}$和$K_2 = \frac{1}{2}(^{S}_{E}q_{t-1} + \Delta tK_1)\otimes^{S}w_t$。</p>
+<p>此处，近似估计物体四元数在t-1到t时刻之间的平均变化速度$^{S}_{E}\dot{q}_{w,t-1,t}$。在实际过程中，往往并不能得到t-1时刻的准确的四元数，二是一个最优的估计值$^{S}_{E}\hat{q}_{est,t-1}$。</p>
+<p>我们得到$^{S}_{E}\dot{q}_{w,t-1,t} = \frac{1}{2}(K_1 + K_2) = \frac{1}{2}(\frac{1}{2}^{S}_{E}\hat{q}_{est,t-1}\otimes ^{S}w_{t-1} + \frac{1}{2}(^{S}_{E}\hat{q}_{est,t-1} + \Delta t(\frac{1}{2}^{S}_{E}\hat{q}_{est,t-1}\otimes ^{S}w_{t-1})) \otimes ^{S}w_{t})$</p>
+<p>$^{S}_{E}q_{w,t} = ^{S}_{E}\hat{q}_{est,t-1} + ^{S}_{E}\dot{q}_{w,t-1,t}\Delta t$</p>
+<p>从而得到，</p>
+<p>$^{S}_{E}q_{w,t} = ^{S}_{E}\hat{q}_{est,t-1} + \frac{\Delta}{2}(\frac{1}{2}^{S}_{E}\hat{q}_{est,t-1}\otimes ^{S}w_{t-1} + \frac{1}{2}(^{S}_{E}\hat{q}_{est,t-1} + \Delta t(\frac{1}{2}^{S}_{E}\hat{q}_{est,t-1}\otimes ^{S}w_{t-1})) \otimes ^{S}w_{t})$</p>
+<p>以上迭代公式是计算精度要求较高时采用的。而在实际工程中，不要求如此的高精度而追求计算速度时，可采用以下的近似迭代公式。亦是参考<a href="https://www.cnblogs.com/ilekoaiq/p/8849217.html" target="_blank" rel="noopener">Madgwick算法详细解读</a>。</p>
+<p>在t-1时刻到t时刻之间的变化速度$^S_E\dot{q}_{w,t-1,t}$可近似为，</p>
+<p>$^S_E\dot{q}_{w,t-1,t} = \frac{1}{2}^S_E\hat{q}_{est,t-1}\otimes ^Sw_t$,</p>
+<p>所以，$^S_Eq_{w,t} = ^S_E\hat{q}_{est,t-1} + ^S_E\dot{q}_{w,t-1,t}\Delta t = ^S_E\hat{q}_{est,t-1} + (\frac{1}{2}^S_E\hat{q}_{est,t-1}\otimes ^Sw_t)\Delta t$.</p>
+<h2 id="2-2-加速度计和磁力计姿态解算"><a href="#2-2-加速度计和磁力计姿态解算" class="headerlink" title="2.2 加速度计和磁力计姿态解算"></a>2.2 加速度计和磁力计姿态解算</h2><ul>
+<li>传感器介绍<ul>
+<li>加速度计<ul>
+<li>测量重力和外界施加给物体的力产生的加速度的和</li>
+</ul>
+</li>
+<li>磁力计<ul>
+<li>测量地球磁场和外界地磁干扰在传感器坐标系下的磁通量</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>假设<ul>
+<li>该算法假设加速度计和磁力计分别仅仅观测重力和地球磁场</li>
+</ul>
+</li>
+<li>目标<ul>
+<li>利用加速度计和磁力计求解姿态$^{S}_{E}q_{\bigtriangledown, t}$</li>
+</ul>
+</li>
+</ul>
+<p>以上的推导参考<a href="https://www.cnblogs.com/ilekoaiq/p/8849217.html" target="_blank" rel="noopener">Madgwick算法详细解读</a>，推导思路同论文一致，只是有些符号定义不同。此外，论文中首先分别对加速度计读数和磁力计读数进行推导，然后组合在一起。以下的推导直接将加速度计读数和磁力计读数组合在一起。</p>
+<p>当物体静止朝北时，加速度计理论输出为$^{E}\hat{g} = [0\ 0\ 0\ 1]$，磁力计理论输出为$^E\hat{b} = [0\ b_x\ 0\ b_z]$，表示为实部为0的四元数。进一步地，我们得到向量$^E\hat{y} = [0\ 0\ 1\ b_x\ 0\ b_z]$。</p>
+<p>当物体运动后，在t时刻，我们得到新的加速度计和磁力计的向量分别为$^S\hat{a}_t = [0\ a_x\ a_y\ a_z]$和$^S\hat{m}_t = [0\ m_x\ m_y\ m_z]$。进一步地，我们得到新的向量$^S\hat{y}_t = [a_x\ a_y\ a_z\ m_x\ m_y\ m_z]$。</p>
+<p>设t时刻物体的姿态为$^{S}_{E}q_t$，那么根据四元数旋转可得到，</p>
+<p>$^S\hat{a}_t = ^{S}_{E}q_t \otimes ^E\hat{g} \otimes ^{S}_{E}q_t^*$,</p>
+<p>$^S\hat{m}_t = ^{S}_{E}q_t \otimes ^E\hat{b} \otimes ^{S}_{E}q_t^*$。</p>
+<p>利用旋转矩阵表示为，</p>
+<p>$^S\hat{a}_t^T = R_t ^E\hat{g}^T$，</p>
+<p>$^S\hat{m}_t^T = R_t ^E\hat{b}^T$,</p>
+<p>将$R_t$组合为新的矩阵$M_t$，</p>
+<p>$M_t = \left[<br> \begin{matrix}<br>   R_t &amp; 0 \\<br>   0 &amp; R_t<br>  \end{matrix}<br>  \right]$,</p>
+<p>那么，我们得到，</p>
+<p>$^S\hat{y}_t^T = M_t^E\hat{y}^T$.</p>
+<p>上式中，$^S\hat{y}_t$和$^E\hat{y}$是已知的，可以求出$^{S}_{E}q_t$，即估计值$^{S}_{E}\hat{q}_t = [q_0\ q_1\ q_2\ q_3]^T$，由此转换成$\hat{M}_t$，使得误差平方和$F(^{S}_{E}\hat{q}_t, ^E\hat{y}, ^S\hat{y}_t)$最小，得到如下优化方程，</p>
+<p>$\min_{^{S}_{E}\hat{q}_t\in R^4}F(^{S}_{E}\hat{q}_t, ^E\hat{y}, ^S\hat{y}_t)$,</p>
+<p>其中，$F(^{S}_{E}\hat{q}_t, ^E\hat{y}, ^S\hat{y}_t) = ||f(^{S}_{E}\hat{q}_t, ^E\hat{y}, ^S\hat{y}_t)||^2 = (\hat{M}_t\ ^E\hat{y}^T - ^S\hat{y}_t^T)^T(\hat{M}_t\ ^E\hat{y}^T - ^S\hat{y}_t^T)$。</p>
+<p>函数$f(\cdot)$回一个多元向量函数，采用数值解法，例如梯度下降法、牛顿法等。论文中采用梯度下降法。</p>
+<p>设$^{S}_{E}\hat{q}_t$的初值为$^{S}_{E}\hat{q}_{t,k}$，为4行1列矩阵，那么误差平方和为$F(^{S}_{E}\hat{q}_{t,k}, ^E\hat{y}, ^S\hat{y}_t$。假设初值四元数需要修正的量为$\bigtriangledown f(^{S}_{E}\hat{q}_{t,k}, ^E\hat{y}, ^S\hat{y}_t)$，那么修正后的误差平方和为$F(^{S}_{E}\hat{q}_{t,k} + \bigtriangledown f, ^E\hat{y}, ^S\hat{y}_t)$。</p>
+<p>由泰勒公式展开得到，</p>
+<p>$F(^{S}_{E}\hat{q}_{t,k} + \bigtriangledown f, ^E\hat{y}, ^S\hat{y}_t) = F(^{S}_{E}\hat{q}_{t,k}, ^E\hat{y}, ^S\hat{y}_t) + \frac{\partial F(^{S}_{E}\hat{q}_{t,k}, ^E\hat{y}, ^S\hat{y}_t)}{\partial q}\bigtriangledown f + O(||\bigtriangledown f||^2) \approx F(^{S}_{E}\hat{q}_{t,k}, ^E\hat{y}, ^S\hat{y}_t) + \frac{\partial F(^{S}_{E}\hat{q}_{t,k}, ^E\hat{y}, ^S\hat{y}_t)}{\partial q}\bigtriangledown f$,</p>
+<p>其中，$\bigtriangledown f$为4行1列矩阵，$\frac{\partial F(^{S}_{E}\hat{q}_{t,k}, ^E\hat{y}, ^S\hat{y}_t)}{\partial q}$为1行4列矩阵，得到，</p>
+<p>$\frac{\partial F(^{S}_{E}\hat{q}_{t,k}, ^E\hat{y}, ^S\hat{y}_t)}{\partial q} = [\frac{\partial F}{\partial q_0}\ \frac{\partial F}{\partial q_1}\ \frac{\partial F}{\partial q_2}\ \frac{\partial F}{\partial q_3}]$，</p>
+<p>那么，梯度为，</p>
+<p>$\lim_{\bigtriangledown f\rightarrow 0}\frac{F(^{S}_{E}\hat{q}_{t,k} + \bigtriangledown f, ^E\hat{y}, ^S\hat{y}_t) - F(^{S}_{E}\hat{q}_{t,k}, ^E\hat{y}, ^S\hat{y}_t)}{||\bigtriangledown f||} = \frac{\partial F(^{S}_{E}\hat{q}_{t,k}, ^E\hat{y}, ^S\hat{y}_t)}{\partial q}\frac{\bigtriangledown f}{||\bigtriangledown f||} = ||\frac{\partial F(^{S}_{E}\hat{q}_{t,k}, ^E\hat{y}, ^S\hat{y}_t)}{\partial q}||\cos \theta$,</p>
+<p>其中，$\theta$为向量$(\frac{\partial F(^{S}_{E}\hat{q}_{t,k}, ^E\hat{y}, ^S\hat{y}_t)}{\partial q})^T$与单位向量$\frac{\bigtriangledown f}{||\bigtriangledown f||}$的夹角。当$\theta = \pi$时，误差平方和下降最快。因此，我们得到，</p>
+<p>$\bigtriangledown f = -\rho (\frac{\partial F(^{S}_{E}\hat{q}_{t,k}, ^E\hat{y}, ^S\hat{y}_t)}{\partial q})^T$,</p>
+<p>其中，$\rho$为一个大于0的比例系数。上式中的$F(^{S}_{E}\hat{q}_{t,k}, ^E\hat{y}, ^S\hat{y}_t)$关于四元数q的偏导计算为，</p>
+<p>$\frac{\partial F(^{S}_{E}\hat{q}_{t,k}, ^E\hat{y}, ^S\hat{y}_t)}{\partial q} = \frac{\partial (f^T(^{S}_{E}\hat{q}_t, ^E\hat{y}, ^S\hat{y}_t)f(^{S}_{E}\hat{q}_t, ^E\hat{y}, ^S\hat{y}_t))}{\partial q}$</p>
+<p>$= [\frac{\partial (f_{11}^2 + f_{21}^2 + \cdots + f_{61}^2)}{\partial q_0}\ \frac{\partial (f_{11}^2 + f_{21}^2 + \cdots + f_{61}^2)}{\partial q_1}\ \frac{\partial (f_{11}^2 + f_{21}^2 + \cdots + f_{61}^2)}{\partial q_2}\ \frac{\partial (f_{11}^2 + f_{21}^2 + \cdots + f_{61}^2)}{\partial q_3}]$</p>
+<p>$= [2f_{11}\frac{\partial f_{11}}{\partial q_0} + \cdots + 2f_{61}\frac{\partial f_{61}}{\partial q_0}\ 2f_{11}\frac{\partial f_{11}}{\partial q_1} + \cdots + 2f_{61}\frac{\partial f_{61}}{\partial q_1}\ 2f_{11}\frac{\partial f_{11}}{\partial q_2} + \cdots + 2f_{61}\frac{\partial f_{61}}{\partial q_2}\ 2f_{11}\frac{\partial f_{11}}{\partial q_3} + \cdots + 2f_{61}\frac{\partial f_{61}}{\partial q_3}]$</p>
+<p>$= 2f^T(^{S}_{E}\hat{q}_t, ^E\hat{y}, ^S\hat{y}_t)\frac{\partial f(^{S}_{E}\hat{q}_t, ^E\hat{y}, ^S\hat{y}_t)}{\partial q}$,</p>
+<p>其中，$f_{ij}$表示$f(^{S}_{E}\hat{q}_t, ^E\hat{y}, ^S\hat{y}_t)$中第i行第j列元素。$f(^{S}_{E}\hat{q}_t, ^E\hat{y}, ^S\hat{y}_t)$的表达式为，</p>
+<p>$f(^{S}_{E}\hat{q}_t, ^E\hat{y}, ^S\hat{y}_t) = \hat{M}_t\ ^E\hat{y}^T - ^S\hat{y}_t^T$</p>
+<p>$= \left[<br>\begin{matrix}<br>    2(q_1q_3 - q_0q_2) - a_x \\<br>    2(q_0q_1 + q_2q_3) - a_y \\<br>    2(\frac{1}{2} - q_1^2 - q_2^2) \\<br>    2b_x(\frac{1}{2} - q_2^2 - q_3^2) + 2b_z(q_1q_3 - q_0q_2) - m_x \\<br>    2b_x(q_1q_2 - q_0q_3) + 2b_z(q_0q_1 + q_1q_3) - m_y \\<br>    2b_x(q_0q_2 + q_1q_3) + 2b_z(\frac{1}{2} - q_1^2 - q_2^2) - m_z<br>\end{matrix}<br>\right]$.</p>
+<p>而$\frac{\partial f(^{S}_{E}\hat{q}_{t,k}, ^E\hat{y}, ^S\hat{y}_t)}{\partial q}$是$f(^{S}_{E}\hat{q}_{t,k}, ^E\hat{y}, ^S\hat{y}_t)$关于四元数的偏导，其雅可比矩阵为，</p>
+<p>$\frac{\partial F(^{S}_{E}\hat{q}_{t,k}, ^E\hat{y}, ^S\hat{y}_t)}{\partial q} = J(^{S}_{E}\hat{q}_{t,k}, ^E\hat{y}, ^S\hat{y}_t))$</p>
+<p>$ = [\frac{\partial f(^{S}_{E}\hat{q}_{t,k}, ^E\hat{y}, ^S\hat{y}_t)}{\partial q_0}\ \frac{\partial f(^{S}_{E}\hat{q}_{t,k}, ^E\hat{y}, ^S\hat{y}_t)}{\partial q_1}\ \frac{\partial f(^{S}_{E}\hat{q}_{t,k}, ^E\hat{y}, ^S\hat{y}_t)}{\partial q_2}\ \frac{\partial f(^{S}_{E}\hat{q}_{t,k}, ^E\hat{y}, ^S\hat{y}_t)}{\partial q_3}]$</p>
+<p>$= \left[<br>\begin{matrix}<br>    -2q_2 &amp; 2q_3 &amp; -2q_0 &amp; 2q_1 \\<br>    2q_1 &amp; 2q_0 &amp; 2q_3 &amp; 2q_2 \\<br>    0 &amp; -4q_1 &amp; -4q_2 &amp; 0 \\<br>    -2b_zq_2 &amp; 2b_zq_3 &amp; -4b_xq_2 - 2b_zq_0 &amp; -4b_xq_3 + 2b_zq_1 \\<br>    -2b_xq_3 + 2b_zq_1 &amp; 2b_xq_2 + 2b_zq_0 &amp; 2b_xq_1 + 2b_zq_3 &amp; -2b_xq_0 + 2b_zq_2 \\<br>    2b_xq_2 &amp; 2b_xq_3 - 4b_zq_1 &amp; 2b_xq_0 - 4b_zq_2 &amp; 2b_xq_1<br>\end{matrix}<br>\right]$,</p>
+<p>因此，$\bigtriangledown f$的计算为，</p>
+<p>$\bigtriangledown f(^{S}_{E}\hat{q}_t, ^E\hat{y}, ^S\hat{y}_t) = -rho(2f^T(^{S}_{E}\hat{q}_t, ^E\hat{y}, ^S\hat{y}_t)J(^{S}_{E}\hat{q}_t, ^E\hat{y}, ^S\hat{y}_t))^T$</p>
+<p>$= -2\rho J^T(^{S}_{E}\hat{q}_t, ^E\hat{y}, ^S\hat{y}_t)f(^{S}_{E}\hat{q}_t, ^E\hat{y}, ^S\hat{y}_t)$.</p>
+<p>进行归一化，除以其范数，得到梯度方向为，</p>
+<p>$\frac{\bigtriangledown f(^{S}_{E}\hat{q}_t, ^E\hat{y}, ^S\hat{y}_t)}{||\bigtriangledown f(^{S}_{E}\hat{q}_t, ^E\hat{y}, ^S\hat{y}_t)||} = \frac{-2\rho J^T(^{S}_{E}\hat{q}_t, ^E\hat{y}, ^S\hat{y}_t)f(^{S}_{E}\hat{q}_t, ^E\hat{y}, ^S\hat{y}_t)}{||-2\rho J^T(^{S}_{E}\hat{q}_t, ^E\hat{y}, ^S\hat{y}_t)f(^{S}_{E}\hat{q}_t, ^E\hat{y}, ^S\hat{y}_t)||}$</p>
+<p>$= \frac{-J^T(^{S}_{E}\hat{q}_t, ^E\hat{y}, ^S\hat{y}_t)f(^{S}_{E}\hat{q}_t, ^E\hat{y}, ^S\hat{y}_t)}{||-J^T(^{S}_{E}\hat{q}_t, ^E\hat{y}, ^S\hat{y}_t)f(^{S}_{E}\hat{q}_t, ^E\hat{y}, ^S\hat{y}_t)||}$,</p>
+<p>然后再乘以步长$\mu_t$就得到各个变量要改变的值。因此，各个自变量现有的值加上要修正的量，得到新的$^S_E\hat{q}_t$的估计为，</p>
+<p>$^S_E\hat{q}_{t,k} = ^S_E\hat{q}_{t,k-1} + \frac{\bigtriangledown f(^{S}_{E}\hat{q}_t, ^E\hat{y}, ^S\hat{y}_t)}{||\bigtriangledown f(^{S}_{E}\hat{q}_t, ^E\hat{y}, ^S\hat{y}_t)||}\mu_t$,</p>
+<p>其中，$k = 1, 2, \cdots, n$.</p>
+<p>如此迭代下去，用上一时刻的姿态$^S_E\hat{q}_{est,t-1}$作为初值$^S_E\hat{q}_{t,0}$，即已知上一次的估计$^S_E\hat{q}_{t,k}$，代入上述公式中，进行多次迭代，直到$F(^{S}_{E}\hat{q}_{t,k}, ^E\hat{y}, ^S\hat{y}_t)$小于某一阈值，或者经过多次迭代，直到满足$F(^{S}_{E}\hat{q}_{t,k}, ^E\hat{y}, ^S\hat{y}_t) - F(^{S}_{E}\hat{q}_{t,k-1}, ^E\hat{y}, ^S\hat{y}_t) \geq 0$，此时，$^S_E\hat{q}_{t,k}$为$^S_E\hat{q}_{t}$的最佳估计值。</p>
+<p>以上迭代公式是计算精度要求较高时采用的。而在实际工程中，不要求如此的高精度而追求计算速度时，可采用以下的近似迭代公式。亦是参考<a href="https://www.cnblogs.com/ilekoaiq/p/8849217.html" target="_blank" rel="noopener">Madgwick算法详细解读</a>。</p>
+<p>梯度下降法的迭代过程，也可以只用一步来简化，即认为一步就可以近似达到最佳估计值。那就是要设置步长$\mu_t$，使得迭代一次就能够接近最佳估计值，</p>
+<p>$\mu_t = \eta||^S_E\dot{q}_{w,t-1,t}||\Delta t$，其中，$\eta \geq 1$，是一个根据实际情况调节的量，用来弥补加速度计和磁力计的测量误差。</p>
+<p>因此，简化后的$^S_Eq_{\bigtriangledown, t}$为，</p>
+<p>$^S_Eq_{\bigtriangledown, t} = ^S_E\hat{q}_{est,t-1} - \mu_t\frac{\bigtriangledown f(^{S}_{E}\hat{q}_{est,t-1}, ^E\hat{y}, ^S\hat{y}_t)}{||\bigtriangledown f(^{S}_{E}\hat{q}_{est,t-1}, ^E\hat{y}, ^S\hat{y}_t)||}$</p>
+<p>$= ^S_E\hat{q}_{est,t-1} - (\eta||^S_E\dot{q}_{w,t-1,t}||\Delta t)\frac{\bigtriangledown f(^{S}_{E}\hat{q}_{est,t-1}, ^E\hat{y}, ^S\hat{y}_t)}{||\bigtriangledown f(^{S}_{E}\hat{q}_{est,t-1}, ^E\hat{y}, ^S\hat{y}_t)||}$</p>
+<p>$^S_E\hat{q}_{est,t-1} - (\eta||\frac{1}{2}^S_E\hat{q}_{est,t-1}\otimes ^Sw_t||\Delta t)\frac{\bigtriangledown f(^{S}_{E}\hat{q}_{est,t-1}, ^E\hat{y}, ^S\hat{y}_t)}{||\bigtriangledown f(^{S}_{E}\hat{q}_{est,t-1}, ^E\hat{y}, ^S\hat{y}_t)||}$</p>
+<h2 id="2-3-加权融合"><a href="#2-3-加权融合" class="headerlink" title="2.3 加权融合"></a>2.3 加权融合</h2><p>互补滤波的方法将两个部分的加权平均，</p>
+<p>$^S_Eq_{est,t} = \alpha_1\ ^S_Eq_{w,t} + \alpha_2\ ^S_Eq_{\bigtriangledown,t}$,</p>
+<p>其中，$\alpha_1 + \alpha_2 = 1$，$0 \leq \alpha_1 \leq 1$，$0 \leq \alpha_2 \leq 1$。$\alpha_1$和$\alpha_2$是加权系数，它们是由各自的误差占总体误差的比重所决定的，误差所占的比重越小则加权系数越大。</p>
+<p>设采样间隔为$\Delta t$，陀螺仪的单位误差$\beta$可以通过查手册得到，那么陀螺仪的误差为$\beta \Delta t$。而加速度计磁场计共同算出的姿态的误差是由计算方法决定的，计算方法如梯度下降法、高斯牛顿迭代法、牛顿法、共轭梯度法等，由于采用的方法是梯度下降法，所以其误差为梯度下降法中所选取的步长$\mu_t$，步长越长则其计算结果的误差越大。所以，总体误差为$\beta \Delta t + \mu_t$。</p>
+<p>$\alpha_1$是陀螺仪的姿态加权系数，$\alpha_1 = 1 - \frac{\beta \Delta t}{\beta \Delta t + \mu_t}$。</p>
+<p>$\alpha_2$是加速度计和磁力计的姿态加权系数，$\alpha_2 = \alpha_1 = 1 - \frac{\mu_t}{\beta \Delta t + \mu_t}$。</p>
+<p>所以，</p>
+<p>$^S_Eq_{est,t} = \alpha_1\ ^S_Eq_{w,t} + \alpha_2\ ^S_Eq_{\bigtriangledown,t}$</p>
+<p>$= (1-\frac{\beta\Delta t}{\beta\Delta t + \mu_t})(^S_E\hat{q}_{est,t-1} + ^S_E\dot{q}_{w,t-1,t}\Delta t) + (1-\frac{\mu_t}{\beta\Delta t + \mu_t})(^S_E\hat{q}_{est,t-1} - \mu_t\frac{\bigtriangledown f(^{S}_{E}\hat{q}_{est,t-1}, ^E\hat{y}, ^S\hat{y}_t)}{||\bigtriangledown f(^{S}_{E}\hat{q}_{est,t-1}, ^E\hat{y}, ^S\hat{y}_t)||})$</p>
+<p>$= ^S_E\hat{q}_{est,t-1} + \frac{\mu_t}{\beta\Delta t + \mu_t}^S_E\dot{q}_{w,t-1,t}\Delta t - \frac{\beta\Delta t}{\beta\Delta t + \mu_t}\mu_t\frac{\bigtriangledown f(^{S}_{E}\hat{q}_{est,t-1}, ^E\hat{y}, ^S\hat{y}_t)}{||\bigtriangledown f(^{S}_{E}\hat{q}_{est,t-1}, ^E\hat{y}, ^S\hat{y}_t)||}$</p>
+<p>$= ^S_E\hat{q}_{est,t-1} + \frac{\eta||^S_E\dot{q}_{w,t-1,t}||\Delta t}{\beta\Delta t + \eta||^S_E\dot{q}_{w,t-1,t}||\Delta t}^S_E\dot{q}_{w,t-1,t}\Delta t - \frac{\beta\Delta t}{\beta\Delta t + \eta||^S_E\dot{q}_{w,t-1,t}||}\eta||^S_E\dot{q}_{w,t-1,t}||\Delta t\frac{\bigtriangledown f(^{S}_{E}\hat{q}_{est,t-1}, ^E\hat{y}, ^S\hat{y}_t)}{||\bigtriangledown f(^{S}_{E}\hat{q}_{est,t-1}, ^E\hat{y}, ^S\hat{y}_t)||}$</p>
+<p>$= ^S_E\hat{q}_{est,t-1}+ \frac{\eta||^S_E\hat{q}_{est,t-1}||}{\beta + \eta||^S_E\hat{q}_{est,t-1}||}(\frac{1}{2}^S_E\hat{q}_{est,t-1}\otimes ^Sw_t)\Delta t - \frac{\beta}{\beta + \eta||^S_E\hat{q}_{est,t-1}||}\eta||\frac{1}{2}^S_E\hat{q}_{est,t-1}\otimes ^Sw_t||\Delta t\frac{\bigtriangledown f(^{S}_{E}\hat{q}_{est,t-1}, ^E\hat{y}, ^S\hat{y}_t)}{||\bigtriangledown f(^{S}_{E}\hat{q}_{est,t-1}, ^E\hat{y}, ^S\hat{y}_t)||}$.</p>
+<h2 id="2-4-系统流程图"><a href="#2-4-系统流程图" class="headerlink" title="2.4 系统流程图"></a>2.4 系统流程图</h2><p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-12-08-081943.png" alt="image-20191208161930373" style="zoom:50%;"></p>
+<h2 id="2-5-磁力计校准"><a href="#2-5-磁力计校准" class="headerlink" title="2.5 磁力计校准"></a>2.5 磁力计校准</h2><ul>
+<li>磁力计易受外界地磁干扰，导致地磁测量数据误差较大</li>
+<li>磁力计本身也具有误差，例如漂移、制造误差等</li>
+<li><p>如果使用磁力计估计姿态，为了获取精确地姿态，需要对磁力计进行校准</p>
+</li>
+<li><p>主要思想</p>
+<ul>
+<li>利用加速度计来校准磁力计</li>
+<li>因为加速度计不收外界干扰，仅有其自身传感器相关误差</li>
+<li>采用最优化算法来估计最优姿态，继而校准磁力计</li>
+</ul>
+</li>
+</ul>
+<p>根据论文和参考<a href="https://www.cnblogs.com/ilekoaiq/p/8849217.html" target="_blank" rel="noopener">Madgwick算法详细解读</a>，磁力计校准过程描述如下。</p>
+<p>在传感器刚开始运行的时候，即第一帧的时候，传感器可能处于任意一种姿态，几乎不会是水平静止朝北的，所以磁场计的输出$^S\hat{m}_0$几乎不会是$^E\hat{b}_0$。所以，$^E\hat{b}_0$是未知的。此时，可利用加速度计来估计姿态，</p>
+<p>$^S\hat{a}_0 = ^S_Eq_0 \otimes ^E\hat{g} \otimes ^S_Eq^*_0$,</p>
+<p>用旋转矩阵R表示为，</p>
+<p>$^S\hat{a}_0^T = R ^E\hat{g}$.</p>
+<p>在上式中，$^S\hat{a}_0$和$^E\hat{g}$是已知的，所以可以由上式再反过来去求出第一帧的姿态$^S_Eq_0$，转换成R，使得f最小，</p>
+<p>$\epsilon = R\ ^E\hat{g}^T - ^S\hat{a}^T_0$,</p>
+<p>$f = \epsilon^T\epsilon = (R\ ^E\hat{g}^T - ^S\hat{a}_0^T)^T(R\ ^E\hat{g}^T - ^S\hat{a}_0^T)$.</p>
+<p>用高斯牛顿迭代法来寻找这个最佳的四元数，其雅克比矩阵为，</p>
+<p>$J = [\frac{\partial \epsilon}{\partial q_0}\ \frac{\partial \epsilon}{\partial q_1}\ \frac{\partial \epsilon}{\partial q_2}\ \frac{\partial \epsilon}{\partial q_3}]$.</p>
+<p>假设当前四元数各个元素的误差为4行1列的矩阵x，那么$Jx = \epsilon$。采用最小二乘法计算x，</p>
+<p>$x = (J^TJ)^{-1}\epsilon$.</p>
+<p>所以，现有的四元数的值减去误差，得到新的四元数，</p>
+<p>$,^S_E\hat{q}_{0,k+1} = ^S_E\hat{q}_{0,k} - x = ^S_E\hat{q}_{0,k+1} - (J^TJ)^{-1}J^T\epsilon$</p>
+<p>其中，$^S_E\hat{q}_{0}$的初始值可以设为$[1\ 0\ 0\ 0]$。</p>
+<p>重复上述公式，迭代多次，直到f达到最小值。</p>
+<p>于是就得到加速度计估计出的第一帧的姿态$^S_E\hat{q}_{0}$。</p>
+<p>根据四元数的坐标系旋转性质，可以把坐标系转到水平的位置上，但并不能保证朝北。对于向量来讲，坐标系逆着四元数转回去，就相当于是向量顺着四元数继续转，得到在这个水平坐标系中的磁场的向量$^E\hat{h}_0$。</p>
+<p>其中，$h_x$和$h_y$是$b_x$在这个坐标系中的x轴和y轴上的分量，得到$^E\hat{b}_0 = [0\ \sqrt{h_x^2 + h_y^2}\ 0\ h_z]$.</p>
+<p>以上是第一帧的时候得到$^E\hat{b}_0$的方法。</p>
+<p>再将加速度计估计出来的姿态$^S_E\hat{q}_{0}$作为初值，将$^E\hat{g}$、$^S\hat{a}_0$、$^E\hat{b}_0$、$^S\hat{m}_0$代入之前公式中，用梯度下降法迭代，得到高精度的第一帧的姿态$^S_E\hat{q}_{0}$。</p>
+<p>当物体发生运动之后，由于周围环境的影响，每一帧都要对$^E\hat{b}_t$进行修正，假设上一针的最佳的姿态估计为$^S_R\hat{q}_{est,t-1}$，那么这一帧的$^E\hat{b}_t$为</p>
+<p>$^E\hat{h}_t = [0\ h_x\ h_y\ h_z] = ^S_R\hat{q}_{est,t-1} \otimes ^S\hat{m}_t \otimes ^S_R\hat{q}_{est,t-1}^*$,</p>
+<p>$^E\hat{b}_t  = [0\ \sqrt{h_x^2 + h_y^2}\ 0\ h_z]$.</p>
+<p>这样的校准计算可以将外界的电磁干扰影响约束在对传感器指向的方向估计中。而且不需要预先给定地磁方向。</p>
+<h2 id="2-6-陀螺仪零点漂移校准"><a href="#2-6-陀螺仪零点漂移校准" class="headerlink" title="2.6 陀螺仪零点漂移校准"></a>2.6 陀螺仪零点漂移校准</h2><ul>
+<li>陀螺仪的零飘受温度和运动等因素的影响</li>
+<li>本文提出陀螺仪的零飘可通过姿态变化率来进行弥补</li>
+</ul>
+<p>修正方法如下：</p>
+<p>$^S_E\dot{\hat{q}}_{\epsilon}$代表了陀螺仪在各个轴的角误差，使用前文提到的$^S_E\dot{q}_{w,t} = \frac{1}{2}^S_E\hat{q}_{est,t-1}\otimes ^Sw_t$公式的逆运算可以得出陀螺仪当前度数的可能偏差为$^Sw_{\epsilon, t} = 2^S_E\hat{q}^*_{est,t-1}\otimes ^S_E\dot{\hat{q}}_{\epsilon,t}$。</p>
+<p>那么，陀螺仪随着时间的漂移量为$^Sw_{b,t} = \zeta\sum\ ^Sw_{\epsilon,t}\Delta t$。</p>
+<p>最后，得到校正后的陀螺仪读数为$^Sw_{\epsilon,t} = ^Sw_{t} - ^Sw_{b,t}$。</p>
+<h2 id="2-7-算法的整体流程"><a href="#2-7-算法的整体流程" class="headerlink" title="2.7 算法的整体流程"></a>2.7 算法的整体流程</h2><p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-12-08-125136.png" alt="image-20191208205128064"></p>
+<h1 id="3-实验评测"><a href="#3-实验评测" class="headerlink" title="3. 实验评测"></a>3. 实验评测</h1><h2 id="3-1-实验设置"><a href="#3-1-实验设置" class="headerlink" title="3.1 实验设置"></a>3.1 实验设置</h2><ul>
+<li>传感器<ul>
+<li>xsens MTx orientation sensor</li>
+<li>tri-axis gyroscopes, accelerometers and magnetometers</li>
+<li>512 Hz</li>
+</ul>
+</li>
+<li>对比算法<ul>
+<li>Kalman-based orientation filter</li>
+</ul>
+</li>
+<li>真值<ul>
+<li>A Vicon system</li>
+</ul>
+</li>
+</ul>
+<h2 id="3-2-实验结果"><a href="#3-2-实验结果" class="headerlink" title="3.2 实验结果"></a>3.2 实验结果</h2><p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-12-08-125811.png" alt="image-20191208205742715"></p>
+<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-12-08-125832.png" alt="image-20191208205816720"></p>
+<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-12-08-130056.png" alt="image-20191208205959230"></p>
+<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-12-08-130351.png" alt="image-20191208210044291"></p>
+<h1 id="5-代码实现"><a href="#5-代码实现" class="headerlink" title="5. 代码实现"></a>5. 代码实现</h1><h2 id="5-1-论文源码"><a href="#5-1-论文源码" class="headerlink" title="5.1 论文源码"></a>5.1 论文源码</h2><ul>
+<li>加速度计和陀螺仪</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;math.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// System constants</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> deltat 0.001f <span class="comment">// sampling period in seconds (shown as 1 ms)</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> gyroMeasError 3.14159265358979f * (5.0f / 180.0f) <span class="comment">// gyroscope measurement error in rad/s (shown as 5 deg/s)</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> beta sqrt(3.0f / 4.0f) * gyroMeasError <span class="comment">// compute beta</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Global system variables</span></span><br><span class="line"><span class="keyword">float</span> a_x, a_y, a_z; <span class="comment">// accelerometer measurements</span></span><br><span class="line"><span class="keyword">float</span> w_x, w_y, w_z; <span class="comment">// gyroscope measurements in rad/s</span></span><br><span class="line"><span class="keyword">float</span> SEq_1 = <span class="number">1.0f</span>, SEq_2 = <span class="number">0.0f</span>, SEq_3 = <span class="number">0.0f</span>, SEq_4 = <span class="number">0.0f</span>; <span class="comment">// estimated orientation quaternion elements with initial conditions</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">filterUpdate</span><span class="params">(<span class="keyword">float</span> w_x, <span class="keyword">float</span> w_y, <span class="keyword">float</span> w_z, <span class="keyword">float</span> a_x, <span class="keyword">float</span> a_y, <span class="keyword">float</span> a_z)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// Local system variables</span></span><br><span class="line">  <span class="keyword">float</span> norm; <span class="comment">// vector norm</span></span><br><span class="line">  <span class="keyword">float</span> SEqDot_omega_1, SEqDot_omega_2, SEqDot_omega_3, SEqDot_omega_4; <span class="comment">// quaternion derrivative from gyroscopes elements</span></span><br><span class="line">  <span class="keyword">float</span> f_1, f_2, f_3; <span class="comment">// objective function elements</span></span><br><span class="line">  <span class="keyword">float</span> J_11or24, J_12or23, J_13or22, J_14or21, J_32, J_33; <span class="comment">// objective function Jacobian elements</span></span><br><span class="line">  <span class="keyword">float</span> SEqHatDot_1, SEqHatDot_2, SEqHatDot_3, SEqHatDot_4; <span class="comment">// estimated direction of the gyroscope error</span></span><br><span class="line">  <span class="comment">// Axulirary variables to avoid reapeated calcualtions</span></span><br><span class="line">  <span class="keyword">float</span> halfSEq_1 = <span class="number">0.5f</span> * SEq_1;</span><br><span class="line">  <span class="keyword">float</span> halfSEq_2 = <span class="number">0.5f</span> * SEq_2;</span><br><span class="line">  <span class="keyword">float</span> halfSEq_3 = <span class="number">0.5f</span> * SEq_3;</span><br><span class="line">  <span class="keyword">float</span> halfSEq_4 = <span class="number">0.5f</span> * SEq_4;</span><br><span class="line">  <span class="keyword">float</span> twoSEq_1 = <span class="number">2.0f</span> * SEq_1;</span><br><span class="line">  <span class="keyword">float</span> twoSEq_2 = <span class="number">2.0f</span> * SEq_2;</span><br><span class="line">  <span class="keyword">float</span> twoSEq_3 = <span class="number">2.0f</span> * SEq_3;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// Normalise the accelerometer measurement</span></span><br><span class="line">  norm = <span class="built_in">sqrt</span>(a_x * a_x + a_y * a_y + a_z * a_z);</span><br><span class="line">  a_x /= norm;</span><br><span class="line">  a_y /= norm;</span><br><span class="line">  a_z /= norm;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// Compute the objective function and Jacobian</span></span><br><span class="line">  f_1 = twoSEq_2 * SEq_4 - twoSEq_1 * SEq_3 - a_x;</span><br><span class="line">  f_2 = twoSEq_1 * SEq_2 + twoSEq_3 * SEq_4 - a_y;</span><br><span class="line">  f_3 = <span class="number">1.0f</span> - twoSEq_2 * SEq_2 - twoSEq_3 * SEq_3 - a_z;</span><br><span class="line">  J_11or24 = twoSEq_3; <span class="comment">// J_11 negated in matrix multiplication</span></span><br><span class="line">  J_12or23 = <span class="number">2.0f</span> * SEq_4;</span><br><span class="line">  J_13or22 = twoSEq_1; <span class="comment">// J_12 negated in matrix multiplication</span></span><br><span class="line">  J_14or21 = twoSEq_2;</span><br><span class="line">  J_32 = <span class="number">2.0f</span> * J_14or21; <span class="comment">// negated in matrix multiplication</span></span><br><span class="line">  J_33 = <span class="number">2.0f</span> * J_11or24; <span class="comment">// negated in matrix multiplication</span></span><br><span class="line">  </span><br><span class="line">  <span class="comment">// Compute the gradient (matrix multiplication)</span></span><br><span class="line">  SEqHatDot_1 = J_14or21 * f_2 - J_11or24 * f_1;</span><br><span class="line">  SEqHatDot_2 = J_12or23 * f_1 + J_13or22 * f_2 - J_32 * f_3;</span><br><span class="line">  SEqHatDot_3 = J_12or23 * f_2 - J_33 * f_3 - J_13or22 * f_1;</span><br><span class="line">  SEqHatDot_4 = J_14or21 * f_1 + J_11or24 * f_2;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// Normalise the gradient</span></span><br><span class="line">  norm = <span class="built_in">sqrt</span>(SEqHatDot_1 * SEqHatDot_1 + SEqHatDot_2 * SEqHatDot_2 + SEqHatDot_3 * SEqHatDot_3 + SEqHatDot_4 * SEqHatDot_4);</span><br><span class="line">  SEqHatDot_1 /= norm;</span><br><span class="line">  SEqHatDot_2 /= norm;</span><br><span class="line">  SEqHatDot_3 /= norm;</span><br><span class="line">  SEqHatDot_4 /= norm;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// Compute the quaternion derrivative measured by gyroscopes</span></span><br><span class="line">  SEqDot_omega_1 = -halfSEq_2 * w_x - halfSEq_3 * w_y - halfSEq_4 * w_z;</span><br><span class="line">  SEqDot_omega_2 = halfSEq_1 * w_x + halfSEq_3 * w_z - halfSEq_4 * w_y;</span><br><span class="line">  SEqDot_omega_3 = halfSEq_1 * w_y - halfSEq_2 * w_z + halfSEq_4 * w_x;</span><br><span class="line">  SEqDot_omega_4 = halfSEq_1 * w_z + halfSEq_2 * w_y - halfSEq_3 * w_x;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// Compute then integrate the estimated quaternion derrivative</span></span><br><span class="line">  SEq_1 += (SEqDot_omega_1 - (beta * SEqHatDot_1)) * deltat;</span><br><span class="line">  SEq_2 += (SEqDot_omega_2 - (beta * SEqHatDot_2)) * deltat;</span><br><span class="line">  SEq_3 += (SEqDot_omega_3 - (beta * SEqHatDot_3)) * deltat;</span><br><span class="line">  SEq_4 += (SEqDot_omega_4 - (beta * SEqHatDot_4)) * deltat;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// Normalise quaternion</span></span><br><span class="line">  norm = <span class="built_in">sqrt</span>(SEq_1 * SEq_1 + SEq_2 * SEq_2 + SEq_3 * SEq_3 + SEq_4 * SEq_4);</span><br><span class="line">  SEq_1 /= norm;</span><br><span class="line">  SEq_2 /= norm;</span><br><span class="line">  SEq_3 /= norm;</span><br><span class="line">  SEq_4 /= norm;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>加速度计、陀螺仪和磁力计</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Math library required for `sqrt'</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;math.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// System constants</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> deltat 0.001f <span class="comment">// sampling period in seconds (shown as 1 ms)</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> gyroMeasError 3.14159265358979 * (5.0f / 180.0f) <span class="comment">// gyroscope measurement error in rad/s (shown as 5 deg/s)</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> gyroMeasDrift 3.14159265358979 * (0.2f / 180.0f) <span class="comment">// gyroscope measurement error in rad/s/s (shown as 0.2f deg/s/s)</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> beta sqrt(3.0f / 4.0f) * gyroMeasError <span class="comment">// compute beta</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> zeta sqrt(3.0f / 4.0f) * gyroMeasDrift <span class="comment">// compute zeta</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Global system variables</span></span><br><span class="line"><span class="keyword">float</span> a_x, a_y, a_z; <span class="comment">// accelerometer measurements</span></span><br><span class="line"><span class="keyword">float</span> w_x, w_y, w_z; <span class="comment">// gyroscope measurements in rad/s</span></span><br><span class="line"><span class="keyword">float</span> m_x, m_y, m_z; <span class="comment">// magnetometer measurements</span></span><br><span class="line"><span class="keyword">float</span> SEq_1 = <span class="number">1</span>, SEq_2 = <span class="number">0</span>, SEq_3 = <span class="number">0</span>, SEq_4 = <span class="number">0</span>; <span class="comment">// estimated orientation quaternion elements with initial conditions</span></span><br><span class="line"><span class="keyword">float</span> b_x = <span class="number">1</span>, b_z = <span class="number">0</span>; <span class="comment">// reference direction of flux in earth frame</span></span><br><span class="line"><span class="keyword">float</span> w_bx = <span class="number">0</span>, w_by = <span class="number">0</span>, w_bz = <span class="number">0</span>; <span class="comment">// estimate gyroscope biases error</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">filterUpdate</span><span class="params">(<span class="keyword">float</span> w_x, <span class="keyword">float</span> w_y, <span class="keyword">float</span> w_z, <span class="keyword">float</span> a_x, <span class="keyword">float</span> a_y, <span class="keyword">float</span> a_z, <span class="keyword">float</span> m_x, <span class="keyword">float</span> m_y, <span class="keyword">float</span> m_z)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// local system variables</span></span><br><span class="line">  <span class="keyword">float</span> norm; <span class="comment">// vector norm</span></span><br><span class="line">  <span class="keyword">float</span> SEqDot_omega_1, SEqDot_omega_2, SEqDot_omega_3, SEqDot_omega_4; <span class="comment">// quaternion rate from gyroscopes elements</span></span><br><span class="line">  <span class="keyword">float</span> f_1, f_2, f_3, f_4, f_5, f_6; <span class="comment">// objective function elements</span></span><br><span class="line">  <span class="keyword">float</span> J_11or24, J_12or23, J_13or22, J_14or21, J_32, J_33, <span class="comment">// objective function Jacobian elements</span></span><br><span class="line">  J_41, J_42, J_43, J_44, J_51, J_52, J_53, J_54, J_61, J_62, J_63, J_64; <span class="comment">//</span></span><br><span class="line">  <span class="keyword">float</span> SEqHatDot_1, SEqHatDot_2, SEqHatDot_3, SEqHatDot_4; <span class="comment">// estimated direction of the gyroscope error</span></span><br><span class="line">  <span class="keyword">float</span> w_err_x, w_err_y, w_err_z; <span class="comment">// estimated direction of the gyroscope error (angular)</span></span><br><span class="line">  <span class="keyword">float</span> h_x, h_y, h_z; <span class="comment">// computed flux in the earth frame</span></span><br><span class="line">  </span><br><span class="line">  <span class="comment">// axulirary variables to avoid reapeated calcualtions</span></span><br><span class="line">  <span class="keyword">float</span> halfSEq_1 = <span class="number">0.5f</span> * SEq_1;</span><br><span class="line">  <span class="keyword">float</span> halfSEq_2 = <span class="number">0.5f</span> * SEq_2;</span><br><span class="line">  <span class="keyword">float</span> halfSEq_3 = <span class="number">0.5f</span> * SEq_3;</span><br><span class="line">  <span class="keyword">float</span> halfSEq_4 = <span class="number">0.5f</span> * SEq_4;</span><br><span class="line">  <span class="keyword">float</span> twoSEq_1 = <span class="number">2.0f</span> * SEq_1;</span><br><span class="line">  <span class="keyword">float</span> twoSEq_2 = <span class="number">2.0f</span> * SEq_2;</span><br><span class="line">  <span class="keyword">float</span> twoSEq_3 = <span class="number">2.0f</span> * SEq_3;</span><br><span class="line">  <span class="keyword">float</span> twoSEq_4 = <span class="number">2.0f</span> * SEq_4;</span><br><span class="line">  <span class="keyword">float</span> twob_x = <span class="number">2.0f</span> * b_x;</span><br><span class="line">  <span class="keyword">float</span> twob_z = <span class="number">2.0f</span> * b_z;</span><br><span class="line">  <span class="keyword">float</span> twob_xSEq_1 = <span class="number">2.0f</span> * b_x * SEq_1;</span><br><span class="line">  <span class="keyword">float</span> twob_xSEq_2 = <span class="number">2.0f</span> * b_x * SEq_2;</span><br><span class="line">  <span class="keyword">float</span> twob_xSEq_3 = <span class="number">2.0f</span> * b_x * SEq_3;</span><br><span class="line">  <span class="keyword">float</span> twob_xSEq_4 = <span class="number">2.0f</span> * b_x * SEq_4;</span><br><span class="line">  <span class="keyword">float</span> twob_zSEq_1 = <span class="number">2.0f</span> * b_z * SEq_1;</span><br><span class="line">  <span class="keyword">float</span> twob_zSEq_2 = <span class="number">2.0f</span> * b_z * SEq_2;</span><br><span class="line">  <span class="keyword">float</span> twob_zSEq_3 = <span class="number">2.0f</span> * b_z * SEq_3;</span><br><span class="line">  <span class="keyword">float</span> twob_zSEq_4 = <span class="number">2.0f</span> * b_z * SEq_4;</span><br><span class="line">  <span class="keyword">float</span> SEq_1SEq_2;</span><br><span class="line">  <span class="keyword">float</span> SEq_1SEq_3 = SEq_1 * SEq_3;</span><br><span class="line">  <span class="keyword">float</span> SEq_1SEq_4;</span><br><span class="line">  <span class="keyword">float</span> SEq_2SEq_3;</span><br><span class="line">  <span class="keyword">float</span> SEq_2SEq_4 = SEq_2 * SEq_4;</span><br><span class="line">  <span class="keyword">float</span> SEq_3SEq_4;</span><br><span class="line">  <span class="keyword">float</span> twom_x = <span class="number">2.0f</span> * m_x;</span><br><span class="line">  <span class="keyword">float</span> twom_y = <span class="number">2.0f</span> * m_y;</span><br><span class="line">  <span class="keyword">float</span> twom_z = <span class="number">2.0f</span> * m_z;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// normalise the accelerometer measurement</span></span><br><span class="line">  norm = <span class="built_in">sqrt</span>(a_x * a_x + a_y * a_y + a_z * a_z);</span><br><span class="line">  a_x /= norm;</span><br><span class="line">  a_y /= norm;</span><br><span class="line">  a_z /= norm;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// normalise the magnetometer measurement</span></span><br><span class="line">  norm = <span class="built_in">sqrt</span>(m_x * m_x + m_y * m_y + m_z * m_z);</span><br><span class="line">  m_x /= norm;</span><br><span class="line">  m_y /= norm;</span><br><span class="line">  m_z /= norm;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// compute the objective function and Jacobian</span></span><br><span class="line">  f_1 = twoSEq_2 * SEq_4 - twoSEq_1 * SEq_3 - a_x;</span><br><span class="line">  f_2 = twoSEq_1 * SEq_2 + twoSEq_3 * SEq_4 - a_y;</span><br><span class="line">  f_3 = <span class="number">1.0f</span> - twoSEq_2 * SEq_2 - twoSEq_3 * SEq_3 - a_z;</span><br><span class="line">  f_4 = twob_x * (<span class="number">0.5f</span> - SEq_3 * SEq_3 - SEq_4 * SEq_4) + twob_z * (SEq_2SEq_4 - SEq_1SEq_3) - m_x;</span><br><span class="line">  f_5 = twob_x * (SEq_2 * SEq_3 - SEq_1 * SEq_4) + twob_z * (SEq_1 * SEq_2 + SEq_3 * SEq_4) - m_y;</span><br><span class="line">  f_6 = twob_x * (SEq_1SEq_3 + SEq_2SEq_4) + twob_z * (<span class="number">0.5f</span> - SEq_2 * SEq_2 - SEq_3 * SEq_3) - m_z;</span><br><span class="line">  J_11or24 = twoSEq_3; <span class="comment">// J_11 negated in matrix multiplication</span></span><br><span class="line">  J_12or23 = <span class="number">2.0f</span> * SEq_4;</span><br><span class="line">  J_13or22 = twoSEq_1; <span class="comment">// J_12 negated in matrix multiplication</span></span><br><span class="line">  J_14or21 = twoSEq_2;</span><br><span class="line">  J_32 = <span class="number">2.0f</span> * J_14or21; <span class="comment">// negated in matrix multiplication</span></span><br><span class="line">  J_33 = <span class="number">2.0f</span> * J_11or24; <span class="comment">// negated in matrix multiplication</span></span><br><span class="line">  J_41 = twob_zSEq_3; <span class="comment">// negated in matrix multiplication</span></span><br><span class="line">  J_42 = twob_zSEq_4;</span><br><span class="line">  J_43 = <span class="number">2.0f</span> * twob_xSEq_3 + twob_zSEq_1; <span class="comment">// negated in matrix multiplication</span></span><br><span class="line">  J_44 = <span class="number">2.0f</span> * twob_xSEq_4 - twob_zSEq_2; <span class="comment">// negated in matrix multiplication</span></span><br><span class="line">  J_51 = twob_xSEq_4 - twob_zSEq_2; <span class="comment">// negated in matrix multiplication</span></span><br><span class="line">  J_52 = twob_xSEq_3 + twob_zSEq_1;</span><br><span class="line">  J_53 = twob_xSEq_2 + twob_zSEq_4;</span><br><span class="line">  J_54 = twob_xSEq_1 - twob_zSEq_3; <span class="comment">// negated in matrix multiplication</span></span><br><span class="line">  J_61 = twob_xSEq_3;</span><br><span class="line">  J_62 = twob_xSEq_4 - <span class="number">2.0f</span> * twob_zSEq_2;</span><br><span class="line">  J_63 = twob_xSEq_1 - <span class="number">2.0f</span> * twob_zSEq_3;</span><br><span class="line">  J_64 = twob_xSEq_2;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// compute the gradient (matrix multiplication)</span></span><br><span class="line">  SEqHatDot_1 = J_14or21 * f_2 - J_11or24 * f_1 - J_41 * f_4 - J_51 * f_5 + J_61 * f_6;</span><br><span class="line">  SEqHatDot_2 = J_12or23 * f_1 + J_13or22 * f_2 - J_32 * f_3 + J_42 * f_4 + J_52 * f_5 + J_62 * f_6;</span><br><span class="line">  SEqHatDot_3 = J_12or23 * f_2 - J_33 * f_3 - J_13or22 * f_1 - J_43 * f_4 + J_53 * f_5 + J_63 * f_6;</span><br><span class="line">  SEqHatDot_4 = J_14or21 * f_1 + J_11or24 * f_2 - J_44 * f_4 - J_54 * f_5 + J_64 * f_6;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// normalise the gradient to estimate direction of the gyroscope error</span></span><br><span class="line">  norm = <span class="built_in">sqrt</span>(SEqHatDot_1 * SEqHatDot_1 + SEqHatDot_2 * SEqHatDot_2 + SEqHatDot_3 * SEqHatDot_3 + SEqHatDot_4 * SEqHatDot_4);</span><br><span class="line">  SEqHatDot_1 = SEqHatDot_1 / norm;</span><br><span class="line">  SEqHatDot_2 = SEqHatDot_2 / norm;</span><br><span class="line">    SEqHatDot_3 = SEqHatDot_3 / norm;</span><br><span class="line">  SEqHatDot_4 = SEqHatDot_4 / norm;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// compute angular estimated direction of the gyroscope error</span></span><br><span class="line">  w_err_x = twoSEq_1 * SEqHatDot_2 - twoSEq_2 * SEqHatDot_1 - twoSEq_3 * SEqHatDot_4 + twoSEq_4 * SEqHatDot_3;</span><br><span class="line">  w_err_y = twoSEq_1 * SEqHatDot_3 + twoSEq_2 * SEqHatDot_4 - twoSEq_3 * SEqHatDot_1 - twoSEq_4 * SEqHatDot_2;</span><br><span class="line">  w_err_z = twoSEq_1 * SEqHatDot_4 - twoSEq_2 * SEqHatDot_3 + twoSEq_3 * SEqHatDot_2 - twoSEq_4 * SEqHatDot_1;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// compute and remove the gyroscope baises</span></span><br><span class="line">  w_bx += w_err_x * deltat * zeta;</span><br><span class="line">  w_by += w_err_y * deltat * zeta;</span><br><span class="line">  w_bz += w_err_z * deltat * zeta;</span><br><span class="line">  w_x -= w_bx;</span><br><span class="line">  w_y -= w_by;</span><br><span class="line">  w_z -= w_bz;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// compute the quaternion rate measured by gyroscopes</span></span><br><span class="line">  SEqDot_omega_1 = -halfSEq_2 * w_x - halfSEq_3 * w_y - halfSEq_4 * w_z;</span><br><span class="line">  SEqDot_omega_2 = halfSEq_1 * w_x + halfSEq_3 * w_z - halfSEq_4 * w_y;</span><br><span class="line">  SEqDot_omega_3 = halfSEq_1 * w_y - halfSEq_2 * w_z + halfSEq_4 * w_x;</span><br><span class="line">  SEqDot_omega_4 = halfSEq_1 * w_z + halfSEq_2 * w_y - halfSEq_3 * w_x;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// compute then integrate the estimated quaternion rate</span></span><br><span class="line">  SEq_1 += (SEqDot_omega_1 - (beta * SEqHatDot_1)) * deltat;</span><br><span class="line">  SEq_2 += (SEqDot_omega_2 - (beta * SEqHatDot_2)) * deltat;</span><br><span class="line">  SEq_3 += (SEqDot_omega_3 - (beta * SEqHatDot_3)) * deltat;</span><br><span class="line">  SEq_4 += (SEqDot_omega_4 - (beta * SEqHatDot_4)) * deltat;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// normalise quaternion</span></span><br><span class="line">  norm = <span class="built_in">sqrt</span>(SEq_1 * SEq_1 + SEq_2 * SEq_2 + SEq_3 * SEq_3 + SEq_4 * SEq_4);</span><br><span class="line">  SEq_1 /= norm;</span><br><span class="line">  SEq_2 /= norm;</span><br><span class="line">  SEq_3 /= norm;</span><br><span class="line">  SEq_4 /= norm;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// compute flux in the earth frame</span></span><br><span class="line">  SEq_1SEq_2 = SEq_1 * SEq_2; <span class="comment">// recompute axulirary variables</span></span><br><span class="line">  SEq_1SEq_3 = SEq_1 * SEq_3;</span><br><span class="line">  SEq_1SEq_4 = SEq_1 * SEq_4;</span><br><span class="line">  SEq_3SEq_4 = SEq_3 * SEq_4;</span><br><span class="line">  SEq_2SEq_3 = SEq_2 * SEq_3;</span><br><span class="line">  SEq_2SEq_4 = SEq_2 * SEq_4;</span><br><span class="line">  h_x = twom_x * (<span class="number">0.5f</span> - SEq_3 * SEq_3 - SEq_4 * SEq_4) + twom_y * (SEq_2SEq_3 - SEq_1SEq_4) + twom_z * (SEq_2SEq_4 + SEq_1SEq_3);</span><br><span class="line">  h_y = twom_x * (SEq_2SEq_3 + SEq_1SEq_4) + twom_y * (<span class="number">0.5f</span> - SEq_2 * SEq_2 - SEq_4 * SEq_4) + twom_z * (SEq_3SEq_4 - SEq_1SEq_2);</span><br><span class="line">  h_z = twom_x * (SEq_2SEq_4 - SEq_1SEq_3) + twom_y * (SEq_3SEq_4 + SEq_1SEq_2) + twom_z * (<span class="number">0.5f</span> - SEq_2 * SEq_2 - SEq_3 * SEq_3);</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// normalise the flux vector to have only components in the x and z</span></span><br><span class="line">  b_x = <span class="built_in">sqrt</span>((h_x * h_x) + (h_y * h_y));</span><br><span class="line">  b_z = h_z;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="5-2-x-io源码"><a href="#5-2-x-io源码" class="headerlink" title="5.2 x-io源码"></a>5.2 x-io源码</h2><ul>
+<li><a href="https://x-io.co.uk/open-source-imu-and-ahrs-algorithms/" target="_blank" rel="noopener">https://x-io.co.uk/open-source-imu-and-ahrs-algorithms/</a></li>
+<li>MadgwickAHRS.h</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//=====================================================================================================</span></span><br><span class="line"><span class="comment">// MadgwickAHRS.h</span></span><br><span class="line"><span class="comment">//=====================================================================================================</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// Implementation of Madgwick's IMU and AHRS algorithms.</span></span><br><span class="line"><span class="comment">// See: http://www.x-io.co.uk/node/8#open_source_ahrs_and_imu_algorithms</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// Date			Author          Notes</span></span><br><span class="line"><span class="comment">// 29/09/2011	SOH Madgwick    Initial release</span></span><br><span class="line"><span class="comment">// 02/10/2011	SOH Madgwick	Optimised for reduced CPU load</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">//=====================================================================================================</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> MadgwickAHRS_h</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MadgwickAHRS_h</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//----------------------------------------------------------------------------------------------------</span></span><br><span class="line"><span class="comment">// Variable declaration</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">volatile</span> <span class="keyword">float</span> beta;				<span class="comment">// algorithm gain</span></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">volatile</span> <span class="keyword">float</span> q0, q1, q2, q3;	<span class="comment">// quaternion of sensor frame relative to auxiliary frame</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//---------------------------------------------------------------------------------------------------</span></span><br><span class="line"><span class="comment">// Function declarations</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">MadgwickAHRSupdate</span><span class="params">(<span class="keyword">float</span> gx, <span class="keyword">float</span> gy, <span class="keyword">float</span> gz, <span class="keyword">float</span> ax, <span class="keyword">float</span> ay, <span class="keyword">float</span> az, <span class="keyword">float</span> mx, <span class="keyword">float</span> my, <span class="keyword">float</span> mz)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">MadgwickAHRSupdateIMU</span><span class="params">(<span class="keyword">float</span> gx, <span class="keyword">float</span> gy, <span class="keyword">float</span> gz, <span class="keyword">float</span> ax, <span class="keyword">float</span> ay, <span class="keyword">float</span> az)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"><span class="comment">//=====================================================================================================</span></span><br><span class="line"><span class="comment">// End of file</span></span><br><span class="line"><span class="comment">//=====================================================================================================</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>MadgwickAHRS.c</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//=====================================================================================================</span></span><br><span class="line"><span class="comment">// MadgwickAHRS.c</span></span><br><span class="line"><span class="comment">//=====================================================================================================</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// Implementation of Madgwick's IMU and AHRS algorithms.</span></span><br><span class="line"><span class="comment">// See: http://www.x-io.co.uk/node/8#open_source_ahrs_and_imu_algorithms</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// Date			Author          Notes</span></span><br><span class="line"><span class="comment">// 29/09/2011	SOH Madgwick    Initial release</span></span><br><span class="line"><span class="comment">// 02/10/2011	SOH Madgwick	Optimised for reduced CPU load</span></span><br><span class="line"><span class="comment">// 19/02/2012	SOH Madgwick	Magnetometer measurement is normalised</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">//=====================================================================================================</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//---------------------------------------------------------------------------------------------------</span></span><br><span class="line"><span class="comment">// Header files</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"MadgwickAHRS.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;math.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//---------------------------------------------------------------------------------------------------</span></span><br><span class="line"><span class="comment">// Definitions</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> sampleFreq	512.0f		<span class="comment">// sample frequency in Hz</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> betaDef		0.1f		<span class="comment">// 2 * proportional gain</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//---------------------------------------------------------------------------------------------------</span></span><br><span class="line"><span class="comment">// Variable definitions</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">volatile</span> <span class="keyword">float</span> beta = betaDef;								<span class="comment">// 2 * proportional gain (Kp)</span></span><br><span class="line"><span class="keyword">volatile</span> <span class="keyword">float</span> q0 = <span class="number">1.0f</span>, q1 = <span class="number">0.0f</span>, q2 = <span class="number">0.0f</span>, q3 = <span class="number">0.0f</span>;	<span class="comment">// quaternion of sensor frame relative to auxiliary frame</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//---------------------------------------------------------------------------------------------------</span></span><br><span class="line"><span class="comment">// Function declarations</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">float</span> <span class="title">invSqrt</span><span class="params">(<span class="keyword">float</span> x)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//====================================================================================================</span></span><br><span class="line"><span class="comment">// Functions</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//---------------------------------------------------------------------------------------------------</span></span><br><span class="line"><span class="comment">// AHRS algorithm update</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">MadgwickAHRSupdate</span><span class="params">(<span class="keyword">float</span> gx, <span class="keyword">float</span> gy, <span class="keyword">float</span> gz, <span class="keyword">float</span> ax, <span class="keyword">float</span> ay, <span class="keyword">float</span> az, <span class="keyword">float</span> mx, <span class="keyword">float</span> my, <span class="keyword">float</span> mz)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">float</span> recipNorm;</span><br><span class="line">	<span class="keyword">float</span> s0, s1, s2, s3;</span><br><span class="line">	<span class="keyword">float</span> qDot1, qDot2, qDot3, qDot4;</span><br><span class="line">	<span class="keyword">float</span> hx, hy;</span><br><span class="line">	<span class="keyword">float</span> _2q0mx, _2q0my, _2q0mz, _2q1mx, _2bx, _2bz, _4bx, _4bz, _2q0, _2q1, _2q2, _2q3, _2q0q2, _2q2q3, q0q0, q0q1, q0q2, q0q3, q1q1, q1q2, q1q3, q2q2, q2q3, q3q3;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Use IMU algorithm if magnetometer measurement invalid (avoids NaN in magnetometer normalisation)</span></span><br><span class="line">	<span class="keyword">if</span>((mx == <span class="number">0.0f</span>) &amp;&amp; (my == <span class="number">0.0f</span>) &amp;&amp; (mz == <span class="number">0.0f</span>)) &#123;</span><br><span class="line">		MadgwickAHRSupdateIMU(gx, gy, gz, ax, ay, az);</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Rate of change of quaternion from gyroscope</span></span><br><span class="line">	qDot1 = <span class="number">0.5f</span> * (-q1 * gx - q2 * gy - q3 * gz);</span><br><span class="line">	qDot2 = <span class="number">0.5f</span> * (q0 * gx + q2 * gz - q3 * gy);</span><br><span class="line">	qDot3 = <span class="number">0.5f</span> * (q0 * gy - q1 * gz + q3 * gx);</span><br><span class="line">	qDot4 = <span class="number">0.5f</span> * (q0 * gz + q1 * gy - q2 * gx);</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Compute feedback only if accelerometer measurement valid (avoids NaN in accelerometer normalisation)</span></span><br><span class="line">	<span class="keyword">if</span>(!((ax == <span class="number">0.0f</span>) &amp;&amp; (ay == <span class="number">0.0f</span>) &amp;&amp; (az == <span class="number">0.0f</span>))) &#123;</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Normalise accelerometer measurement</span></span><br><span class="line">		recipNorm = invSqrt(ax * ax + ay * ay + az * az);</span><br><span class="line">		ax *= recipNorm;</span><br><span class="line">		ay *= recipNorm;</span><br><span class="line">		az *= recipNorm;   </span><br><span class="line"></span><br><span class="line">		<span class="comment">// Normalise magnetometer measurement</span></span><br><span class="line">		recipNorm = invSqrt(mx * mx + my * my + mz * mz);</span><br><span class="line">		mx *= recipNorm;</span><br><span class="line">		my *= recipNorm;</span><br><span class="line">		mz *= recipNorm;</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Auxiliary variables to avoid repeated arithmetic</span></span><br><span class="line">		_2q0mx = <span class="number">2.0f</span> * q0 * mx;</span><br><span class="line">		_2q0my = <span class="number">2.0f</span> * q0 * my;</span><br><span class="line">		_2q0mz = <span class="number">2.0f</span> * q0 * mz;</span><br><span class="line">		_2q1mx = <span class="number">2.0f</span> * q1 * mx;</span><br><span class="line">		_2q0 = <span class="number">2.0f</span> * q0;</span><br><span class="line">		_2q1 = <span class="number">2.0f</span> * q1;</span><br><span class="line">		_2q2 = <span class="number">2.0f</span> * q2;</span><br><span class="line">		_2q3 = <span class="number">2.0f</span> * q3;</span><br><span class="line">		_2q0q2 = <span class="number">2.0f</span> * q0 * q2;</span><br><span class="line">		_2q2q3 = <span class="number">2.0f</span> * q2 * q3;</span><br><span class="line">		q0q0 = q0 * q0;</span><br><span class="line">		q0q1 = q0 * q1;</span><br><span class="line">		q0q2 = q0 * q2;</span><br><span class="line">		q0q3 = q0 * q3;</span><br><span class="line">		q1q1 = q1 * q1;</span><br><span class="line">		q1q2 = q1 * q2;</span><br><span class="line">		q1q3 = q1 * q3;</span><br><span class="line">		q2q2 = q2 * q2;</span><br><span class="line">		q2q3 = q2 * q3;</span><br><span class="line">		q3q3 = q3 * q3;</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Reference direction of Earth's magnetic field</span></span><br><span class="line">		hx = mx * q0q0 - _2q0my * q3 + _2q0mz * q2 + mx * q1q1 + _2q1 * my * q2 + _2q1 * mz * q3 - mx * q2q2 - mx * q3q3;</span><br><span class="line">		hy = _2q0mx * q3 + my * q0q0 - _2q0mz * q1 + _2q1mx * q2 - my * q1q1 + my * q2q2 + _2q2 * mz * q3 - my * q3q3;</span><br><span class="line">		_2bx = <span class="built_in">sqrt</span>(hx * hx + hy * hy);</span><br><span class="line">		_2bz = -_2q0mx * q2 + _2q0my * q1 + mz * q0q0 + _2q1mx * q3 - mz * q1q1 + _2q2 * my * q3 - mz * q2q2 + mz * q3q3;</span><br><span class="line">		_4bx = <span class="number">2.0f</span> * _2bx;</span><br><span class="line">		_4bz = <span class="number">2.0f</span> * _2bz;</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Gradient decent algorithm corrective step</span></span><br><span class="line">		s0 = -_2q2 * (<span class="number">2.0f</span> * q1q3 - _2q0q2 - ax) + _2q1 * (<span class="number">2.0f</span> * q0q1 + _2q2q3 - ay) - _2bz * q2 * (_2bx * (<span class="number">0.5f</span> - q2q2 - q3q3) + _2bz * (q1q3 - q0q2) - mx) + (-_2bx * q3 + _2bz * q1) * (_2bx * (q1q2 - q0q3) + _2bz * (q0q1 + q2q3) - my) + _2bx * q2 * (_2bx * (q0q2 + q1q3) + _2bz * (<span class="number">0.5f</span> - q1q1 - q2q2) - mz);</span><br><span class="line">		s1 = _2q3 * (<span class="number">2.0f</span> * q1q3 - _2q0q2 - ax) + _2q0 * (<span class="number">2.0f</span> * q0q1 + _2q2q3 - ay) - <span class="number">4.0f</span> * q1 * (<span class="number">1</span> - <span class="number">2.0f</span> * q1q1 - <span class="number">2.0f</span> * q2q2 - az) + _2bz * q3 * (_2bx * (<span class="number">0.5f</span> - q2q2 - q3q3) + _2bz * (q1q3 - q0q2) - mx) + (_2bx * q2 + _2bz * q0) * (_2bx * (q1q2 - q0q3) + _2bz * (q0q1 + q2q3) - my) + (_2bx * q3 - _4bz * q1) * (_2bx * (q0q2 + q1q3) + _2bz * (<span class="number">0.5f</span> - q1q1 - q2q2) - mz);</span><br><span class="line">		s2 = -_2q0 * (<span class="number">2.0f</span> * q1q3 - _2q0q2 - ax) + _2q3 * (<span class="number">2.0f</span> * q0q1 + _2q2q3 - ay) - <span class="number">4.0f</span> * q2 * (<span class="number">1</span> - <span class="number">2.0f</span> * q1q1 - <span class="number">2.0f</span> * q2q2 - az) + (-_4bx * q2 - _2bz * q0) * (_2bx * (<span class="number">0.5f</span> - q2q2 - q3q3) + _2bz * (q1q3 - q0q2) - mx) + (_2bx * q1 + _2bz * q3) * (_2bx * (q1q2 - q0q3) + _2bz * (q0q1 + q2q3) - my) + (_2bx * q0 - _4bz * q2) * (_2bx * (q0q2 + q1q3) + _2bz * (<span class="number">0.5f</span> - q1q1 - q2q2) - mz);</span><br><span class="line">		s3 = _2q1 * (<span class="number">2.0f</span> * q1q3 - _2q0q2 - ax) + _2q2 * (<span class="number">2.0f</span> * q0q1 + _2q2q3 - ay) + (-_4bx * q3 + _2bz * q1) * (_2bx * (<span class="number">0.5f</span> - q2q2 - q3q3) + _2bz * (q1q3 - q0q2) - mx) + (-_2bx * q0 + _2bz * q2) * (_2bx * (q1q2 - q0q3) + _2bz * (q0q1 + q2q3) - my) + _2bx * q1 * (_2bx * (q0q2 + q1q3) + _2bz * (<span class="number">0.5f</span> - q1q1 - q2q2) - mz);</span><br><span class="line">		recipNorm = invSqrt(s0 * s0 + s1 * s1 + s2 * s2 + s3 * s3); <span class="comment">// normalise step magnitude</span></span><br><span class="line">		s0 *= recipNorm;</span><br><span class="line">		s1 *= recipNorm;</span><br><span class="line">		s2 *= recipNorm;</span><br><span class="line">		s3 *= recipNorm;</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Apply feedback step</span></span><br><span class="line">		qDot1 -= beta * s0;</span><br><span class="line">		qDot2 -= beta * s1;</span><br><span class="line">		qDot3 -= beta * s2;</span><br><span class="line">		qDot4 -= beta * s3;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Integrate rate of change of quaternion to yield quaternion</span></span><br><span class="line">	q0 += qDot1 * (<span class="number">1.0f</span> / sampleFreq);</span><br><span class="line">	q1 += qDot2 * (<span class="number">1.0f</span> / sampleFreq);</span><br><span class="line">	q2 += qDot3 * (<span class="number">1.0f</span> / sampleFreq);</span><br><span class="line">	q3 += qDot4 * (<span class="number">1.0f</span> / sampleFreq);</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Normalise quaternion</span></span><br><span class="line">	recipNorm = invSqrt(q0 * q0 + q1 * q1 + q2 * q2 + q3 * q3);</span><br><span class="line">	q0 *= recipNorm;</span><br><span class="line">	q1 *= recipNorm;</span><br><span class="line">	q2 *= recipNorm;</span><br><span class="line">	q3 *= recipNorm;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//---------------------------------------------------------------------------------------------------</span></span><br><span class="line"><span class="comment">// IMU algorithm update</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">MadgwickAHRSupdateIMU</span><span class="params">(<span class="keyword">float</span> gx, <span class="keyword">float</span> gy, <span class="keyword">float</span> gz, <span class="keyword">float</span> ax, <span class="keyword">float</span> ay, <span class="keyword">float</span> az)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">float</span> recipNorm;</span><br><span class="line">	<span class="keyword">float</span> s0, s1, s2, s3;</span><br><span class="line">	<span class="keyword">float</span> qDot1, qDot2, qDot3, qDot4;</span><br><span class="line">	<span class="keyword">float</span> _2q0, _2q1, _2q2, _2q3, _4q0, _4q1, _4q2 ,_8q1, _8q2, q0q0, q1q1, q2q2, q3q3;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Rate of change of quaternion from gyroscope</span></span><br><span class="line">	qDot1 = <span class="number">0.5f</span> * (-q1 * gx - q2 * gy - q3 * gz);</span><br><span class="line">	qDot2 = <span class="number">0.5f</span> * (q0 * gx + q2 * gz - q3 * gy);</span><br><span class="line">	qDot3 = <span class="number">0.5f</span> * (q0 * gy - q1 * gz + q3 * gx);</span><br><span class="line">	qDot4 = <span class="number">0.5f</span> * (q0 * gz + q1 * gy - q2 * gx);</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Compute feedback only if accelerometer measurement valid (avoids NaN in accelerometer normalisation)</span></span><br><span class="line">	<span class="keyword">if</span>(!((ax == <span class="number">0.0f</span>) &amp;&amp; (ay == <span class="number">0.0f</span>) &amp;&amp; (az == <span class="number">0.0f</span>))) &#123;</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Normalise accelerometer measurement</span></span><br><span class="line">		recipNorm = invSqrt(ax * ax + ay * ay + az * az);</span><br><span class="line">		ax *= recipNorm;</span><br><span class="line">		ay *= recipNorm;</span><br><span class="line">		az *= recipNorm;   </span><br><span class="line"></span><br><span class="line">		<span class="comment">// Auxiliary variables to avoid repeated arithmetic</span></span><br><span class="line">		_2q0 = <span class="number">2.0f</span> * q0;</span><br><span class="line">		_2q1 = <span class="number">2.0f</span> * q1;</span><br><span class="line">		_2q2 = <span class="number">2.0f</span> * q2;</span><br><span class="line">		_2q3 = <span class="number">2.0f</span> * q3;</span><br><span class="line">		_4q0 = <span class="number">4.0f</span> * q0;</span><br><span class="line">		_4q1 = <span class="number">4.0f</span> * q1;</span><br><span class="line">		_4q2 = <span class="number">4.0f</span> * q2;</span><br><span class="line">		_8q1 = <span class="number">8.0f</span> * q1;</span><br><span class="line">		_8q2 = <span class="number">8.0f</span> * q2;</span><br><span class="line">		q0q0 = q0 * q0;</span><br><span class="line">		q1q1 = q1 * q1;</span><br><span class="line">		q2q2 = q2 * q2;</span><br><span class="line">		q3q3 = q3 * q3;</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Gradient decent algorithm corrective step</span></span><br><span class="line">		s0 = _4q0 * q2q2 + _2q2 * ax + _4q0 * q1q1 - _2q1 * ay;</span><br><span class="line">		s1 = _4q1 * q3q3 - _2q3 * ax + <span class="number">4.0f</span> * q0q0 * q1 - _2q0 * ay - _4q1 + _8q1 * q1q1 + _8q1 * q2q2 + _4q1 * az;</span><br><span class="line">		s2 = <span class="number">4.0f</span> * q0q0 * q2 + _2q0 * ax + _4q2 * q3q3 - _2q3 * ay - _4q2 + _8q2 * q1q1 + _8q2 * q2q2 + _4q2 * az;</span><br><span class="line">		s3 = <span class="number">4.0f</span> * q1q1 * q3 - _2q1 * ax + <span class="number">4.0f</span> * q2q2 * q3 - _2q2 * ay;</span><br><span class="line">		recipNorm = invSqrt(s0 * s0 + s1 * s1 + s2 * s2 + s3 * s3); <span class="comment">// normalise step magnitude</span></span><br><span class="line">		s0 *= recipNorm;</span><br><span class="line">		s1 *= recipNorm;</span><br><span class="line">		s2 *= recipNorm;</span><br><span class="line">		s3 *= recipNorm;</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Apply feedback step</span></span><br><span class="line">		qDot1 -= beta * s0;</span><br><span class="line">		qDot2 -= beta * s1;</span><br><span class="line">		qDot3 -= beta * s2;</span><br><span class="line">		qDot4 -= beta * s3;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Integrate rate of change of quaternion to yield quaternion</span></span><br><span class="line">	q0 += qDot1 * (<span class="number">1.0f</span> / sampleFreq);</span><br><span class="line">	q1 += qDot2 * (<span class="number">1.0f</span> / sampleFreq);</span><br><span class="line">	q2 += qDot3 * (<span class="number">1.0f</span> / sampleFreq);</span><br><span class="line">	q3 += qDot4 * (<span class="number">1.0f</span> / sampleFreq);</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Normalise quaternion</span></span><br><span class="line">	recipNorm = invSqrt(q0 * q0 + q1 * q1 + q2 * q2 + q3 * q3);</span><br><span class="line">	q0 *= recipNorm;</span><br><span class="line">	q1 *= recipNorm;</span><br><span class="line">	q2 *= recipNorm;</span><br><span class="line">	q3 *= recipNorm;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//---------------------------------------------------------------------------------------------------</span></span><br><span class="line"><span class="comment">// Fast inverse square-root</span></span><br><span class="line"><span class="comment">// See: http://en.wikipedia.org/wiki/Fast_inverse_square_root</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">float</span> <span class="title">invSqrt</span><span class="params">(<span class="keyword">float</span> x)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">float</span> halfx = <span class="number">0.5f</span> * x;</span><br><span class="line">	<span class="keyword">float</span> y = x;</span><br><span class="line">	<span class="keyword">long</span> i = *(<span class="keyword">long</span>*)&amp;y;</span><br><span class="line">	i = <span class="number">0x5f3759df</span> - (i&gt;&gt;<span class="number">1</span>);</span><br><span class="line">	y = *(<span class="keyword">float</span>*)&amp;i;</span><br><span class="line">	y = y * (<span class="number">1.5f</span> - (halfx * y * y));</span><br><span class="line">	<span class="keyword">return</span> y;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//====================================================================================================</span></span><br><span class="line"><span class="comment">// END OF CODE</span></span><br><span class="line"><span class="comment">//====================================================================================================</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>MahonyAHRS.h</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//=====================================================================================================</span></span><br><span class="line"><span class="comment">// MahonyAHRS.h</span></span><br><span class="line"><span class="comment">//=====================================================================================================</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// Madgwick's implementation of Mayhony's AHRS algorithm.</span></span><br><span class="line"><span class="comment">// See: http://www.x-io.co.uk/node/8#open_source_ahrs_and_imu_algorithms</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// Date			Author			Notes</span></span><br><span class="line"><span class="comment">// 29/09/2011	SOH Madgwick    Initial release</span></span><br><span class="line"><span class="comment">// 02/10/2011	SOH Madgwick	Optimised for reduced CPU load</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">//=====================================================================================================</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> MahonyAHRS_h</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MahonyAHRS_h</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//----------------------------------------------------------------------------------------------------</span></span><br><span class="line"><span class="comment">// Variable declaration</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">volatile</span> <span class="keyword">float</span> twoKp;			<span class="comment">// 2 * proportional gain (Kp)</span></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">volatile</span> <span class="keyword">float</span> twoKi;			<span class="comment">// 2 * integral gain (Ki)</span></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">volatile</span> <span class="keyword">float</span> q0, q1, q2, q3;	<span class="comment">// quaternion of sensor frame relative to auxiliary frame</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//---------------------------------------------------------------------------------------------------</span></span><br><span class="line"><span class="comment">// Function declarations</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">MahonyAHRSupdate</span><span class="params">(<span class="keyword">float</span> gx, <span class="keyword">float</span> gy, <span class="keyword">float</span> gz, <span class="keyword">float</span> ax, <span class="keyword">float</span> ay, <span class="keyword">float</span> az, <span class="keyword">float</span> mx, <span class="keyword">float</span> my, <span class="keyword">float</span> mz)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">MahonyAHRSupdateIMU</span><span class="params">(<span class="keyword">float</span> gx, <span class="keyword">float</span> gy, <span class="keyword">float</span> gz, <span class="keyword">float</span> ax, <span class="keyword">float</span> ay, <span class="keyword">float</span> az)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"><span class="comment">//=====================================================================================================</span></span><br><span class="line"><span class="comment">// End of file</span></span><br><span class="line"><span class="comment">//=====================================================================================================</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>MahonyAHRS.c</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//=====================================================================================================</span></span><br><span class="line"><span class="comment">// MahonyAHRS.c</span></span><br><span class="line"><span class="comment">//=====================================================================================================</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// Madgwick's implementation of Mayhony's AHRS algorithm.</span></span><br><span class="line"><span class="comment">// See: http://www.x-io.co.uk/node/8#open_source_ahrs_and_imu_algorithms</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// Date			Author			Notes</span></span><br><span class="line"><span class="comment">// 29/09/2011	SOH Madgwick    Initial release</span></span><br><span class="line"><span class="comment">// 02/10/2011	SOH Madgwick	Optimised for reduced CPU load</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">//=====================================================================================================</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//---------------------------------------------------------------------------------------------------</span></span><br><span class="line"><span class="comment">// Header files</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"MahonyAHRS.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;math.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//---------------------------------------------------------------------------------------------------</span></span><br><span class="line"><span class="comment">// Definitions</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> sampleFreq	512.0f			<span class="comment">// sample frequency in Hz</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> twoKpDef	(2.0f * 0.5f)	<span class="comment">// 2 * proportional gain</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> twoKiDef	(2.0f * 0.0f)	<span class="comment">// 2 * integral gain</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//---------------------------------------------------------------------------------------------------</span></span><br><span class="line"><span class="comment">// Variable definitions</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">volatile</span> <span class="keyword">float</span> twoKp = twoKpDef;											<span class="comment">// 2 * proportional gain (Kp)</span></span><br><span class="line"><span class="keyword">volatile</span> <span class="keyword">float</span> twoKi = twoKiDef;											<span class="comment">// 2 * integral gain (Ki)</span></span><br><span class="line"><span class="keyword">volatile</span> <span class="keyword">float</span> q0 = <span class="number">1.0f</span>, q1 = <span class="number">0.0f</span>, q2 = <span class="number">0.0f</span>, q3 = <span class="number">0.0f</span>;					<span class="comment">// quaternion of sensor frame relative to auxiliary frame</span></span><br><span class="line"><span class="keyword">volatile</span> <span class="keyword">float</span> integralFBx = <span class="number">0.0f</span>,  integralFBy = <span class="number">0.0f</span>, integralFBz = <span class="number">0.0f</span>;	<span class="comment">// integral error terms scaled by Ki</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//---------------------------------------------------------------------------------------------------</span></span><br><span class="line"><span class="comment">// Function declarations</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">float</span> <span class="title">invSqrt</span><span class="params">(<span class="keyword">float</span> x)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//====================================================================================================</span></span><br><span class="line"><span class="comment">// Functions</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//---------------------------------------------------------------------------------------------------</span></span><br><span class="line"><span class="comment">// AHRS algorithm update</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">MahonyAHRSupdate</span><span class="params">(<span class="keyword">float</span> gx, <span class="keyword">float</span> gy, <span class="keyword">float</span> gz, <span class="keyword">float</span> ax, <span class="keyword">float</span> ay, <span class="keyword">float</span> az, <span class="keyword">float</span> mx, <span class="keyword">float</span> my, <span class="keyword">float</span> mz)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">float</span> recipNorm;</span><br><span class="line">    <span class="keyword">float</span> q0q0, q0q1, q0q2, q0q3, q1q1, q1q2, q1q3, q2q2, q2q3, q3q3;  </span><br><span class="line">	<span class="keyword">float</span> hx, hy, bx, bz;</span><br><span class="line">	<span class="keyword">float</span> halfvx, halfvy, halfvz, halfwx, halfwy, halfwz;</span><br><span class="line">	<span class="keyword">float</span> halfex, halfey, halfez;</span><br><span class="line">	<span class="keyword">float</span> qa, qb, qc;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Use IMU algorithm if magnetometer measurement invalid (avoids NaN in magnetometer normalisation)</span></span><br><span class="line">	<span class="keyword">if</span>((mx == <span class="number">0.0f</span>) &amp;&amp; (my == <span class="number">0.0f</span>) &amp;&amp; (mz == <span class="number">0.0f</span>)) &#123;</span><br><span class="line">		MahonyAHRSupdateIMU(gx, gy, gz, ax, ay, az);</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Compute feedback only if accelerometer measurement valid (avoids NaN in accelerometer normalisation)</span></span><br><span class="line">	<span class="keyword">if</span>(!((ax == <span class="number">0.0f</span>) &amp;&amp; (ay == <span class="number">0.0f</span>) &amp;&amp; (az == <span class="number">0.0f</span>))) &#123;</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Normalise accelerometer measurement</span></span><br><span class="line">		recipNorm = invSqrt(ax * ax + ay * ay + az * az);</span><br><span class="line">		ax *= recipNorm;</span><br><span class="line">		ay *= recipNorm;</span><br><span class="line">		az *= recipNorm;     </span><br><span class="line"></span><br><span class="line">		<span class="comment">// Normalise magnetometer measurement</span></span><br><span class="line">		recipNorm = invSqrt(mx * mx + my * my + mz * mz);</span><br><span class="line">		mx *= recipNorm;</span><br><span class="line">		my *= recipNorm;</span><br><span class="line">		mz *= recipNorm;   </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Auxiliary variables to avoid repeated arithmetic</span></span><br><span class="line">        q0q0 = q0 * q0;</span><br><span class="line">        q0q1 = q0 * q1;</span><br><span class="line">        q0q2 = q0 * q2;</span><br><span class="line">        q0q3 = q0 * q3;</span><br><span class="line">        q1q1 = q1 * q1;</span><br><span class="line">        q1q2 = q1 * q2;</span><br><span class="line">        q1q3 = q1 * q3;</span><br><span class="line">        q2q2 = q2 * q2;</span><br><span class="line">        q2q3 = q2 * q3;</span><br><span class="line">        q3q3 = q3 * q3;   </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Reference direction of Earth's magnetic field</span></span><br><span class="line">        hx = <span class="number">2.0f</span> * (mx * (<span class="number">0.5f</span> - q2q2 - q3q3) + my * (q1q2 - q0q3) + mz * (q1q3 + q0q2));</span><br><span class="line">        hy = <span class="number">2.0f</span> * (mx * (q1q2 + q0q3) + my * (<span class="number">0.5f</span> - q1q1 - q3q3) + mz * (q2q3 - q0q1));</span><br><span class="line">        bx = <span class="built_in">sqrt</span>(hx * hx + hy * hy);</span><br><span class="line">        bz = <span class="number">2.0f</span> * (mx * (q1q3 - q0q2) + my * (q2q3 + q0q1) + mz * (<span class="number">0.5f</span> - q1q1 - q2q2));</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Estimated direction of gravity and magnetic field</span></span><br><span class="line">		halfvx = q1q3 - q0q2;</span><br><span class="line">		halfvy = q0q1 + q2q3;</span><br><span class="line">		halfvz = q0q0 - <span class="number">0.5f</span> + q3q3;</span><br><span class="line">        halfwx = bx * (<span class="number">0.5f</span> - q2q2 - q3q3) + bz * (q1q3 - q0q2);</span><br><span class="line">        halfwy = bx * (q1q2 - q0q3) + bz * (q0q1 + q2q3);</span><br><span class="line">        halfwz = bx * (q0q2 + q1q3) + bz * (<span class="number">0.5f</span> - q1q1 - q2q2);  </span><br><span class="line">	</span><br><span class="line">		<span class="comment">// Error is sum of cross product between estimated direction and measured direction of field vectors</span></span><br><span class="line">		halfex = (ay * halfvz - az * halfvy) + (my * halfwz - mz * halfwy);</span><br><span class="line">		halfey = (az * halfvx - ax * halfvz) + (mz * halfwx - mx * halfwz);</span><br><span class="line">		halfez = (ax * halfvy - ay * halfvx) + (mx * halfwy - my * halfwx);</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Compute and apply integral feedback if enabled</span></span><br><span class="line">		<span class="keyword">if</span>(twoKi &gt; <span class="number">0.0f</span>) &#123;</span><br><span class="line">			integralFBx += twoKi * halfex * (<span class="number">1.0f</span> / sampleFreq);	<span class="comment">// integral error scaled by Ki</span></span><br><span class="line">			integralFBy += twoKi * halfey * (<span class="number">1.0f</span> / sampleFreq);</span><br><span class="line">			integralFBz += twoKi * halfez * (<span class="number">1.0f</span> / sampleFreq);</span><br><span class="line">			gx += integralFBx;	<span class="comment">// apply integral feedback</span></span><br><span class="line">			gy += integralFBy;</span><br><span class="line">			gz += integralFBz;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> &#123;</span><br><span class="line">			integralFBx = <span class="number">0.0f</span>;	<span class="comment">// prevent integral windup</span></span><br><span class="line">			integralFBy = <span class="number">0.0f</span>;</span><br><span class="line">			integralFBz = <span class="number">0.0f</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Apply proportional feedback</span></span><br><span class="line">		gx += twoKp * halfex;</span><br><span class="line">		gy += twoKp * halfey;</span><br><span class="line">		gz += twoKp * halfez;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// Integrate rate of change of quaternion</span></span><br><span class="line">	gx *= (<span class="number">0.5f</span> * (<span class="number">1.0f</span> / sampleFreq));		<span class="comment">// pre-multiply common factors</span></span><br><span class="line">	gy *= (<span class="number">0.5f</span> * (<span class="number">1.0f</span> / sampleFreq));</span><br><span class="line">	gz *= (<span class="number">0.5f</span> * (<span class="number">1.0f</span> / sampleFreq));</span><br><span class="line">	qa = q0;</span><br><span class="line">	qb = q1;</span><br><span class="line">	qc = q2;</span><br><span class="line">	q0 += (-qb * gx - qc * gy - q3 * gz);</span><br><span class="line">	q1 += (qa * gx + qc * gz - q3 * gy);</span><br><span class="line">	q2 += (qa * gy - qb * gz + q3 * gx);</span><br><span class="line">	q3 += (qa * gz + qb * gy - qc * gx); </span><br><span class="line">	</span><br><span class="line">	<span class="comment">// Normalise quaternion</span></span><br><span class="line">	recipNorm = invSqrt(q0 * q0 + q1 * q1 + q2 * q2 + q3 * q3);</span><br><span class="line">	q0 *= recipNorm;</span><br><span class="line">	q1 *= recipNorm;</span><br><span class="line">	q2 *= recipNorm;</span><br><span class="line">	q3 *= recipNorm;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//---------------------------------------------------------------------------------------------------</span></span><br><span class="line"><span class="comment">// IMU algorithm update</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">MahonyAHRSupdateIMU</span><span class="params">(<span class="keyword">float</span> gx, <span class="keyword">float</span> gy, <span class="keyword">float</span> gz, <span class="keyword">float</span> ax, <span class="keyword">float</span> ay, <span class="keyword">float</span> az)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">float</span> recipNorm;</span><br><span class="line">	<span class="keyword">float</span> halfvx, halfvy, halfvz;</span><br><span class="line">	<span class="keyword">float</span> halfex, halfey, halfez;</span><br><span class="line">	<span class="keyword">float</span> qa, qb, qc;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Compute feedback only if accelerometer measurement valid (avoids NaN in accelerometer normalisation)</span></span><br><span class="line">	<span class="keyword">if</span>(!((ax == <span class="number">0.0f</span>) &amp;&amp; (ay == <span class="number">0.0f</span>) &amp;&amp; (az == <span class="number">0.0f</span>))) &#123;</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Normalise accelerometer measurement</span></span><br><span class="line">		recipNorm = invSqrt(ax * ax + ay * ay + az * az);</span><br><span class="line">		ax *= recipNorm;</span><br><span class="line">		ay *= recipNorm;</span><br><span class="line">		az *= recipNorm;        </span><br><span class="line"></span><br><span class="line">		<span class="comment">// Estimated direction of gravity and vector perpendicular to magnetic flux</span></span><br><span class="line">		halfvx = q1 * q3 - q0 * q2;</span><br><span class="line">		halfvy = q0 * q1 + q2 * q3;</span><br><span class="line">		halfvz = q0 * q0 - <span class="number">0.5f</span> + q3 * q3;</span><br><span class="line">	</span><br><span class="line">		<span class="comment">// Error is sum of cross product between estimated and measured direction of gravity</span></span><br><span class="line">		halfex = (ay * halfvz - az * halfvy);</span><br><span class="line">		halfey = (az * halfvx - ax * halfvz);</span><br><span class="line">		halfez = (ax * halfvy - ay * halfvx);</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Compute and apply integral feedback if enabled</span></span><br><span class="line">		<span class="keyword">if</span>(twoKi &gt; <span class="number">0.0f</span>) &#123;</span><br><span class="line">			integralFBx += twoKi * halfex * (<span class="number">1.0f</span> / sampleFreq);	<span class="comment">// integral error scaled by Ki</span></span><br><span class="line">			integralFBy += twoKi * halfey * (<span class="number">1.0f</span> / sampleFreq);</span><br><span class="line">			integralFBz += twoKi * halfez * (<span class="number">1.0f</span> / sampleFreq);</span><br><span class="line">			gx += integralFBx;	<span class="comment">// apply integral feedback</span></span><br><span class="line">			gy += integralFBy;</span><br><span class="line">			gz += integralFBz;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> &#123;</span><br><span class="line">			integralFBx = <span class="number">0.0f</span>;	<span class="comment">// prevent integral windup</span></span><br><span class="line">			integralFBy = <span class="number">0.0f</span>;</span><br><span class="line">			integralFBz = <span class="number">0.0f</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Apply proportional feedback</span></span><br><span class="line">		gx += twoKp * halfex;</span><br><span class="line">		gy += twoKp * halfey;</span><br><span class="line">		gz += twoKp * halfez;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// Integrate rate of change of quaternion</span></span><br><span class="line">	gx *= (<span class="number">0.5f</span> * (<span class="number">1.0f</span> / sampleFreq));		<span class="comment">// pre-multiply common factors</span></span><br><span class="line">	gy *= (<span class="number">0.5f</span> * (<span class="number">1.0f</span> / sampleFreq));</span><br><span class="line">	gz *= (<span class="number">0.5f</span> * (<span class="number">1.0f</span> / sampleFreq));</span><br><span class="line">	qa = q0;</span><br><span class="line">	qb = q1;</span><br><span class="line">	qc = q2;</span><br><span class="line">	q0 += (-qb * gx - qc * gy - q3 * gz);</span><br><span class="line">	q1 += (qa * gx + qc * gz - q3 * gy);</span><br><span class="line">	q2 += (qa * gy - qb * gz + q3 * gx);</span><br><span class="line">	q3 += (qa * gz + qb * gy - qc * gx); </span><br><span class="line">	</span><br><span class="line">	<span class="comment">// Normalise quaternion</span></span><br><span class="line">	recipNorm = invSqrt(q0 * q0 + q1 * q1 + q2 * q2 + q3 * q3);</span><br><span class="line">	q0 *= recipNorm;</span><br><span class="line">	q1 *= recipNorm;</span><br><span class="line">	q2 *= recipNorm;</span><br><span class="line">	q3 *= recipNorm;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//---------------------------------------------------------------------------------------------------</span></span><br><span class="line"><span class="comment">// Fast inverse square-root</span></span><br><span class="line"><span class="comment">// See: http://en.wikipedia.org/wiki/Fast_inverse_square_root</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">float</span> <span class="title">invSqrt</span><span class="params">(<span class="keyword">float</span> x)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">float</span> halfx = <span class="number">0.5f</span> * x;</span><br><span class="line">	<span class="keyword">float</span> y = x;</span><br><span class="line">	<span class="keyword">long</span> i = *(<span class="keyword">long</span>*)&amp;y;</span><br><span class="line">	i = <span class="number">0x5f3759df</span> - (i&gt;&gt;<span class="number">1</span>);</span><br><span class="line">	y = *(<span class="keyword">float</span>*)&amp;i;</span><br><span class="line">	y = y * (<span class="number">1.5f</span> - (halfx * y * y));</span><br><span class="line">	<span class="keyword">return</span> y;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//====================================================================================================</span></span><br><span class="line"><span class="comment">// END OF CODE</span></span><br><span class="line"><span class="comment">//====================================================================================================</span></span><br></pre></td></tr></table></figure>
+<h1 id="6-参考："><a href="#6-参考：" class="headerlink" title="6. 参考："></a>6. 参考：</h1><ul>
+<li><p><a href="https://www.samba.org/tridge/UAV/madgwick_internal_report.pdf" target="_blank" rel="noopener">An efficient orientation filter for inertial and inertial/magnetic sensor arrays</a></p>
+</li>
+<li><p><a href="https://blog.csdn.net/Gregory24/article/details/90646084" target="_blank" rel="noopener">Madgwick算法的数学推演：基于惯性导航元件的位姿估计</a></p>
+</li>
+<li><a href="https://www.cnblogs.com/ilekoaiq/p/8849217.html" target="_blank" rel="noopener">Madgwick算法详细解读</a></li>
+<li>[<a href="https://x-io.co.uk/open-source-imu-and-ahrs-algorithms/" target="_blank" rel="noopener">Open source IMU and AHRS algorithms</a>]</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+        
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/理论/" rel="tag"># 理论</a>
+          
+            <a href="/tags/姿态估计/" rel="tag"># 姿态估计</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/12/07/vSLAMNet（四）-最优化-数值解法/" rel="next" title="vSLAMNet（四）-最优化-数值解法">
+                <i class="fa fa-chevron-left"></i> vSLAMNet（四）-最优化-数值解法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/12/14/线性代数及其应用（三）-行列式/" rel="prev" title="线性代数及其应用（三）-行列式">
+                线性代数及其应用（三）-行列式 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Xiaoqiang Teng</p>
+              <p class="site-description motion-element" itemprop="description">Remember what should be remembered, and forget what should be forgotten.Alter what is changeable, and accept what is mutable.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">44</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-概述"><span class="nav-text">1. 概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-算法详解"><span class="nav-text">2. 算法详解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-陀螺仪姿态解算"><span class="nav-text">2.1 陀螺仪姿态解算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-加速度计和磁力计姿态解算"><span class="nav-text">2.2 加速度计和磁力计姿态解算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-加权融合"><span class="nav-text">2.3 加权融合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-系统流程图"><span class="nav-text">2.4 系统流程图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-5-磁力计校准"><span class="nav-text">2.5 磁力计校准</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-6-陀螺仪零点漂移校准"><span class="nav-text">2.6 陀螺仪零点漂移校准</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-7-算法的整体流程"><span class="nav-text">2.7 算法的整体流程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-实验评测"><span class="nav-text">3. 实验评测</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-实验设置"><span class="nav-text">3.1 实验设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-实验结果"><span class="nav-text">3.2 实验结果</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-代码实现"><span class="nav-text">5. 代码实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#5-1-论文源码"><span class="nav-text">5.1 论文源码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-2-x-io源码"><span class="nav-text">5.2 x-io源码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-参考："><span class="nav-text">6. 参考：</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiaoqiang Teng</span>
+
+  
+</div>
+
+
+
+<div class="powered-by">
+<i class="fa fa-user-md"></i><span id="busuanzi_container_site_uv">
+  本站访客数:<span id="busuanzi_value_site_uv"></span>
+</span>
+</div>
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+<div>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style="display:none">
+    本站总访问量 <span id="busuanzi_value_site_pv"></span> 次
+    <span class="post-meta-divider">|</span>
+</span>
+<span id="busuanzi_container_site_uv" style="display:none">
+    有<span id="busuanzi_value_site_uv"></span>人看过我的博客啦
+</span>
+</div>
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
