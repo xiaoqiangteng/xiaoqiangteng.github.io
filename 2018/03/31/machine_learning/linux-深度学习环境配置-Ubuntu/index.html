@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="编程,Linux,环境配置,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Ubuntu16.04 cuda8.0 GPU驱动配置 ubuntu 16.04 64bit  显卡：NVIDIA Tesla k40m + 集成显卡  更换阿里源更换之前要先备份之前的源： 1sudo cp /etc/apt/source.list /etc/apt/source.list.bak 编辑源列表文件: 1sudo vim/etc/apt/sources.list 原来的列表删除，替">
+<meta name="keywords" content="编程,Linux,环境配置">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux-深度学习环境配置-Ubuntu">
+<meta property="og:url" content="http://yoursite.com/2018/03/31/machine_learning/linux-深度学习环境配置-Ubuntu/index.html">
+<meta property="og:site_name" content="学步">
+<meta property="og:description" content="Ubuntu16.04 cuda8.0 GPU驱动配置 ubuntu 16.04 64bit  显卡：NVIDIA Tesla k40m + 集成显卡  更换阿里源更换之前要先备份之前的源： 1sudo cp /etc/apt/source.list /etc/apt/source.list.bak 编辑源列表文件: 1sudo vim/etc/apt/sources.list 原来的列表删除，替">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-02-18T16:19:05.807Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="linux-深度学习环境配置-Ubuntu">
+<meta name="twitter:description" content="Ubuntu16.04 cuda8.0 GPU驱动配置 ubuntu 16.04 64bit  显卡：NVIDIA Tesla k40m + 集成显卡  更换阿里源更换之前要先备份之前的源： 1sudo cp /etc/apt/source.list /etc/apt/source.list.bak 编辑源列表文件: 1sudo vim/etc/apt/sources.list 原来的列表删除，替">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/03/31/machine_learning/linux-深度学习环境配置-Ubuntu/">
+
+
+
+
+
+  <title>linux-深度学习环境配置-Ubuntu | 学步</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">学步</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-编程">
+          <a href="/categories/programming" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            编程
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-学术">
+          <a href="/categories/science" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            学术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-理论">
+          <a href="/categories/theory" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            理论
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-其他">
+          <a href="/categories/other" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            其他
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+    
+  
+  
+
+  <article class="post post-type-normal true" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/31/machine_learning/linux-深度学习环境配置-Ubuntu/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Xiaoqiang Teng">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="学步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">linux-深度学习环境配置-Ubuntu</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-31T21:17:38+08:00">
+                2018-03-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">编程</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/programming/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/programming/Linux/环境配置/" itemprop="url" rel="index">
+                    <span itemprop="name">环境配置</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Ubuntu16-04-cuda8-0-GPU驱动配置"><a href="#Ubuntu16-04-cuda8-0-GPU驱动配置" class="headerlink" title="Ubuntu16.04 cuda8.0 GPU驱动配置"></a>Ubuntu16.04 cuda8.0 GPU驱动配置</h1><ul>
+<li>ubuntu 16.04 64bit </li>
+<li>显卡：NVIDIA Tesla k40m + 集成显卡</li>
+</ul>
+<h2 id="更换阿里源"><a href="#更换阿里源" class="headerlink" title="更换阿里源"></a>更换阿里源</h2><p>更换之前要先备份之前的源：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo cp /etc/apt/source.list /etc/apt/source.list.bak</span><br></pre></td></tr></table></figure>
+<p>编辑源列表文件:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim/etc/apt/sources.list</span><br></pre></td></tr></table></figure>
+<p>原来的列表删除，替换：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># deb cdrom:[Ubuntu 16.04 LTS _Xenial Xerus_ - Release amd64 (20160420.1)]/ xenial main restricted</span></span><br><span class="line">deb-src http://archive.ubuntu.com/ubuntu xenial main restricted <span class="comment">#Added by software-properties</span></span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ xenial main restricted</span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ xenial main restricted multiverse universe <span class="comment">#Added by software-properties</span></span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ xenial-updates main restricted</span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ xenial-updates main restricted multiverse universe <span class="comment">#Added by software-properties</span></span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ xenial universe</span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ xenial-updates universe</span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ xenial multiverse</span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ xenial-updates multiverse</span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ xenial-backports main restricted universe multiverse</span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ xenial-backports main restricted universe multiverse <span class="comment">#Added by software-properties</span></span><br><span class="line">deb http://archive.canonical.com/ubuntu xenial partner</span><br><span class="line">deb-src http://archive.canonical.com/ubuntu xenial partner</span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ xenial-security main restricted</span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ xenial-security main restricted multiverse universe <span class="comment">#Added by software-properties</span></span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ xenial-security universe</span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ xenial-security multiverse</span><br></pre></td></tr></table></figure>
+<p>更新：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br></pre></td></tr></table></figure>
+<h2 id="Ubuntu16-04挂载新硬盘并格式化硬盘"><a href="#Ubuntu16-04挂载新硬盘并格式化硬盘" class="headerlink" title="Ubuntu16.04挂载新硬盘并格式化硬盘"></a>Ubuntu16.04挂载新硬盘并格式化硬盘</h2><p>查看硬盘:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo fdisk -l</span><br></pre></td></tr></table></figure>
+<p>新建分区:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo fdisk /dev/sdb</span><br></pre></td></tr></table></figure>
+<p>之后进入command状态，大概是这么操作的：</p>
+<ul>
+<li>输入 m 查看帮助</li>
+<li>输入 p 查看 /dev/sdb 分区的状态</li>
+<li>输入 n 创建sdb这块硬盘的分区</li>
+<li>选 p primary =&gt;输入　p</li>
+<li>Partition number =&gt;分一个区所以输入　1</li>
+<li>其他的默认回车即可</li>
+<li>最后输入 w 保存并退出 Command 状态。</li>
+</ul>
+<p>操作示例:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">Command (m <span class="keyword">for</span> <span class="built_in">help</span>): n</span><br><span class="line"><span class="comment"># n创建分区</span></span><br><span class="line">Partition <span class="built_in">type</span></span><br><span class="line">   p   primary (0 primary, 0 extended, 4 free)</span><br><span class="line">   e   extended (container <span class="keyword">for</span> logical partitions)</span><br><span class="line">Select (default p): p</span><br><span class="line"><span class="comment"># p(primary主分区） e(extended拓展分区)</span></span><br><span class="line">Partition number (1-4, default 1): 1</span><br><span class="line"><span class="comment"># 分区号</span></span><br><span class="line">First sector (2048-83886079, default 2048): </span><br><span class="line"><span class="comment"># 默认</span></span><br><span class="line">Last sector, +sectors or +size&#123;K,M,G,T,P&#125; (2048-83886079, default 83886079): </span><br><span class="line"><span class="comment"># 大小，可自定义，保持默认</span></span><br><span class="line">Created a new partition 1 of <span class="built_in">type</span> <span class="string">'Linux'</span> and of size 40 GiB.</span><br><span class="line"></span><br><span class="line">Command (m <span class="keyword">for</span> <span class="built_in">help</span>): p</span><br><span class="line"><span class="comment"># 查看分区情况</span></span><br><span class="line">Disk /dev/sdb: 40 GiB, 42949672960 bytes, 83886080 sectors</span><br><span class="line">Units: sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disklabel <span class="built_in">type</span>: dos</span><br><span class="line">Disk identifier: 0xbb6c1792</span><br><span class="line"></span><br><span class="line">Device     Boot Start      End  Sectors Size Id Type</span><br><span class="line">/dev/sdb1        2048 83886079 83884032  40G 83 Linux</span><br><span class="line"></span><br><span class="line">Command (m <span class="keyword">for</span> <span class="built_in">help</span>): w</span><br><span class="line"><span class="comment"># 保存</span></span><br><span class="line">The partition table has been altered.</span><br><span class="line">Calling ioctl() to re-read partition table.</span><br><span class="line">Syncing disks.</span><br></pre></td></tr></table></figure>
+<p>在通过查看命令即可查看，新增的硬盘.</p>
+<p>格式化:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo mkfs.ext4 /dev/sdb1 <span class="comment"># ext4为分区格式</span></span><br></pre></td></tr></table></figure>
+<p>挂载:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir /home/data</span><br><span class="line">sudo mount /dev/sdb1 /home/data</span><br></pre></td></tr></table></figure>
+<p>开机自动挂载:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo blkid</span><br></pre></td></tr></table></figure>
+<p>添加UUID到/etc/fstab 添加UUID=63295b70-daec-4253-b659-821f51200be9 /home/data ext4 defaults,errors=remount-ro 0 1到/etc/fstab 其中UUID后面跟sdb1的UUID 重启。</p>
+<h2 id="安装必要的软件"><a href="#安装必要的软件" class="headerlink" title="安装必要的软件"></a>安装必要的软件</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install vim git openssh-server</span><br></pre></td></tr></table></figure>
+<h2 id="检查是否正确识别显卡"><a href="#检查是否正确识别显卡" class="headerlink" title="检查是否正确识别显卡"></a>检查是否正确识别显卡</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lspci | grep -i nvidia</span><br></pre></td></tr></table></figure>
+<h2 id="查看是否已有安装的NVIDIA驱动"><a href="#查看是否已有安装的NVIDIA驱动" class="headerlink" title="查看是否已有安装的NVIDIA驱动"></a>查看是否已有安装的NVIDIA驱动</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lsmod | grep nvidia</span><br></pre></td></tr></table></figure>
+<h2 id="查看集显驱动"><a href="#查看集显驱动" class="headerlink" title="查看集显驱动"></a>查看集显驱动</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lsmod | grep nouveau</span><br></pre></td></tr></table></figure>
+<h2 id="禁用nouveau驱动和相关的驱动包"><a href="#禁用nouveau驱动和相关的驱动包" class="headerlink" title="禁用nouveau驱动和相关的驱动包"></a>禁用nouveau驱动和相关的驱动包</h2><p>用编辑器打开blacklist.conf配置文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo gedit /etc/modprobe.d/blacklist.conf</span><br></pre></td></tr></table></figure>
+<p>在文件的最后一行加入下面的命令，屏蔽有影响的驱动包（这里有的博客添加了blacklist amd76x_edac，但是经测试后不加也是可以安装成功的）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">blacklist rivafb</span><br><span class="line">blacklist vga16fb</span><br><span class="line">blacklist nouveau</span><br><span class="line">blacklist nvidiafb</span><br><span class="line">blacklist rivatv</span><br><span class="line">options nouveau modeset=0</span><br><span class="line"><span class="built_in">alias</span> nouveau off</span><br><span class="line"><span class="built_in">alias</span> lbm-nouveau off</span><br></pre></td></tr></table></figure>
+<p>禁用 nouveau 内核模块:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$echo</span> options nouveau modeset=0 | sudo tee -a /etc/modprobe.d/nouveau-kms.conf</span><br><span class="line"><span class="variable">$sudo</span> update-initramfs -u</span><br></pre></td></tr></table></figure>
+<h2 id="卸载所有安装的nvidia驱动"><a href="#卸载所有安装的nvidia驱动" class="headerlink" title="卸载所有安装的nvidia驱动"></a>卸载所有安装的nvidia驱动</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get remove –purge nvidia*</span><br></pre></td></tr></table></figure>
+<h2 id="重启"><a href="#重启" class="headerlink" title="重启"></a>重启</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo reboot</span><br></pre></td></tr></table></figure>
+<h2 id="GPU驱动配置"><a href="#GPU驱动配置" class="headerlink" title="GPU驱动配置"></a>GPU驱动配置</h2><p>根据GPU型号从相应网站下载驱动，例如使用NVIDIA Tesla M60，从<a href="http://www.nvidia.cn/Download/index.aspx?lang=cn" target="_blank" rel="noopener">NVIDIA网站</a>选择对应的型号和操作系统，CUDA Toolkit版本，下载驱动文件，如NVIDIA-Linux-x86_64-375.66.run，运行驱动文件，根据提示安装：</p>
+<h3 id="安装驱动"><a href="#安装驱动" class="headerlink" title="安装驱动"></a>安装驱动</h3><p>安装驱动可能需要的依赖(可选):</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$sudo</span> apt-get update</span><br><span class="line"><span class="variable">$sudo</span> apt-get install dkms build-essential linux-headers-generic</span><br><span class="line"><span class="variable">$sudo</span> gedit ~/.bashrc</span><br><span class="line">	<span class="built_in">export</span> LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:<span class="variable">$LD_LIBRARY_PATH</span></span><br><span class="line">	<span class="built_in">export</span> LD_LIBRARY_PATH=/lib/x86_64-linux-gnu:<span class="variable">$LD_LIBRARY_PATH</span></span><br><span class="line"><span class="variable">$source</span> ~/.bashrc</span><br></pre></td></tr></table></figure>
+<p>进入命令行界面</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Ctrl-Alt+F1 </span><br><span class="line">sudo /etc/init.d/lightdm stop <span class="comment">#关闭当前图形环境令</span></span><br></pre></td></tr></table></figure>
+<p>关闭桌面服务</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo service lightdm stop</span><br></pre></td></tr></table></figure>
+<p>给驱动run文件赋予执行权限</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chmod a+x NVIDIA-Linux-x86_64-384.66.run</span><br></pre></td></tr></table></figure>
+<p>安装: 注意下面参数</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo ./NVIDIA-Linux-x86_64-384.66.run –no-x-check –no-nouveau-check –no-opengl-files </span><br><span class="line"><span class="comment"># –no-x-check安装驱动时关闭X服务 </span></span><br><span class="line"><span class="comment"># –no-nouveau-check 安装驱动时禁用nouveau </span></span><br><span class="line"><span class="comment"># –no-opengl-files 只安装驱动文件，不安装OpenGL文件</span></span><br></pre></td></tr></table></figure>
+<p>注意：安装CUDA时一定使用runfile文件，这样可以进行选择。不再选择安装驱动，以及在弹出xorg.conf时选择NO.不要使用ubuntu设置中附加驱动中驱动</p>
+<p>报错：</p>
+<p>（1）ERROR: Unable to load the kernel module ‘nvidia.ko’. This happens most frequently when this kernel module was built against the wrong or improperly configured kernel sources, with a version of gcc that differs from the one used to build the target kernel, or if a driver such as rivafb, nvidiafb, or nouveau is present and prevents the NVIDIA kernel module from obtaining ownership of the NVIDIA graphics device(s), or no NVIDIA GPU installed in this system is supported by this NVIDIA Linux graphics driver release.</p>
+<p>解决方法：</p>
+<ul>
+<li>禁用nouveau驱动和相关的驱动</li>
+<li>首先，Ctrl+Alt+F1进入命令提示符界面 </li>
+<li>然后，输入对应的username和passwd进入命令行. </li>
+<li>最后，使用指令sudo service lightdm stop 关闭图形界面，再利用cd指令进入下载好的驱动目录</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sudo chmod 755 NVIDIA-Linux-x86_64-384.111.run  <span class="comment">#修改权限（否则没有访问权限，无法进行指令安装）</span></span><br><span class="line">sudo ./NVIDIA-Linux-x86_64-384.111.run –no-x-check –no-nouveau-check –no-opengl-files <span class="comment">#安装驱动</span></span><br><span class="line"><span class="comment">#–no-x-check 关闭X服务</span></span><br><span class="line"><span class="comment">#–no-nouveau-check 禁用nouveau</span></span><br><span class="line"><span class="comment">#–no-opengl-files 不安装OpenGL文件</span></span><br><span class="line"><span class="comment">#...安装完成后</span></span><br><span class="line">sudo update-initramfs -u</span><br><span class="line">sudo reboot</span><br></pre></td></tr></table></figure>
+<p>(2) WARNING: Unable to find a suitable destination to install 32-bit compatibility libraries. Your system may not be set up for 32-bit compatibility. 32-bit compatibility files will not be installed; if you wish to install them, re-run the installation and set a valid directory with the —compat32-libdir option.</p>
+<p>解决方法：</p>
+<p>运行命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo aptitude install ia32-libs</span><br></pre></td></tr></table></figure>
+<h2 id="安装cuda"><a href="#安装cuda" class="headerlink" title="安装cuda"></a>安装<a href="https://developer.nvidia.com/cuda-80-ga2-download-archive" target="_blank" rel="noopener">cuda</a></h2><p>注意这里下载的是cuda8.0的runfile（local）文件。 </p>
+<p>这里是nvidia给出的官方安装指南（遇到问题时可以查阅) </p>
+<p>下载完cuda8.0后，执行如下语句，运行runfile文件： </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo sh cuda_8.0.27_linux.run</span><br></pre></td></tr></table></figure>
+<p>因为驱动之前已经安装，这里就不要选择安装驱动。其余的都直接默认或者选择是即可。</p>
+<p>使用：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo gedit /etc/profile</span><br></pre></td></tr></table></figure>
+<p>打开“profile”文件，在末尾处添加（注意不要有空格，不然会报错):</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> PATH=/usr/<span class="built_in">local</span>/cuda-8.0/bin:<span class="variable">$PATH</span></span><br><span class="line"><span class="built_in">export</span> LD_LIBRARY_PATH=/usr/<span class="built_in">local</span>/cuda-8.0/lib64<span class="variable">$LD_LIBRARY_PATH</span></span><br></pre></td></tr></table></figure>
+<p>重启电脑：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo reboot</span><br></pre></td></tr></table></figure>
+<p>测试cuda的Samples:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /usr/<span class="built_in">local</span>/cuda-8.0/samples/1_Utilities/deviceQuery</span><br><span class="line">sudo make</span><br><span class="line">./deviceQuery</span><br></pre></td></tr></table></figure>
+<h1 id="OpenCV3-1配置"><a href="#OpenCV3-1配置" class="headerlink" title="OpenCV3.1配置"></a>OpenCV3.1配置</h1><h2 id="安装依赖库"><a href="#安装依赖库" class="headerlink" title="安装依赖库"></a>安装依赖库</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install build-essential</span><br><span class="line"><span class="comment"># 必须的，gcc编译环境</span></span><br><span class="line"></span><br><span class="line">sudo apt-get install cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev</span><br><span class="line"><span class="comment"># 必须的,包括cmake等工具</span></span><br><span class="line"></span><br><span class="line">sudo apt-get install python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev</span><br><span class="line"><span class="comment"># 可选的，看个人需要，总共5M左右</span></span><br><span class="line"></span><br><span class="line">sudo apt-get install libv4l-dev</span><br></pre></td></tr></table></figure>
+<h2 id="下载-源码"><a href="#下载-源码" class="headerlink" title="下载 源码"></a>下载 源码</h2><p><a href="https://opencv.org/releases.html" target="_blank" rel="noopener">OpenCV</a></p>
+<p>或着用git clone：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> ~/opencv310</span><br><span class="line">    <span class="comment"># opencv310为自己建的，源码将放在这里</span></span><br><span class="line">git <span class="built_in">clone</span> https://github.com/Itseez/opencv.git</span><br><span class="line">git <span class="built_in">clone</span> https://github.com/Itseez/opencv_contrib.git</span><br></pre></td></tr></table></figure>
+<h2 id="CMake-Opencv源码"><a href="#CMake-Opencv源码" class="headerlink" title="CMake Opencv源码"></a>CMake Opencv源码</h2><p>建立一个编译目录（例如：/build）把cmake后的文件都放在这里边。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> ~/opencv</span><br><span class="line">mkdir build  //建立一个build目录，把cmake的文件都放着里边</span><br><span class="line"><span class="built_in">cd</span> build　　　//进入build目录</span><br></pre></td></tr></table></figure>
+<p>cmake时ippicv_linux_20151201.tgz总是不能成功下载，故cmake之前将./downloads/linux-808b791a6eac9ed78d32a7666804320e 文件拷贝至./opencv-3.1.0/3rdparty/ippicv/ 路径下(先执行一次cmake 命令生成文件路径，在将ippicv_linux_20151201.tgz复制进去) 首先，手动下载<a href="https://raw.githubusercontent.com/Itseez/opencv_3rdparty/81a676001ca8075ada498583e4166079e5744668/ippicv/ippicv_linux_20151201.tgz" target="_blank" rel="noopener">ippicv</a></p>
+<p>然后开始cmake，这里需要注意几个cmake的参数，比较重要。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=/usr/<span class="built_in">local</span> WITH_LIBV4L=ON ..</span><br></pre></td></tr></table></figure>
+<p>切记最后’..’两个点之前要加空格！！</p>
+<h2 id="把代码编译成可执行文件"><a href="#把代码编译成可执行文件" class="headerlink" title="把代码编译成可执行文件"></a>把代码编译成可执行文件</h2><p>这里官方推荐使用多进程编译，推荐七个进程：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 报错：</span></span><br><span class="line"><span class="comment"># modules/cudalegacy/src/graphcuts.cpp:120:54: error: </span></span><br><span class="line"><span class="comment"># ‘NppiGraphcutState’ has not been declared</span></span><br><span class="line"><span class="comment"># typedef NppStatus (*init_func_t)(NppiSize oSize, </span></span><br><span class="line"><span class="comment"># NppiGraphcutState** ppState, Npp8u* pDeviceMem);</span></span><br><span class="line"><span class="comment"># 这是因为opecv3.0与cuda8.0不兼容导致的。解决办法： </span></span><br><span class="line"><span class="comment"># 修改 ～/opencv/modules/cudalegacy/src/graphcuts.cpp文件内容</span></span><br><span class="line"><span class="comment"># 将  </span></span><br><span class="line"><span class="comment"># #if !defined (HAVE_CUDA) || defined (CUDA_DISABLER)   </span></span><br><span class="line"><span class="comment"># 改为  </span></span><br><span class="line"><span class="comment"># #if !defined (HAVE_CUDA) || defined (CUDA_DISABLER) || (CUDART_VERSION &gt;= 8000) </span></span><br><span class="line">make -j7 <span class="comment"># 并行运行七个jobs，这一步也在build目录中进行</span></span><br></pre></td></tr></table></figure>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo make install</span><br><span class="line"></span><br><span class="line">如果你要在python下运行opencv库的情况下，那就必须安装安装python-opencv</span><br><span class="line">sudo apt-get install python-opencv</span><br></pre></td></tr></table></figure>
+<h2 id="配置库文件路径"><a href="#配置库文件路径" class="headerlink" title="配置库文件路径"></a>配置库文件路径</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/bin/bash -c <span class="string">'echo "/usr/local/lib" &gt; /etc/ld.so.conf.d/opencv.conf'</span></span><br><span class="line"><span class="comment">#或者直接打开/etc/ld.so.conf.d/opencv.conf，添加/usr/local/lib</span></span><br><span class="line"><span class="comment">#使配置生效</span></span><br><span class="line">sudo  ldconfig(重要)</span><br></pre></td></tr></table></figure>
+<h2 id="设置环境变量"><a href="#设置环境变量" class="headerlink" title="设置环境变量"></a>设置环境变量</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sudo vim/etc/bash.bashrc   </span><br><span class="line"><span class="comment">#在最后加入以下两行代码</span></span><br><span class="line">PKG_CONFIG_PATH=<span class="variable">$PKG_CONFIG_PATH</span>:/usr/<span class="built_in">local</span>/lib/pkgconfig </span><br><span class="line"><span class="built_in">export</span> PKG_CONFIG_PATH  </span><br><span class="line"><span class="comment">#使配置生效</span></span><br><span class="line">sudo <span class="built_in">source</span> /etc/bash.bashrc </span><br><span class="line">（该步骤可能会报错找不到命令，原因是<span class="built_in">source</span>为root命令</span><br><span class="line">su（进入root权限）</span><br></pre></td></tr></table></figure>
+<h2 id="查看"><a href="#查看" class="headerlink" title="查看"></a>查看</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pkg-config --modversion opencv</span><br><span class="line">pkg-config --cflags opencv</span><br></pre></td></tr></table></figure>
+<h2 id="运行测试"><a href="#运行测试" class="headerlink" title="运行测试"></a>运行测试</h2><p>我是用python+opencv的，我这里直接运行opencv自带的python的例子程序，TX1自带摄像头不能用，需要使用外接USB摄像头，插入USB接口即可，无需安装驱动，也无需改动测试代码。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> &lt;opencv3.1.0_dir&gt;/samples/python/</span><br><span class="line">python video.py</span><br><span class="line">python edge.py</span><br><span class="line">python facedetect.py</span><br></pre></td></tr></table></figure>
+<h1 id="colmap配置"><a href="#colmap配置" class="headerlink" title="colmap配置"></a><a href="https://colmap.github.io/tutorial.html" target="_blank" rel="noopener">colmap</a>配置</h1><p>clone colmap源码到本地：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/colmap/colmap</span><br></pre></td></tr></table></figure>
+<p>安装依赖：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install cmake build-essential libboost-all-dev libeigen3-dev libsuitesparse-dev libfreeimage-dev libgoogle-glog-dev libgflags-dev libglew-dev qtbase5-dev libqt5opengl5-dev</span><br></pre></td></tr></table></figure>
+<p>配置Ceres Solver:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install libatlas-base-dev libsuitesparse-dev</span><br><span class="line">git <span class="built_in">clone</span> https://ceres-solver.googlesource.com/ceres-solver</span><br><span class="line"><span class="built_in">cd</span> ceres-solver</span><br><span class="line">mkdir build</span><br><span class="line"><span class="built_in">cd</span> build</span><br><span class="line">cmake .. -DBUILD_TESTING=OFF -DBUILD_EXAMPLES=OFF</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br><span class="line"><span class="comment"># 注：如果该安装包无法下载，请离线下载安装，需翻墙</span></span><br></pre></td></tr></table></figure>
+<p>配置和编译colmap:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> path/to/colmap</span><br><span class="line">mkdir build</span><br><span class="line"><span class="built_in">cd</span> build</span><br><span class="line">cmake ..</span><br><span class="line">make -j8</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
+<p>运行colmap:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">colmap -h</span><br><span class="line">colmap gui</span><br></pre></td></tr></table></figure>
+<h1 id="Caffe配置"><a href="#Caffe配置" class="headerlink" title="Caffe配置"></a>Caffe配置</h1><p>安装依赖：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install libprotobuf-dev libleveldb-dev libsnappy-dev libopencv-dev libhdf5-serial-dev protobuf-compiler</span><br><span class="line">sudo apt-get install --no-install-recommends libboost-all-dev</span><br><span class="line">sudo apt-get install libopenblas-dev liblapack-dev libatlas-base-dev</span><br><span class="line">sudo apt-get install libgflags-dev libgoogle-glog-dev liblmdb-dev</span><br><span class="line">sudo apt-get install git cmake build-essential</span><br></pre></td></tr></table></figure>
+<p>有一定几率安装失败而导致后续步骤出现问题，所以要确保以上依赖包都已安装成功，验证方法就是重新运行安装命令，如验证 git cmake build-essential是否安装成功共则再次运行以下命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install git cmake build-essential</span><br></pre></td></tr></table></figure>
+<p>安装的路径下 clone ：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/BVLC/caffe.git</span><br></pre></td></tr></table></figure>
+<p>进入 caffe ，将 Makefile.config.example 文件复制一份并更名为 Makefile.config ，也可以在 caffe 目录下直接调用以下命令完成复制操作 ：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo cp Makefile.config.example Makefile.config</span><br></pre></td></tr></table></figure>
+<p>复制一份的原因是编译 caffe 时需要的是 Makefile.config 文件，而Makefile.config.example 只是caffe 给出的配置文件例子，不能用来编译 caffe。</p>
+<p>参考我的Makefile.config：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## Refer to http://caffe.berkeleyvision.org/installation.html</span></span><br><span class="line"><span class="comment"># Contributions simplifying and improving our build system are welcome!</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># cuDNN acceleration switch (uncomment to build with cuDNN).</span></span><br><span class="line"><span class="comment"># USE_CUDNN := 1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># CPU-only switch (uncomment to build without GPU support).</span></span><br><span class="line"><span class="comment"># CPU_ONLY := 1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># uncomment to disable IO dependencies and corresponding data layers</span></span><br><span class="line"><span class="comment"># USE_OPENCV := 0</span></span><br><span class="line"><span class="comment"># USE_LEVELDB := 0</span></span><br><span class="line"><span class="comment"># USE_LMDB := 0</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># uncomment to allow MDB_NOLOCK when reading LMDB files (only if necessary)</span></span><br><span class="line"><span class="comment">#	You should not set this flag if you will be reading LMDBs with any</span></span><br><span class="line"><span class="comment">#	possibility of simultaneous read and write</span></span><br><span class="line"><span class="comment"># ALLOW_LMDB_NOLOCK := 1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Uncomment if you're using OpenCV 3</span></span><br><span class="line">OPENCV_VERSION := 3</span><br><span class="line"></span><br><span class="line"><span class="comment"># To customize your choice of compiler, uncomment and set the following.</span></span><br><span class="line"><span class="comment"># N.B. the default for Linux is g++ and the default for OSX is clang++</span></span><br><span class="line"><span class="comment"># CUSTOM_CXX := g++</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># CUDA directory contains bin/ and lib/ directories that we need.</span></span><br><span class="line">CUDA_DIR := /usr/<span class="built_in">local</span>/cuda</span><br><span class="line"><span class="comment"># On Ubuntu 14.04, if cuda tools are installed via</span></span><br><span class="line"><span class="comment"># "sudo apt-get install nvidia-cuda-toolkit" then use this instead:</span></span><br><span class="line"><span class="comment"># CUDA_DIR := /usr</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># CUDA architecture setting: going with all of them.</span></span><br><span class="line"><span class="comment"># For CUDA &lt; 6.0, comment the *_50 lines for compatibility.</span></span><br><span class="line">CUDA_ARCH := -gencode arch=compute_20,code=sm_20 \</span><br><span class="line">		-gencode arch=compute_20,code=sm_21 \</span><br><span class="line">		-gencode arch=compute_30,code=sm_30 \</span><br><span class="line">		-gencode arch=compute_35,code=sm_35 \</span><br><span class="line">		-gencode arch=compute_50,code=sm_50 \</span><br><span class="line">		-gencode arch=compute_50,code=compute_50</span><br><span class="line"></span><br><span class="line"><span class="comment"># BLAS choice:</span></span><br><span class="line"><span class="comment"># atlas for ATLAS (default)</span></span><br><span class="line"><span class="comment"># mkl for MKL</span></span><br><span class="line"><span class="comment"># open for OpenBlas</span></span><br><span class="line">BLAS := open</span><br><span class="line"><span class="comment"># Custom (MKL/ATLAS/OpenBLAS) include and lib directories.</span></span><br><span class="line"><span class="comment"># Leave commented to accept the defaults for your choice of BLAS</span></span><br><span class="line"><span class="comment"># (which should work)!</span></span><br><span class="line"><span class="comment"># BLAS_INCLUDE := /path/to/your/blas</span></span><br><span class="line"><span class="comment"># BLAS_LIB := /path/to/your/blas</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Homebrew puts openblas in a directory that is not on the standard search path</span></span><br><span class="line"><span class="comment"># BLAS_INCLUDE := $(shell brew --prefix openblas)/include</span></span><br><span class="line"><span class="comment"># BLAS_LIB := $(shell brew --prefix openblas)/lib</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># This is required only if you will compile the matlab interface.</span></span><br><span class="line"><span class="comment"># MATLAB directory should contain the mex binary in /bin.</span></span><br><span class="line"><span class="comment"># MATLAB_DIR := /usr/local</span></span><br><span class="line"><span class="comment"># MATLAB_DIR := /Applications/MATLAB_R2012b.app</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># <span class="doctag">NOTE:</span> this is required only if you will compile the python interface.</span></span><br><span class="line"><span class="comment"># We need to be able to find Python.h and numpy/arrayobject.h.</span></span><br><span class="line">PYTHON_INCLUDE := /usr/include/python2.7 \</span><br><span class="line">		/usr/lib64/python2.7/site-packages/numpy/core/include</span><br><span class="line"><span class="comment"># Anaconda Python distribution is quite popular. Include path:</span></span><br><span class="line"><span class="comment"># Verify anaconda location, sometimes it's in root.</span></span><br><span class="line"><span class="comment"># ANACONDA_HOME := $(HOME)/anaconda</span></span><br><span class="line"><span class="comment"># PYTHON_INCLUDE := $(ANACONDA_HOME)/include \</span></span><br><span class="line">		<span class="comment"># $(ANACONDA_HOME)/include/python2.7 \</span></span><br><span class="line">		<span class="comment"># $(ANACONDA_HOME)/lib/python2.7/site-packages/numpy/core/include \</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># We need to be able to find libpythonX.X.so or .dylib.</span></span><br><span class="line">PYTHON_LIB := /usr/lib</span><br><span class="line"><span class="comment"># PYTHON_LIB := $(ANACONDA_HOME)/lib</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Homebrew installs numpy in a non standard path (keg only)</span></span><br><span class="line"><span class="comment"># PYTHON_INCLUDE += $(dir $(shell python -c 'import numpy.core; print(numpy.core.__file__)'))/include</span></span><br><span class="line"><span class="comment"># PYTHON_LIB += $(shell brew --prefix numpy)/lib</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Uncomment to support layers written in Python (will link against Python libs)</span></span><br><span class="line">WITH_PYTHON_LAYER := 1</span><br><span class="line"></span><br><span class="line"><span class="comment"># Whatever else you find you need goes here.</span></span><br><span class="line">INCLUDE_DIRS := $(PYTHON_INCLUDE) /usr/<span class="built_in">local</span>/include /usr/include/hdf5/serial/</span><br><span class="line">LIBRARY_DIRS := $(PYTHON_LIB) /usr/<span class="built_in">local</span>/lib /usr/lib /usr/lib/x86_64-linux-gnu /usr/lib/x86_64-linux-gnu/hdf5/serial</span><br><span class="line"></span><br><span class="line"><span class="comment"># If Homebrew is installed at a non standard location (for example your home directory) and you use it for general dependencies</span></span><br><span class="line"><span class="comment"># INCLUDE_DIRS += $(shell brew --prefix)/include</span></span><br><span class="line"><span class="comment"># LIBRARY_DIRS += $(shell brew --prefix)/lib</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Uncomment to use `pkg-config` to specify OpenCV library paths.</span></span><br><span class="line"><span class="comment"># (Usually not necessary -- OpenCV libraries are normally installed in one of the above $LIBRARY_DIRS.)</span></span><br><span class="line"><span class="comment"># USE_PKG_CONFIG := 1</span></span><br><span class="line"></span><br><span class="line">BUILD_DIR := build</span><br><span class="line">DISTRIBUTE_DIR := distribute</span><br><span class="line"></span><br><span class="line"><span class="comment"># Uncomment for debugging. Does not work on OSX due to https://github.com/BVLC/caffe/issues/171</span></span><br><span class="line"><span class="comment"># DEBUG := 1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The ID of the GPU that 'make runtest' will use to run unit tests.</span></span><br><span class="line">TEST_GPUID := 0</span><br><span class="line"></span><br><span class="line"><span class="comment"># enable pretty build (comment to see full commands)</span></span><br><span class="line">Q ?= @</span><br></pre></td></tr></table></figure>
+<p>可以开始编译了，在 caffe 目录下执行 ：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">make all -j8</span><br><span class="line">sudo make runtest -j8</span><br><span class="line">sudo make pycaffe -j8 <span class="comment"># 安装 pycaffe notebook 接口环境</span></span><br></pre></td></tr></table></figure>
+<h1 id="darknet配置"><a href="#darknet配置" class="headerlink" title="darknet配置"></a><a href="https://pjreddie.com/darknet/yolo/" target="_blank" rel="noopener">darknet</a>配置</h1><p>环境: Ubuntu16.04 + Titan X + Cuda8.0 + OpenCV3.1 + Python2.7</p>
+<p>请参考前文。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/pjreddie/darknet</span><br><span class="line"><span class="built_in">cd</span> darknet</span><br><span class="line"><span class="comment"># 配置Makefile</span></span><br><span class="line"><span class="comment"># GPU=1</span></span><br><span class="line"><span class="comment"># CUDNN=0</span></span><br><span class="line"><span class="comment"># OPENCV=1</span></span><br><span class="line"><span class="comment"># DEBUG=0</span></span><br><span class="line">make</span><br></pre></td></tr></table></figure>
+<p>可能出现的报错：</p>
+<p>（1）error:/usr/bin/ld: 找不到 -lippicv&lt;/br &gt;<br>collect2: error: ld returned 1 exit status &lt;/br &gt;<br>Makefile:82: recipe for target ‘libdarknet.so’ failed &lt;/br &gt;</p>
+<p>解决方法：找到-lippicv对应的库（libippicv.a），该库位于 安装目录./opencv-3.1.0/3rdparty/ippicv/unpack/ippicv_lnx/lib/intel64文件夹下 ，进入该文件夹下执行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">sudo cp sudo cp libippicv.a /usr/<span class="built_in">local</span>/lib/</span><br><span class="line">```   </span><br><span class="line"></span><br><span class="line">继续执行make 即可。</span><br><span class="line"></span><br><span class="line">（2）找不到nvcc</span><br><span class="line"></span><br><span class="line">解决方法：修改darknet下的Makefile文件，将其中的NVCC=nvcc改为/usr/<span class="built_in">local</span>/cuda-*/bin/nvcc即安装的cuda版本信息</span><br><span class="line"></span><br><span class="line">保存  继续执行make 即可。</span><br><span class="line"></span><br><span class="line">下载权重测试:</span><br><span class="line"></span><br><span class="line">```bash</span><br><span class="line">wget http://pjreddie.com/media/files/yolo.weights  </span><br><span class="line">./darknet yolo <span class="built_in">test</span> cfg/yolo.cfg yolo.weights data/dog.jpg   </span><br><span class="line">./darknet detect cfg/yolo.cfg yolo.weights data/dog.jpg</span><br></pre></td></tr></table></figure>
+<ul>
+<li><a href="https://blog.csdn.net/ch_liu23/article/details/53558549" target="_blank" rel="noopener">YOLOv2训练自己的数据集（VOC格式）</a></li>
+<li><a href="https://blog.csdn.net/jozeeh/article/details/79087311" target="_blank" rel="noopener">YOLOv2目标检测_单目标_训练自己数据全过程（自用）</a></li>
+</ul>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ol>
+<li><a href="https://www.liaohuqiu.net/cn/posts/ssh-public-key-auto-login/" target="_blank" rel="noopener">https://www.liaohuqiu.net/cn/posts/ssh-public-key-auto-login/</a></li>
+<li><a href="https://blog.csdn.net/asukasmallriver/article/details/72927860" target="_blank" rel="noopener">https://blog.csdn.net/asukasmallriver/article/details/72927860</a></li>
+<li><a href="https://blog.csdn.net/u011440558/article/details/78358447" target="_blank" rel="noopener">https://blog.csdn.net/u011440558/article/details/78358447</a></li>
+<li><a href="https://www.mtyun.com/library/how-to-install-caffe-on-centos7" target="_blank" rel="noopener">https://www.mtyun.com/library/how-to-install-caffe-on-centos7</a></li>
+<li><a href="https://blog.csdn.net/qq_28413479/article/details/76377184" target="_blank" rel="noopener">https://blog.csdn.net/qq_28413479/article/details/76377184</a></li>
+<li><a href="https://blog.csdn.net/yhaolpz/article/details/71375762" target="_blank" rel="noopener">https://blog.csdn.net/yhaolpz/article/details/71375762</a></li>
+<li><a href="https://www.jianshu.com/p/10ed332caf07" target="_blank" rel="noopener">https://www.jianshu.com/p/10ed332caf07</a></li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+        
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/编程/" rel="tag"># 编程</a>
+          
+            <a href="/tags/Linux/" rel="tag"># Linux</a>
+          
+            <a href="/tags/环境配置/" rel="tag"># 环境配置</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/30/machine_learning/深度学习-TensorFlow教程/" rel="next" title="深度学习-TensorFlow教程">
+                <i class="fa fa-chevron-left"></i> 深度学习-TensorFlow教程
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/04/03/programmings/c_plus_plus/CMake教程/" rel="prev" title="CMake教程">
+                CMake教程 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Xiaoqiang Teng</p>
+              <p class="site-description motion-element" itemprop="description">Remember what should be remembered, and forget what should be forgotten.Alter what is changeable, and accept what is mutable.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">44</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Ubuntu16-04-cuda8-0-GPU驱动配置"><span class="nav-text">Ubuntu16.04 cuda8.0 GPU驱动配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#更换阿里源"><span class="nav-text">更换阿里源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ubuntu16-04挂载新硬盘并格式化硬盘"><span class="nav-text">Ubuntu16.04挂载新硬盘并格式化硬盘</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装必要的软件"><span class="nav-text">安装必要的软件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#检查是否正确识别显卡"><span class="nav-text">检查是否正确识别显卡</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看是否已有安装的NVIDIA驱动"><span class="nav-text">查看是否已有安装的NVIDIA驱动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看集显驱动"><span class="nav-text">查看集显驱动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#禁用nouveau驱动和相关的驱动包"><span class="nav-text">禁用nouveau驱动和相关的驱动包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#卸载所有安装的nvidia驱动"><span class="nav-text">卸载所有安装的nvidia驱动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#重启"><span class="nav-text">重启</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GPU驱动配置"><span class="nav-text">GPU驱动配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装驱动"><span class="nav-text">安装驱动</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装cuda"><span class="nav-text">安装cuda</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#OpenCV3-1配置"><span class="nav-text">OpenCV3.1配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装依赖库"><span class="nav-text">安装依赖库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#下载-源码"><span class="nav-text">下载 源码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CMake-Opencv源码"><span class="nav-text">CMake Opencv源码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#把代码编译成可执行文件"><span class="nav-text">把代码编译成可执行文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装"><span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置库文件路径"><span class="nav-text">配置库文件路径</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置环境变量"><span class="nav-text">设置环境变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看"><span class="nav-text">查看</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#运行测试"><span class="nav-text">运行测试</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#colmap配置"><span class="nav-text">colmap配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Caffe配置"><span class="nav-text">Caffe配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#darknet配置"><span class="nav-text">darknet配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiaoqiang Teng</span>
+
+  
+</div>
+
+
+
+<div class="powered-by">
+<i class="fa fa-user-md"></i><span id="busuanzi_container_site_uv">
+  本站访客数:<span id="busuanzi_value_site_uv"></span>
+</span>
+</div>
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+<div>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style="display:none">
+    本站总访问量 <span id="busuanzi_value_site_pv"></span> 次
+    <span class="post-meta-divider">|</span>
+</span>
+<span id="busuanzi_container_site_uv" style="display:none">
+    有<span id="busuanzi_value_site_uv"></span>人看过我的博客啦
+</span>
+</div>
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>
