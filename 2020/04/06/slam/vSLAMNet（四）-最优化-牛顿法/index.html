@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="1. 概述 梯度下降法 高斯牛顿迭代法 牛顿法 共轭梯度法  2. 基础知识2.1 微分 函数图像中，某点的切线的斜率 函数的变化率  例子： $\frac{d(x^2)}{dx} = 2x$，为单变量微分。 $\frac{\partial}{\partial x}(x^2y^2) = 2xy^2$，为多变量微分 2.2 梯度 梯度实际上就是多变量微分的一般化 在单变量的函数中，梯度其实就是函数的">
+<meta name="description" content="1. 概述 是一种在实数域和复数域上近似求解方程的方法 方法使用函数f (x)的泰勒级数的前面几项来寻找方程f (x) = 0的根 最大的特点就在于它的收敛速度很快  2. 算法原理将函数f(x)在$x_0$处应用泰勒展开得，$f(x) = f(x_0) + \frac{f’(x_0)}{1!}(x - x_0) + \frac{f’’(x_0)}{2!}(x-x_0)^2 + \cdots$，我">
 <meta name="keywords" content="理论,最优化">
 <meta property="og:type" content="article">
-<meta property="og:title" content="vSLAMNet（四）-最优化-数值解法">
-<meta property="og:url" content="http://yoursite.com/2019/12/07/slam/vSLAMNet（四）-最优化-数值解法/index.html">
+<meta property="og:title" content="vSLAMNet（四）-最优化-牛顿法">
+<meta property="og:url" content="http://yoursite.com/2020/04/06/slam/vSLAMNet（四）-最优化-牛顿法/index.html">
 <meta property="og:site_name" content="学步">
-<meta property="og:description" content="1. 概述 梯度下降法 高斯牛顿迭代法 牛顿法 共轭梯度法  2. 基础知识2.1 微分 函数图像中，某点的切线的斜率 函数的变化率  例子： $\frac{d(x^2)}{dx} = 2x$，为单变量微分。 $\frac{\partial}{\partial x}(x^2y^2) = 2xy^2$，为多变量微分 2.2 梯度 梯度实际上就是多变量微分的一般化 在单变量的函数中，梯度其实就是函数的">
+<meta property="og:description" content="1. 概述 是一种在实数域和复数域上近似求解方程的方法 方法使用函数f (x)的泰勒级数的前面几项来寻找方程f (x) = 0的根 最大的特点就在于它的收敛速度很快  2. 算法原理将函数f(x)在$x_0$处应用泰勒展开得，$f(x) = f(x_0) + \frac{f’(x_0)}{1!}(x - x_0) + \frac{f’’(x_0)}{2!}(x-x_0)^2 + \cdots$，我">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-12-08T13:36:17.954Z">
+<meta property="og:updated_time" content="2020-04-06T13:46:28.660Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="vSLAMNet（四）-最优化-数值解法">
-<meta name="twitter:description" content="1. 概述 梯度下降法 高斯牛顿迭代法 牛顿法 共轭梯度法  2. 基础知识2.1 微分 函数图像中，某点的切线的斜率 函数的变化率  例子： $\frac{d(x^2)}{dx} = 2x$，为单变量微分。 $\frac{\partial}{\partial x}(x^2y^2) = 2xy^2$，为多变量微分 2.2 梯度 梯度实际上就是多变量微分的一般化 在单变量的函数中，梯度其实就是函数的">
+<meta name="twitter:title" content="vSLAMNet（四）-最优化-牛顿法">
+<meta name="twitter:description" content="1. 概述 是一种在实数域和复数域上近似求解方程的方法 方法使用函数f (x)的泰勒级数的前面几项来寻找方程f (x) = 0的根 最大的特点就在于它的收敛速度很快  2. 算法原理将函数f(x)在$x_0$处应用泰勒展开得，$f(x) = f(x_0) + \frac{f’(x_0)}{1!}(x - x_0) + \frac{f’’(x_0)}{2!}(x-x_0)^2 + \cdots$，我">
 
 
 
@@ -120,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/12/07/slam/vSLAMNet（四）-最优化-数值解法/">
+  <link rel="canonical" href="http://yoursite.com/2020/04/06/slam/vSLAMNet（四）-最优化-牛顿法/">
 
 
 
 
 
-  <title>vSLAMNet（四）-最优化-数值解法 | 学步</title>
+  <title>vSLAMNet（四）-最优化-牛顿法 | 学步</title>
   
 
 
@@ -307,7 +307,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/07/slam/vSLAMNet（四）-最优化-数值解法/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/06/slam/vSLAMNet（四）-最优化-牛顿法/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Xiaoqiang Teng">
@@ -324,7 +324,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">vSLAMNet（四）-最优化-数值解法</h1>
+          <h1 class="post-title" itemprop="name headline">vSLAMNet（四）-最优化-牛顿法</h1>
         
 
         <div class="post-meta">
@@ -336,8 +336,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-07T22:36:22+08:00">
-                2019-12-07
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-06T21:08:41+08:00">
+                2020-04-06
               </time>
             
 
@@ -408,112 +408,11 @@
 
       
         <h1 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h1><ul>
-<li>梯度下降法</li>
-<li>高斯牛顿迭代法</li>
-<li>牛顿法</li>
-<li>共轭梯度法</li>
-</ul>
-<h1 id="2-基础知识"><a href="#2-基础知识" class="headerlink" title="2. 基础知识"></a>2. 基础知识</h1><h2 id="2-1-微分"><a href="#2-1-微分" class="headerlink" title="2.1 微分"></a>2.1 微分</h2><ul>
-<li>函数图像中，某点的切线的斜率</li>
-<li>函数的变化率</li>
-</ul>
-<p>例子：</p>
-<p>$\frac{d(x^2)}{dx} = 2x$，为单变量微分。</p>
-<p>$\frac{\partial}{\partial x}(x^2y^2) = 2xy^2$，为多变量微分</p>
-<h2 id="2-2-梯度"><a href="#2-2-梯度" class="headerlink" title="2.2 梯度"></a>2.2 梯度</h2><ul>
-<li>梯度实际上就是多变量微分的一般化</li>
-<li>在单变量的函数中，梯度其实就是函数的微分，代表着函数在某个给定点的切线的斜率</li>
-<li>在多变量函数中，梯度是一个向量，向量有方向，梯度的方向就指出了函数在给定点的上升最快的方向<ul>
-<li>分别对每个变量进行微分，然后用逗号分割开，梯度是用&lt;&gt;包括起来，说明梯度其实一个向量</li>
-</ul>
-</li>
-<li>梯度的方向是函数在给定点上升最快的方向，那么梯度的反方向就是函数在给定点下降最快的方向</li>
-<li>只要沿着梯度的方向一直走，就能走到局部的最低点</li>
-</ul>
-<p>例子：</p>
-<p>$J(\Theta) = 0.55 - (5\theta_1 + 2\theta_2 - 12\theta_3)$,</p>
-<p>$\bigtriangledown J(\Theta) = &lt;\frac{\partial J}{\partial \theta_1}, \frac{\partial J}{\partial \theta_2}, \frac{\partial J}{\partial \theta_3}&gt; = &lt;-5, -2, 12&gt;$.</p>
-<h2 id="2-3-泰勒公式"><a href="#2-3-泰勒公式" class="headerlink" title="2.3 泰勒公式"></a>2.3 泰勒公式</h2><ul>
-<li>用多项式函数去逼近光滑函数</li>
-</ul>
-<p>$f(x) = \sum_{i=0}^{n}\frac{f^{(i)}(x_0)}{i!}(x - x_0)^{i}$.</p>
-<h1 id="3-梯度下降法"><a href="#3-梯度下降法" class="headerlink" title="3. 梯度下降法"></a>3. 梯度下降法</h1><h2 id="3-1-原理分析"><a href="#3-1-原理分析" class="headerlink" title="3.1 原理分析"></a>3.1 原理分析</h2><ul>
-<li><p>目标</p>
-<ul>
-<li>有一个可微分的函数，找到这个函数的最小值，就是找到给定点的梯度，然后朝着梯度相反的方向，就能让函数值下降的最快</li>
-</ul>
-</li>
-<li><p>核心公式</p>
-<p>  $\theta_1 = \theta_0 - \alpha \bigtriangledown J(\theta)$.</p>
-</li>
-<li><p>该公式的主要含义如下</p>
-<ul>
-<li>J是$\theta$的函数</li>
-<li>当前处在$\theta_0$点，目标是要从这个点走到J的最小值点</li>
-<li>先确定前进的方向，也就是梯度的反向，然后走一段距离的步长$\alpha$，此时到了$\theta_1$</li>
-<li>如果$\theta_1$就是使得函数局部最小值的点，那么迭代结束</li>
-<li>如果$\theta_1$不是使得函数取得局部最小值的点，那么继续迭代下去</li>
-<li>公式中负号的含义是朝着梯度相反的方向前进；因为梯度的方向实际就是函数在此点上升最快的方向，我们需要朝着下降最快的方向走，自然就是负的梯度的方向，所以此处需要加上负号</li>
-</ul>
-</li>
-</ul>
-<p>例子1：</p>
-<p>假设单变量函数为$J(\theta) = \theta^2$，其微分为$J’(\theta) = 2\theta$，假设起点为$\theta_0 = 1$，步长为$\alpha = 0.4$，那么梯度下降法的迭代过程如下：</p>
-<p>$\theta_0 = 1$,</p>
-<p>$\theta_1 = \theta_0 - \alpha <em> J’(\theta_0) = 1 - 0.4 </em> 2 = 0.2$,</p>
-<p>$\theta_2 = \theta_1 - \alpha <em> J’(\theta_1) = 0.2 - 0.4 </em> 2 * 0.2 = 0.04$,</p>
-<p>$\theta_3 = 0.008$,</p>
-<p>$\theta_4 = 0.0016$.</p>
-<p>如果我们要求的精度为1e2或者迭代次数最大4次，那么，此时我们的算法已收敛。</p>
-<p>例子2：</p>
-<p>假设目标函数为$J(\Theta) = \theta_1^2 + \theta_2^2$，初始值为(1, 3)，步长为0.1，函数的梯度为$\bigtriangledown J(\Theta) = <2\theta_1, 2\theta_2>$，迭代过程如下：</2\theta_1,></p>
-<p>$\Theta_0 = (1, 3)$,</p>
-<p>$\Theta_1 = \Theta_0 - \alpha <em> \bigtriangledown J(\Theta) = (1, 3) - 0.1 </em> (2, 6) = (0.8, 2.4)$,</p>
-<p>$\Theta_2 = \Theta_1 - \alpha <em> \bigtriangledown J(\Theta) = (0.8, 2.4) - 0.1 </em> (1.6, 4.8) = (0.64, 1.92)$,</p>
-<p>$\Theta_3 = (0.512, 1.536)$,</p>
-<p>$\dots$,</p>
-<p>$\Theta_{10} = (0.1073, 0.3221)$,</p>
-<p>$\dots$,</p>
-<p>$\Theta_{100} = (1.629e^{-10}, 4.8888e^{-10})$.</p>
-<h2 id="3-2-算法实现"><a href="#3-2-算法实现" class="headerlink" title="3.2 算法实现"></a>3.2 算法实现</h2><ul>
-<li>线性回归</li>
-</ul>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="comment"># Size of the points dataset.</span></span><br><span class="line">m = <span class="number">20</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Points x-coordinate and dummy value (x0, x1).</span></span><br><span class="line">X0 = np.ones((m, <span class="number">1</span>))</span><br><span class="line">X1 = np.arange(<span class="number">1</span>, m+<span class="number">1</span>).reshape(m, <span class="number">1</span>)</span><br><span class="line">X = np.hstack((X0, X1))</span><br><span class="line"></span><br><span class="line"><span class="comment"># Points y-coordinate</span></span><br><span class="line">y = np.array([</span><br><span class="line">    <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">5</span>, <span class="number">2</span>, <span class="number">4</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">11</span>, <span class="number">8</span>, <span class="number">12</span>,</span><br><span class="line">    <span class="number">11</span>, <span class="number">13</span>, <span class="number">13</span>, <span class="number">16</span>, <span class="number">17</span>, <span class="number">18</span>, <span class="number">17</span>, <span class="number">19</span>, <span class="number">21</span></span><br><span class="line">]).reshape(m, <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># The Learning Rate alpha.</span></span><br><span class="line">alpha = <span class="number">0.01</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">error_function</span><span class="params">(theta, X, y)</span>:</span></span><br><span class="line">    <span class="string">'''Error function J definition.'''</span></span><br><span class="line">    diff = np.dot(X, theta) - y</span><br><span class="line">    <span class="keyword">return</span> (<span class="number">1.</span>/<span class="number">2</span>*m) * np.dot(np.transpose(diff), diff)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">gradient_function</span><span class="params">(theta, X, y)</span>:</span></span><br><span class="line">    <span class="string">'''Gradient of the function J definition.'''</span></span><br><span class="line">    diff = np.dot(X, theta) - y</span><br><span class="line">    <span class="keyword">return</span> (<span class="number">1.</span>/m) * np.dot(np.transpose(X), diff)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">gradient_descent</span><span class="params">(X, y, alpha)</span>:</span></span><br><span class="line">    <span class="string">'''Perform gradient descent.'''</span></span><br><span class="line">    theta = np.array([<span class="number">1</span>, <span class="number">1</span>]).reshape(<span class="number">2</span>, <span class="number">1</span>)</span><br><span class="line">    gradient = gradient_function(theta, X, y)</span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">not</span> np.all(np.absolute(gradient) &lt;= <span class="number">1e-5</span>):</span><br><span class="line">        theta = theta - alpha * gradient</span><br><span class="line">        gradient = gradient_function(theta, X, y)</span><br><span class="line">    <span class="keyword">return</span> theta</span><br><span class="line"></span><br><span class="line">optimal = gradient_descent(X, y, alpha)</span><br><span class="line">print(<span class="string">'optimal:'</span>, optimal)</span><br><span class="line">print(<span class="string">'error function:'</span>, error_function(optimal, X, y)[<span class="number">0</span>,<span class="number">0</span>])</span><br></pre></td></tr></table></figure>
-<h2 id="3-3-梯度下降法大家族（BGD，SGD，MBGD）"><a href="#3-3-梯度下降法大家族（BGD，SGD，MBGD）" class="headerlink" title="3.3 梯度下降法大家族（BGD，SGD，MBGD）"></a>3.3 梯度下降法大家族（BGD，SGD，MBGD）</h2><ul>
-<li>批量梯度下降法（Batch Gradient Descent）<ul>
-<li>批量梯度下降法，是梯度下降法最常用的形式，具体做法也就是在更新参数时使用所有的样本来进行更新</li>
-</ul>
-</li>
-<li>随机梯度下降法（Stochastic Gradient Descent）<ul>
-<li>随机梯度下降法，其实和批量梯度下降法原理类似，区别在与求梯度时没有用所有的样本的数据，而是仅仅选取一个样本来求梯度</li>
-</ul>
-</li>
-<li><p>小批量梯度下降法（Mini-batch Gradient Descent）</p>
-<ul>
-<li>小批量梯度下降法是批量梯度下降法和随机梯度下降法的折衷，也就是对于m个样本，我们采用x个样子来迭代</li>
-</ul>
-</li>
-<li><p>批量梯度下降法python实现</p>
-</li>
-</ul>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">train</span><span class="params">(X, y, W, B, alpha, max_iters)</span>:</span></span><br><span class="line">    <span class="string">'''</span></span><br><span class="line"><span class="string">    使用了所有的样本进行梯度下降</span></span><br><span class="line"><span class="string">    X: 训练集,</span></span><br><span class="line"><span class="string">    y: 标签,</span></span><br><span class="line"><span class="string">    W: 权重向量,</span></span><br><span class="line"><span class="string">    B: bias,</span></span><br><span class="line"><span class="string">    alpha: 学习率,</span></span><br><span class="line"><span class="string">    max_iters: 最大迭代次数.</span></span><br><span class="line"><span class="string">    '''</span></span><br><span class="line">    dW = <span class="number">0</span> <span class="comment"># 权重梯度收集器</span></span><br><span class="line">    dB = <span class="number">0</span> <span class="comment"># Bias梯度的收集器</span></span><br><span class="line">    m = X.shape[<span class="number">0</span>] <span class="comment"># 样本数</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(max_iters):</span><br><span class="line">        dW = <span class="number">0</span> <span class="comment"># 每次迭代重置</span></span><br><span class="line">        dB = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> range(m):</span><br><span class="line">            <span class="comment"># 1. 迭代所有的样本</span></span><br><span class="line">            <span class="comment"># 2. 计算权重和bias的梯度保存在w_grad和b_grad,</span></span><br><span class="line">            <span class="comment"># 3. 通过增加w_grad和b_grad来更新dW和dB</span></span><br><span class="line">            W = W - alpha * (dW / m) <span class="comment"># 更新权重</span></span><br><span class="line">            B = B - alpha * (dB / m) <span class="comment"># 更新bias</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> W, B</span><br></pre></td></tr></table></figure>
-<h2 id="3-4-梯度下降法和最小二乘法"><a href="#3-4-梯度下降法和最小二乘法" class="headerlink" title="3.4 梯度下降法和最小二乘法"></a>3.4 梯度下降法和最小二乘法</h2><ul>
-<li>梯度下降法和最小二乘法相比，梯度下降法需要选择步长，而最小二乘法不需要</li>
-<li>梯度下降法是迭代求解，最小二乘法是计算解析解</li>
-<li>如果样本量不算很大，且存在解析解，最小二乘法比起梯度下降法要有优势，计算速度很快</li>
-<li>如果样本量很大，用最小二乘法由于需要求一个超级大的逆矩阵，这时就很难或者很慢才能求解解析解了，使用迭代的梯度下降法比较有优势</li>
-</ul>
-<h2 id="3-5-优缺点"><a href="#3-5-优缺点" class="headerlink" title="3.5 优缺点"></a>3.5 优缺点</h2><ul>
-<li>靠近极小值时收敛速度减慢</li>
-<li>直线搜索时可能会产生一些问题</li>
-<li>可能会“之字形”地下降</li>
-</ul>
-<h1 id="4-牛顿法"><a href="#4-牛顿法" class="headerlink" title="4. 牛顿法"></a>4. 牛顿法</h1><ul>
 <li>是一种在实数域和复数域上近似求解方程的方法</li>
 <li>方法使用函数<em>f</em> (<em>x</em>)的泰勒级数的前面几项来寻找方程<em>f</em> (<em>x</em>) = 0的根</li>
 <li>最大的特点就在于它的收敛速度很快</li>
 </ul>
-<p>将函数f(x)在$x_0$处应用泰勒展开得，$f(x) = f(x_0) + \frac{f’(x_0)}{1!}(x - x_0) + \frac{f’’(x_0)}{2!}(x-x_0)^2 + \cdots$，我们取前两项，$f(x) = f(x_0) + f’(x_0)(x-x_0)$。</p>
+<h1 id="2-算法原理"><a href="#2-算法原理" class="headerlink" title="2. 算法原理"></a>2. 算法原理</h1><p>将函数f(x)在$x_0$处应用泰勒展开得，$f(x) = f(x_0) + \frac{f’(x_0)}{1!}(x - x_0) + \frac{f’’(x_0)}{2!}(x-x_0)^2 + \cdots$，我们取前两项，$f(x) = f(x_0) + f’(x_0)(x-x_0)$。</p>
 <p>对等式两边求导数得到，</p>
 <p>$f’(x) = f’(x_0) + f’’(x_0)\Delta x$，</p>
 <p>当f(x)取最小值时，$f’(x) = 0$，所以我们得到，</p>
@@ -541,10 +440,7 @@
 <li>取初始值$x^{(0)}$，置$k = 0$</li>
 <li>计算$g_k = g(x^{(k)})$</li>
 <li>若$||g_k|| \leq \epsilon$，停止得到近似解$x^* = x^{(k)}$</li>
-<li>计算$H_k = H(x^{(k)})$，并求$p_k$</li>
-</ol>
-<p>$H_kp_k = -g_k$</p>
-<ol>
+<li>计算$H_k = H(x^{(k)})$，并求$p_k$，$H_kp_k = -g_k$</li>
 <li>置$x^{(k+1)} = x^{(k)} + p_k$</li>
 <li>置$k = k+1$，转2</li>
 </ol>
@@ -553,10 +449,16 @@
 <li>二阶收敛，收敛速度快</li>
 <li>牛顿法是一种迭代算法，每一步都需要求解目标函数的Hessian矩阵的逆矩阵，计算比较复杂</li>
 </ul>
-<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
-<li><a href="https://www.jianshu.com/p/c7e642877b0e" target="_blank" rel="noopener">深入浅出—梯度下降法及其实现</a></li>
-<li><a href="https://zhuanlan.zhihu.com/p/37524275" target="_blank" rel="noopener">梯度下降法、牛顿法和拟牛顿法</a></li>
-</ul>
+<h1 id="3-实例"><a href="#3-实例" class="headerlink" title="3. 实例"></a>3. 实例</h1><p>用牛顿法求解$f(x) = \frac{3}{2}x_1^2 - x_1*x_2 - 2x_1$的极小值。</p>
+<p>解：由题可得，</p>
+<p>梯度为$\nabla f(x) = (3x_1 - x_2 -2, x_2 - x_1)^T$，</p>
+<p>$H(x) = \left[\begin{matrix} 3 &amp; -1 \\ -1 &amp; 1 \end{matrix}\right]$是正定矩阵。</p>
+<p>取$x^{(0)} = (0, 0)^T$，则</p>
+<p>$\nabla f(x^{(0)}) = (-2, 0)^T$，$H(x^{(0)}) = \left[\begin{matrix} 3 &amp; -1 \\ -1 &amp; 1 \end{matrix}\right]$，$H(x^{(0)})^{-1} = \left[\begin{matrix} \frac{1}{2} &amp; \frac{1}{2} \\ \frac{1}{2} &amp; \frac{3}{2} \end{matrix}\right]$。</p>
+<p>$x^{(1)} = x^{(0)} - H(x^{(0)})^{-1} \nabla f(x^{0}) = (1, 1)^T$.</p>
+<p>将$x^{(1)}$代入$\nabla f(x)$得$(0, 0)^T$，那么$x^{(1)} = (1, 1)^T$即为极小值点，那么极小值为$-1$。</p>
+<h1 id="4-代码实现"><a href="#4-代码实现" class="headerlink" title="4. 代码实现"></a>4. 代码实现</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">Newton法</span></span><br><span class="line"><span class="string">Rosenbrock函数</span></span><br><span class="line"><span class="string">函数 f(x)=100*(x(2)-x(1).^2).^2+(1-x(1)).^2</span></span><br><span class="line"><span class="string">梯度 g(x)=(-400*(x(2)-x(1)^2)*x(1)-2*(1-x(1)),200*(x(2)-x(1)^2))^(T)</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">jacobian</span><span class="params">(x)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> np.array([<span class="number">-400</span>*x[<span class="number">0</span>]*(x[<span class="number">1</span>]-x[<span class="number">0</span>]**<span class="number">2</span>)<span class="number">-2</span>*(<span class="number">1</span>-x[<span class="number">0</span>]),<span class="number">200</span>*(x[<span class="number">1</span>]-x[<span class="number">0</span>]**<span class="number">2</span>)])</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hessian</span><span class="params">(x)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> np.array([[<span class="number">-400</span>*(x[<span class="number">1</span>]<span class="number">-3</span>*x[<span class="number">0</span>]**<span class="number">2</span>)+<span class="number">2</span>,<span class="number">-400</span>*x[<span class="number">0</span>]],[<span class="number">-400</span>*x[<span class="number">0</span>],<span class="number">200</span>]])</span><br><span class="line"></span><br><span class="line">X1=np.arange(<span class="number">-1.5</span>,<span class="number">1.5</span>+<span class="number">0.05</span>,<span class="number">0.05</span>)</span><br><span class="line">X2=np.arange(<span class="number">-3.5</span>,<span class="number">2</span>+<span class="number">0.05</span>,<span class="number">0.05</span>)</span><br><span class="line">[x1,x2]=np.meshgrid(X1,X2)</span><br><span class="line">f=<span class="number">100</span>*(x2-x1**<span class="number">2</span>)**<span class="number">2</span>+(<span class="number">1</span>-x1)**<span class="number">2</span>; <span class="comment"># 给定的函数</span></span><br><span class="line">plt.contour(x1,x2,f,<span class="number">20</span>) <span class="comment"># 画出函数的20条轮廓线</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">newton</span><span class="params">(x0)</span>:</span></span><br><span class="line"></span><br><span class="line">    print(<span class="string">'初始点为:'</span>)</span><br><span class="line">    print(x0,<span class="string">'\n'</span>)</span><br><span class="line">    W=np.zeros((<span class="number">2</span>,<span class="number">10</span>**<span class="number">3</span>))</span><br><span class="line">    i = <span class="number">1</span></span><br><span class="line">    imax = <span class="number">1000</span></span><br><span class="line">    W[:,<span class="number">0</span>] = x0 </span><br><span class="line">    x = x0</span><br><span class="line">    delta = <span class="number">1</span></span><br><span class="line">    alpha = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> i&lt;imax <span class="keyword">and</span> delta&gt;<span class="number">10</span>**(<span class="number">-5</span>):</span><br><span class="line">        p = -np.dot(np.linalg.inv(hessian(x)),jacobian(x))</span><br><span class="line">        x0 = x</span><br><span class="line">        x = x + alpha*p</span><br><span class="line">        W[:,i] = x</span><br><span class="line">        delta = sum((x-x0)**<span class="number">2</span>)</span><br><span class="line">        print(<span class="string">'第'</span>,i,<span class="string">'次迭代结果:'</span>)</span><br><span class="line">        print(x,<span class="string">'\n'</span>)</span><br><span class="line">        i=i+<span class="number">1</span></span><br><span class="line">    W=W[:,<span class="number">0</span>:i]  <span class="comment"># 记录迭代点</span></span><br><span class="line">    <span class="keyword">return</span> W</span><br><span class="line"></span><br><span class="line">x0 = np.array([<span class="number">-1.2</span>,<span class="number">1</span>])</span><br><span class="line">W=newton(x0)</span><br><span class="line"></span><br><span class="line">plt.plot(W[<span class="number">0</span>,:],W[<span class="number">1</span>,:],<span class="string">'g*'</span>,W[<span class="number">0</span>,:],W[<span class="number">1</span>,:]) <span class="comment"># 画出迭代点收敛的轨迹</span></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<h1 id="5-参考"><a href="#5-参考" class="headerlink" title="5. 参考"></a>5. 参考</h1><p>-<a href="https://blog.csdn.net/piaoxuezhong/article/details/60135153" target="_blank" rel="noopener">梯度下降法，牛顿法，高斯-牛顿迭代法，附代码实现</a></p>
 
       
     </div>
@@ -595,8 +497,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/12/07/slam/vSLAMNet（三）-数字图像处理-高斯滤波/" rel="next" title="vSLAMNet（三）-数字图像处理-高斯滤波">
-                <i class="fa fa-chevron-left"></i> vSLAMNet（三）-数字图像处理-高斯滤波
+              <a href="/2020/04/06/slam/vSLAMNet（四）-最优化-最小二乘法/" rel="next" title="vSLAMNet（四）-最优化-最小二乘法">
+                <i class="fa fa-chevron-left"></i> vSLAMNet（四）-最优化-最小二乘法
               </a>
             
           </div>
@@ -605,8 +507,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/12/07/slam/vSLAMNet（五）-姿态估计-Madgwick算法/" rel="prev" title="vSLAMNet（五）-姿态估计-Madgwick算法">
-                vSLAMNet（五）-姿态估计-Madgwick算法 <i class="fa fa-chevron-right"></i>
+              <a href="/2020/04/06/slam/vSLAMNet（四）-最优化-高斯牛顿法/" rel="prev" title="vSLAMNet（四）-最优化-高斯牛顿法">
+                vSLAMNet（四）-最优化-高斯牛顿法 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -684,7 +586,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-count">71</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -695,7 +597,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">44</span>
+                  <span class="site-state-item-count">46</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -706,7 +608,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-count">39</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -739,7 +641,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-概述"><span class="nav-text">1. 概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-基础知识"><span class="nav-text">2. 基础知识</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-微分"><span class="nav-text">2.1 微分</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-梯度"><span class="nav-text">2.2 梯度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-泰勒公式"><span class="nav-text">2.3 泰勒公式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-梯度下降法"><span class="nav-text">3. 梯度下降法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-原理分析"><span class="nav-text">3.1 原理分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-算法实现"><span class="nav-text">3.2 算法实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-梯度下降法大家族（BGD，SGD，MBGD）"><span class="nav-text">3.3 梯度下降法大家族（BGD，SGD，MBGD）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-4-梯度下降法和最小二乘法"><span class="nav-text">3.4 梯度下降法和最小二乘法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-5-优缺点"><span class="nav-text">3.5 优缺点</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-牛顿法"><span class="nav-text">4. 牛顿法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-text">参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-概述"><span class="nav-text">1. 概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-算法原理"><span class="nav-text">2. 算法原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-实例"><span class="nav-text">3. 实例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-代码实现"><span class="nav-text">4. 代码实现</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-参考"><span class="nav-text">5. 参考</span></a></li></ol></div>
             
 
           </div>
