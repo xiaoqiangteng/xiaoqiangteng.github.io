@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="学步">
 <meta property="og:description" content="1. 概述 本系列主要记录入门计算机视觉领域的基础知识  2. 点算子 亮度、对比度的校正，彩色的校正和变换  2.1 像素变换 一个或多个输入图像到一个输出图像的函数，在连续域中将其表示为  $g(x) = h(f(x))$或者$g(x) = h(f_0(x), \dots, f_n(x))$  常用的两个点算子是乘以和加上一个常数  $g(x) = af(x) + b$.  线性混合算子 可以">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-03-19T16:12:49.341Z">
+<meta property="og:updated_time" content="2020-05-03T01:25:20.350Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="计算机视觉（三）-图像处理">
 <meta name="twitter:description" content="1. 概述 本系列主要记录入门计算机视觉领域的基础知识  2. 点算子 亮度、对比度的校正，彩色的校正和变换  2.1 像素变换 一个或多个输入图像到一个输出图像的函数，在连续域中将其表示为  $g(x) = h(f(x))$或者$g(x) = h(f_0(x), \dots, f_n(x))$  常用的两个点算子是乘以和加上一个常数  $g(x) = af(x) + b$.  线性混合算子 可以">
@@ -432,6 +432,80 @@
 <li>伽马校正算子</li>
 </ul>
 <p>$g(x) = [f(x)]^{\frac{1}{\gamma}}$.</p>
+<h2 id="2-1-直方图均衡化"><a href="#2-1-直方图均衡化" class="headerlink" title="2.1 直方图均衡化"></a>2.1 直方图均衡化</h2><ul>
+<li>当图像直方图完全均匀分布的时候，此时图像的熵是最大的（随机变量每个值的概率都相同时，概率最大），图像对比度是最大的。所以，理想情况下，图像经过变换函数f(x)f(x)f(x)变换后，直方图能够均匀分布，此时对比度是最大的</li>
+<li>提高图像对比度的变换函数f(x)f(x)f(x)需要满足以下条件<ul>
+<li>f(x)在0 &lt;= x &lt;= L−1上单调递增(不要求严格单调递增),其中L表示灰度级（L=256）</li>
+<li>f(x)的范围是[0,L−1]</li>
+</ul>
+</li>
+<li>在图像处理中，有一个函数，能够满足上面的条件</li>
+</ul>
+<p>$y = f(x) = (L-1)\int_p^x p_x(t)dt$,</p>
+<p>其中p(x)表示概率密度函数，在离散的图像中，表示直方图的每个灰度级的概率。f(x)其实就是连续型随机变量x的分布函数，表示的是函数下方的面积。</p>
+<p>接下来证明经过该函数变换能够实现直方图均匀化。</p>
+<p>由概率论知识，变换后的概率密度为</p>
+<p>$p_y(y) = p_x(x)|(f^{-1}(y))’|$.</p>
+<p>由变上限函数求导法则可知：</p>
+<p>$f(x)’ = (L-1)p_x(x)$.</p>
+<p>反函数的导数等于原函数导数的倒数：</p>
+<p>$(f^{-1}(y))’ = \frac{1}{(L-1)p_x(x)}$.</p>
+<p>所以，</p>
+<p>$p_y(y) = \frac{1}{L-1}$.</p>
+<p>变换后的概率密度函数是一个均匀分布，对于图像来说，就是每个灰度级概率都是相等的，达到了我们的目的。将这个变换函数转换为图像中的表达，图像中，我们可以知道，可以使用求和代替积分，差分代替微分，所以上述的变换函数为：</p>
+<p>$y = f(x) = (L-1)\sum_{0}^{x_i}\frac{h(x_i)}{w\times h}$.</p>
+<p>其中，$h(x_i)$表示直方图中每个灰度级像素的个数，$w$和$h$分别表示图像的宽和高。</p>
+<ul>
+<li><p>本质</p>
+<ul>
+<li>扩展了像素的动态范围</li>
+</ul>
+</li>
+<li><p>算法</p>
+<ul>
+<li><p>输入：图像</p>
+</li>
+<li><p>输出：均衡化后图像</p>
+</li>
+<li><p>算法过程</p>
+<ul>
+<li><p>求出图像的恢复直方图，h（一个256维的向量）</p>
+</li>
+<li><p>求出图像的总体像素个数机器所占百分比</p>
+<p>  $N_f = m\times n$,</p>
+<p>  $hs(i) = h(i) / N_f, i = 0, 1, \dots, 255$.</p>
+</li>
+<li><p>计算图像各灰度级的累计分布hp</p>
+<p>  $hp(i) = \sum_{k=0}^{i}h(k), i = 1, 2, \dots, 255$.</p>
+</li>
+<li><p>计算新图像的灰度值</p>
+<p>  $g = 255 * hp(i), i = 1, 2, \dots, 255$.</p>
+<p>  $g = 0, i = 0$.</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>代码实现</p>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding:utf-8</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> cv2 <span class="keyword">as</span> cv</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line">img = cv.imread(<span class="string">'source.jpg'</span>)</span><br><span class="line">im_gray = cv.cvtColor(img,cv.COLOR_RGB2GRAY)</span><br><span class="line">cv.imshow(<span class="string">'im_gray'</span>,im_gray)</span><br><span class="line"></span><br><span class="line">w, h = im_gray.shape[<span class="number">0</span>], im_gray.shape[<span class="number">1</span>] </span><br><span class="line"></span><br><span class="line">plt.figure()</span><br><span class="line">p1 = plt.hist(im_gray.reshape(im_gray.size,<span class="number">1</span>))</span><br><span class="line"> </span><br><span class="line"><span class="comment">#创建直方图</span></span><br><span class="line">n = np.zeros((<span class="number">256</span>),dtype = np.float)</span><br><span class="line">p = np.zeros((<span class="number">256</span>),dtype = np.float)</span><br><span class="line">c = np.zeros((<span class="number">256</span>),dtype = np.float)</span><br><span class="line"> </span><br><span class="line"><span class="comment">#遍历图像的每个像素,得到统计分布直方图</span></span><br><span class="line"><span class="keyword">for</span> x <span class="keyword">in</span> range(<span class="number">0</span>,im_gray.shape[<span class="number">0</span>]):</span><br><span class="line">		<span class="keyword">for</span> y <span class="keyword">in</span> range(<span class="number">0</span>,im_gray.shape[<span class="number">1</span>]):</span><br><span class="line">				n[im_gray[x][y]] += <span class="number">1</span></span><br><span class="line">print(n)</span><br><span class="line"> </span><br><span class="line"><span class="comment">#归一化</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>, <span class="number">256</span>):</span><br><span class="line"> 	p[i] = n[i] / float(im_gray.size)</span><br><span class="line"> </span><br><span class="line"><span class="comment">#计算累积直方图</span></span><br><span class="line">c[<span class="number">0</span>] = p[<span class="number">0</span>]</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>,<span class="number">256</span>):</span><br><span class="line">		c[i] = c[i<span class="number">-1</span>] + p[i]</span><br><span class="line">print(c)</span><br><span class="line"> </span><br><span class="line">des = np.zeros((w, h), dtype=np.uint8)</span><br><span class="line"><span class="keyword">for</span> x <span class="keyword">in</span> range(<span class="number">0</span>, w):</span><br><span class="line">		<span class="keyword">for</span> y <span class="keyword">in</span> range(<span class="number">0</span>, h):</span><br><span class="line">				des[x][y] = <span class="number">255</span> * c[im_gray[x][y]]</span><br><span class="line">print(des)</span><br><span class="line"></span><br><span class="line">cv.imshow(<span class="string">'des'</span>,des)</span><br><span class="line">plt.figure()</span><br><span class="line">p2 = plt.hist(des.reshape(des.size, <span class="number">1</span>))</span><br><span class="line"> </span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<h2 id="2-2-连通量"><a href="#2-2-连通量" class="headerlink" title="2.2 连通量"></a>2.2 连通量</h2><ul>
+<li>在图像中，最小的单位是像素，每个像素周围有8个邻接像素，常见的邻接关系有2种：4邻接与8邻接。4邻接一共4个点，即上下左右；8邻接的点一共有8个，包括了对角线位置的点</li>
+<li>如果像素点A与B邻接，我们称A与B连通</li>
+<li>如果A与B连通，B与C连通，则A与C连通</li>
+<li>在视觉上看来，彼此连通的点形成了一个区域，而不连通的点形成了不同的区域。这样的一个所有的点彼此连通点构成的集合，我们称为一个连通区域</li>
+<li>常见算法<ul>
+<li>第一种算法是现在matlab中连通区域标记函数bwlabel中使的算法，它一次遍历图像，并记下每一行（或列）中连续的团（run）和标记的等价对，然后通过等价对对原来的图像进行重新标记，这个算法是目前我尝试的几个中效率最高的一个，但是算法里用到了稀疏矩阵与Dulmage-Mendelsohn分解算法用来消除等价对，这部分原理比较麻烦</li>
+<li>第二种算法是现在开源库cvBlob中使用的标记算法，它通过定位连通区域的内外轮廓来标记整个图像，这个算法的核心是轮廓的搜索算法，这个我们将在文章中详细介绍。这个算法相比与第一种方法效率上要低一些，但是在连通区域个数在100以内时，两者几乎无差别，当连通区域个数到了103103数量级时，上面的算法会比该算法快10倍以上</li>
+</ul>
+</li>
+</ul>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li><a href="https://blog.csdn.net/fffupeng/article/details/73463749" target="_blank" rel="noopener">直方图均衡化python代码实现</a></li>
+<li><a href="https://blog.csdn.net/superjunenaruto/article/details/52431941" target="_blank" rel="noopener">直方图均衡化的数学原理</a></li>
+<li><a href="https://blog.csdn.net/qianqing13579/article/details/52422364" target="_blank" rel="noopener">直方图均衡化算法原理与实现</a></li>
+</ul>
 
       
     </div>
@@ -559,7 +633,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">75</span>
+                  <span class="site-state-item-count">81</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -614,7 +688,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-概述"><span class="nav-text">1. 概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-点算子"><span class="nav-text">2. 点算子</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-像素变换"><span class="nav-text">2.1 像素变换</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-概述"><span class="nav-text">1. 概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-点算子"><span class="nav-text">2. 点算子</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-像素变换"><span class="nav-text">2.1 像素变换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-直方图均衡化"><span class="nav-text">2.1 直方图均衡化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-连通量"><span class="nav-text">2.2 连通量</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>
