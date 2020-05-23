@@ -79,13 +79,13 @@
 
 
 
-<meta name="description" content="1. 概述 Welch G, Bishop G. An introduction to the Kalman filter[J]. 1995. http://www.cs.unc.edu/~welch/kalman/  2. 基础知识 概率 概率的本质是用数值表示某件事情发生的可能性    3. 卡尔曼滤波问题：测量数据加速度计，但是具有噪声，不能够精确地估计目标的位姿。此时，我们在目标本体上安装">
+<meta name="description" content="1. 概述 Welch G, Bishop G. An introduction to the Kalman filter[J]. 1995. http://www.cs.unc.edu/~welch/kalman/  2. 基础知识 概率 概率的本质是用数值表示某件事情发生的可能性    3. 卡尔曼滤波3.1 运动方程给定一个线性系统的状态差分方程： $x_k = Ax_{k-1} + Bu_">
 <meta name="keywords" content="理论,滤波">
 <meta property="og:type" content="article">
 <meta property="og:title" content="vSLAMNet（六）-滤波算法-卡尔曼滤波基础">
 <meta property="og:url" content="http://yoursite.com/2019/12/22/slam/vSLAMNet（六）-滤波算法-卡尔曼滤波基础/index.html">
 <meta property="og:site_name" content="学步">
-<meta property="og:description" content="1. 概述 Welch G, Bishop G. An introduction to the Kalman filter[J]. 1995. http://www.cs.unc.edu/~welch/kalman/  2. 基础知识 概率 概率的本质是用数值表示某件事情发生的可能性    3. 卡尔曼滤波问题：测量数据加速度计，但是具有噪声，不能够精确地估计目标的位姿。此时，我们在目标本体上安装">
+<meta property="og:description" content="1. 概述 Welch G, Bishop G. An introduction to the Kalman filter[J]. 1995. http://www.cs.unc.edu/~welch/kalman/  2. 基础知识 概率 概率的本质是用数值表示某件事情发生的可能性    3. 卡尔曼滤波3.1 运动方程给定一个线性系统的状态差分方程： $x_k = Ax_{k-1} + Bu_">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-12-28-090518.png">
 <meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-12-28-090800.png">
@@ -95,10 +95,11 @@
 <meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-12-28-131227.png">
 <meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-12-28-131348.png">
 <meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-12-28-131924.png">
-<meta property="og:updated_time" content="2020-04-12T04:34:07.190Z">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-17-095735.png">
+<meta property="og:updated_time" content="2020-05-17T09:58:07.970Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="vSLAMNet（六）-滤波算法-卡尔曼滤波基础">
-<meta name="twitter:description" content="1. 概述 Welch G, Bishop G. An introduction to the Kalman filter[J]. 1995. http://www.cs.unc.edu/~welch/kalman/  2. 基础知识 概率 概率的本质是用数值表示某件事情发生的可能性    3. 卡尔曼滤波问题：测量数据加速度计，但是具有噪声，不能够精确地估计目标的位姿。此时，我们在目标本体上安装">
+<meta name="twitter:description" content="1. 概述 Welch G, Bishop G. An introduction to the Kalman filter[J]. 1995. http://www.cs.unc.edu/~welch/kalman/  2. 基础知识 概率 概率的本质是用数值表示某件事情发生的可能性    3. 卡尔曼滤波3.1 运动方程给定一个线性系统的状态差分方程： $x_k = Ax_{k-1} + Bu_">
 <meta name="twitter:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-12-28-090518.png">
 
 
@@ -426,7 +427,19 @@
 </ul>
 </li>
 </ul>
-<h1 id="3-卡尔曼滤波"><a href="#3-卡尔曼滤波" class="headerlink" title="3. 卡尔曼滤波"></a>3. 卡尔曼滤波</h1><p>问题：测量数据加速度计，但是具有噪声，不能够精确地估计目标的位姿。此时，我们在目标本体上安装了GPS传感器，但是GPS精度也有限。我们的目标是利用均具有误差的加速度计和GPS来估计目标当前的位姿，已达到提升位姿估计精度的目的。</p>
+<h1 id="3-卡尔曼滤波"><a href="#3-卡尔曼滤波" class="headerlink" title="3. 卡尔曼滤波"></a>3. 卡尔曼滤波</h1><h2 id="3-1-运动方程"><a href="#3-1-运动方程" class="headerlink" title="3.1 运动方程"></a>3.1 运动方程</h2><p>给定一个线性系统的状态差分方程：</p>
+<p>$x_k = Ax_{k-1} + Bu_{k-1} + w_{k-1}$,</p>
+<p>其中，$x$是系统的状态向量，大小为$n<em>1$；$A$为状态转移矩阵，大小为$n</em>n$；$u$为系统输入，即控制量，大小为$k<em>1$；$B$是将输入控制量转换为状态量的矩阵，大小为$n</em>k$；$w$为系统噪声，随机变量。</p>
+<p>运动方程举例：</p>
+<p>一个匀加速运动的小车，受到合理为$f_t$，那么，由$t-1$到$t$时刻的位移和速度计算公式为：</p>
+<p>$x_t = x_{t-1} + (\dot{x}_{t-1}*\Delta t) + \frac{f_t(\Delta t)^2}{2m}$,</p>
+<p>$\dot{x}_t = \dot{x}_{t-1} + \frac{f_t\Delta t}{m}$.</p>
+<p>我们得到：</p>
+<p>$x_t = \left[\begin{matrix} x_t \\ \dot{x}_t \end{matrix}\right]$, $u_t = \frac{f_t}{m}$.</p>
+<p>$\left[\begin{matrix} x_t \\ \dot{x}_t \end{matrix}\right] = \left[\begin{matrix} 1 &amp; \Delta t \\ 0 &amp; 1 \end{matrix}\right]\left[\begin{matrix} x_{t-1} \\ \dot{x}_{t-1} \end{matrix}\right] + \left[\begin{matrix} \frac{(\Delta t)^2}{2} \\ \Delta t \end{matrix}\right]\frac{f_t}{m}$.</p>
+<p>那么，有了该运动方程我们就可以地推得到系统的每一个时刻的状态了。那卡尔曼滤波的作用是什么呢？该运动方程的问题在于在实际中，由于系统的复杂程度，很难建立精确地运动方程。此外，由于运动方程是包含噪声的，即随着时间的推移，状态量的误差会逐步累积，直至误差达到不可用的地步。因此，卡尔曼滤波就发挥作用了。既然，一致利用运动方程地推会产生累计误差，那如果中间有观测数据来校准，就能够减少状态量的误差了。此外，由于观测也不是十分精确的，也会带来噪声，那么如果利用运动方程和观测量来计算系统的精确地状态量，就是卡尔曼滤波发挥作用的地方。</p>
+<p>这个观测，或者说是反馈，从概率论贝叶斯模型的观点来看前面预测的结果就是先验，测量出的结果就是后验。</p>
+<h2 id="3-2-运动方程的状态量分析"><a href="#3-2-运动方程的状态量分析" class="headerlink" title="3.2 运动方程的状态量分析"></a>3.2 运动方程的状态量分析</h2><p>下面先来分析一下状态量及其方差。</p>
 <p>目标的状态定义为</p>
 <p>$\vec{x} = \left[<br> \begin{matrix}<br>   p \\<br>   v<br>  \end{matrix}<br>  \right]$，其中$v$表示目标的运动速度，$p$表示目标的当前位置。</p>
 <p>卡尔曼滤波假设两个变量（即位置和速度）是<strong>随机的</strong>，而且符合<strong>高斯分布</strong>。每个变量都有一个均值$\mu$，它是随机分布的中心；有一个方差$\sigma$，它衡量组合的不确定性。</p>
@@ -438,7 +451,7 @@
 <p>接下来，我们利用$k-1$时刻的状态来预测$k$时刻的状态。从$k-1$时刻到$k$时刻，状态变换矩阵定义为$F_k$，如下图所示。它从原始预测中取每一点，并将其移动到新的预测位置。如果原始预测是正确的，系统就会移动到新位置。</p>
 <p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-12-28-090800.png" alt="image-20191228170749372" style="zoom:67%;"></p>
 <p>（图片来源：<a href="http://www.bzarg.com/p/how-a-kalman-filter-works-in-pictures/）" target="_blank" rel="noopener">http://www.bzarg.com/p/how-a-kalman-filter-works-in-pictures/）</a></p>
-<h2 id="3-1-预测方程"><a href="#3-1-预测方程" class="headerlink" title="3.1 预测方程"></a>3.1 预测方程</h2><p>假设目标的运动方程为</p>
+<p>假设目标的运动方程为</p>
 <p>$p_k = p_{k-1}+ \Delta tv_{k-1}$,</p>
 <p>$v_k = v_{k-1}$,</p>
 <p>那么，由$\hat{x}_k = \left[<br> \begin{matrix}<br>   1 &amp; \Delta t \\<br>   0 &amp; 1<br>  \end{matrix}<br>  \right]\hat{x}_{k-1} = F_k\hat{x}_{k-1}$得，$F_k = \left[<br> \begin{matrix}<br>   1 &amp; \Delta t \\<br>   0 &amp; 1<br>  \end{matrix}<br>  \right]$。</p>
@@ -448,7 +461,8 @@
 <p>因此，我们得到</p>
 <p>$\hat{x}_k = F_k\hat{x}_{k-1}$,</p>
 <p>$P_k = F_kP_{k-1}F_k^T$.</p>
-<p>现在我们推到$P_k$。</p>
+<p>其中，$P_k$表示的就是预测值和真实值之间的误差协方差。</p>
+<p><strong>接下来，我们推导误差写方程是如何从k-1时刻通过预测方程传递到k时刻的。</strong></p>
 <p>假设$\vec{x}_k$为t时刻下状态向量的真值，我们得到，</p>
 <p>$\vec{x}_k - \hat{\vec{x}}_{k|k-1} = F(\vec{x}_{k-1} - \hat{\vec{x}}_{k|k-1}) + w_k$,</p>
 <p>而$P_{k|k-1} = E[(\vec{x}_k - \hat{\vec{x}}_{k|k-1})(\vec{x}_k - \hat{\vec{x}}_{k|k-1})^T] = E[(F(\vec{x}_k - \hat{\vec{x}}_{k|k-1}) + w_k)(F(\vec{x}_k - \hat{\vec{x}}_{k|k-1}) + w_k))^T]$</p>
@@ -473,7 +487,7 @@
 <li>新的估计结果是基于原估计结果和已知外部输入校正后得到的预测结果</li>
 <li>新的不确定性是基于原不确定性和外部输入的不确定性得到的预测不确定性</li>
 </ul>
-<h2 id="3-2-观测方程"><a href="#3-2-观测方程" class="headerlink" title="3.2 观测方程"></a>3.2 观测方程</h2><p>基于运动预测方程，当有额外传感器输入观测数据时，我们可利用该观测数据来融合预测数据，易获取目标更加准确地状态。观测是一系列读数，其与状态之间存在一定变换关系，定义为H矩阵。在刚刚的一维情况的小例子中，我们其实做了一个隐式的<strong>假设</strong>，即有预测更新得到的位置的概率分布和测距仪所得的测量值具有相同的单位 (unit)，如米 (m)。但实际情况往往不是这样的，比如，测距仪给出的可能不是距离，而是信号的飞行时间（由仪器至小车的光的传播时间），单位为秒 (s)。这样的话，我们就无法直接如上面一般直接将两个高斯分布相乘了。如下图所示，</p>
+<h2 id="3-3-观测方程"><a href="#3-3-观测方程" class="headerlink" title="3.3 观测方程"></a>3.3 观测方程</h2><p>基于运动预测方程，当有额外传感器输入观测数据时，我们可利用该观测数据来融合预测数据，易获取目标更加准确地状态。观测是一系列读数，其与状态之间存在一定变换关系，定义为H矩阵。在刚刚的一维情况的小例子中，我们其实做了一个隐式的<strong>假设</strong>，即有预测更新得到的位置的概率分布和测距仪所得的测量值具有相同的单位 (unit)，如米 (m)。但实际情况往往不是这样的，比如，测距仪给出的可能不是距离，而是信号的飞行时间（由仪器至小车的光的传播时间），单位为秒 (s)。这样的话，我们就无法直接如上面一般直接将两个高斯分布相乘了。如下图所示，</p>
 <p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-12-28-130904.png" alt="image-20191228210904176" style="zoom:67%;"></p>
 <p>（图片来源：<a href="http://www.bzarg.com/p/how-a-kalman-filter-works-in-pictures/）" target="_blank" rel="noopener">http://www.bzarg.com/p/how-a-kalman-filter-works-in-pictures/）</a></p>
 <p>我们得到如下等式，</p>
@@ -484,7 +498,7 @@
 <p>此时，得到了两块高斯分布，一块围绕预测的均值，另一块围绕传感器读数。如下图所示，</p>
 <p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-12-28-131348.png" alt="image-20191228211347844" style="zoom:67%;"></p>
 <p>（图片来源：<a href="http://www.bzarg.com/p/how-a-kalman-filter-works-in-pictures/）" target="_blank" rel="noopener">http://www.bzarg.com/p/how-a-kalman-filter-works-in-pictures/）</a></p>
-<h2 id="3-3-基于高斯分布的预测和观测融合"><a href="#3-3-基于高斯分布的预测和观测融合" class="headerlink" title="3.3 基于高斯分布的预测和观测融合"></a>3.3 基于高斯分布的预测和观测融合</h2><p>如果要生成靠谱预测，模型必须调和这两个信息。也就是说，对于任何可能的读数$z_1, z_2$，这两种方法预测的状态都有可能是准的，也都有可能是不准的。重点是我们怎么找到这两个准确率。最简单的方法是两者相乘，可以得到它们的重叠部分，这也是会出现最佳估计的区域。换个角度看，它看起来也符合高斯分布。当你把两个高斯分布和它们各自的均值和协方差矩阵相乘时，你会得到一个拥有独立均值和协方差矩阵的新高斯分布。最后剩下的问题就不难解决了：我们必须有一个公式来从旧的参数中获取这些新参数！</p>
+<h2 id="3-4-基于高斯分布的预测和观测融合"><a href="#3-4-基于高斯分布的预测和观测融合" class="headerlink" title="3.4 基于高斯分布的预测和观测融合"></a>3.4 基于高斯分布的预测和观测融合</h2><p>如果要生成靠谱预测，模型必须调和这两个信息。也就是说，对于任何可能的读数$z_1, z_2$，这两种方法预测的状态都有可能是准的，也都有可能是不准的。重点是我们怎么找到这两个准确率。最简单的方法是两者相乘，可以得到它们的重叠部分，这也是会出现最佳估计的区域。换个角度看，它看起来也符合高斯分布。当你把两个高斯分布和它们各自的均值和协方差矩阵相乘时，你会得到一个拥有独立均值和协方差矩阵的新高斯分布。最后剩下的问题就不难解决了：我们必须有一个公式来从旧的参数中获取这些新参数！</p>
 <p>下面将要讨论两个一维高斯分布得到更加准确地高斯分布。</p>
 <p>设方差为$\sigma^2$，均值为$\mu$，高斯分布一般形式为$N(x, \mu, \sigma) = \frac{1}{\sigma\sqrt{2\pi}}e^{-\frac{(x-\mu)^2}{2\sigma^2}}$，那么两条高斯曲线相乘后的曲线大约如下图所示，</p>
 <p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2019-12-28-131924.png" alt="image-20191228211923880" style="zoom:67%;"></p>
@@ -512,6 +526,8 @@
 <p>$P_k’ = P_k - K’H_kP_k$,</p>
 <p>$K’ = P_kH_k^T(H_kP_kH_k^T + R_k)^{-1}$.</p>
 <p>$\hat{x}_k’$是最佳估计值，我们可以把它继续放进去做另一轮预测。</p>
+<h2 id="3-5-总结"><a href="#3-5-总结" class="headerlink" title="3.5 总结"></a>3.5 总结</h2><p>卡尔曼滤波的流程可总结为下图：</p>
+<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-17-095735.png" alt="image-20200517175726271" style="zoom:50%;"></p>
 <h1 id="4-参考"><a href="#4-参考" class="headerlink" title="4. 参考"></a>4. 参考</h1><ul>
 <li><a href="https://zhuanlan.zhihu.com/p/39912633" target="_blank" rel="noopener">图说卡尔曼滤波，一份通俗易懂的教程</a></li>
 <li><a href="http://www.bzarg.com/p/how-a-kalman-filter-works-in-pictures/" target="_blank" rel="noopener">How a Kalman filter works, in pictures</a></li>
@@ -643,7 +659,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">81</span>
+                  <span class="site-state-item-count">85</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -698,7 +714,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-概述"><span class="nav-text">1. 概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-基础知识"><span class="nav-text">2. 基础知识</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-卡尔曼滤波"><span class="nav-text">3. 卡尔曼滤波</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-预测方程"><span class="nav-text">3.1 预测方程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-观测方程"><span class="nav-text">3.2 观测方程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-基于高斯分布的预测和观测融合"><span class="nav-text">3.3 基于高斯分布的预测和观测融合</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-参考"><span class="nav-text">4. 参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-概述"><span class="nav-text">1. 概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-基础知识"><span class="nav-text">2. 基础知识</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-卡尔曼滤波"><span class="nav-text">3. 卡尔曼滤波</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-运动方程"><span class="nav-text">3.1 运动方程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-运动方程的状态量分析"><span class="nav-text">3.2 运动方程的状态量分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-观测方程"><span class="nav-text">3.3 观测方程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-4-基于高斯分布的预测和观测融合"><span class="nav-text">3.4 基于高斯分布的预测和观测融合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-5-总结"><span class="nav-text">3.5 总结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-参考"><span class="nav-text">4. 参考</span></a></li></ol></div>
             
 
           </div>
