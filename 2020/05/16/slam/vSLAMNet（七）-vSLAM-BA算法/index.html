@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="理论,SLAM,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="1. 概述 指从视觉重建中提炼出最优的3D 模型和相机参数（内参数和外参数） 从每一个特征点反射出来的几束光线（bundles of light rays），在我们把相机姿态和特征点空间位置做出最优的调整(adjustment) 之后，最后收束到相机光心的这个过程，简称为BA  2. 投影模型 相机模型也有很多啦，这里我们同样是使用最简单的一种：针孔相机模型 首先，把世界坐标转换到相机坐标，这里将">
+<meta name="keywords" content="理论,SLAM">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vSLAMNet（七）-vSLAM-BA算法">
+<meta property="og:url" content="http://yoursite.com/2020/05/16/slam/vSLAMNet（七）-vSLAM-BA算法/index.html">
+<meta property="og:site_name" content="学步">
+<meta property="og:description" content="1. 概述 指从视觉重建中提炼出最优的3D 模型和相机参数（内参数和外参数） 从每一个特征点反射出来的几束光线（bundles of light rays），在我们把相机姿态和特征点空间位置做出最优的调整(adjustment) 之后，最后收束到相机光心的这个过程，简称为BA  2. 投影模型 相机模型也有很多啦，这里我们同样是使用最简单的一种：针孔相机模型 首先，把世界坐标转换到相机坐标，这里将">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-124440.png">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-124518.png">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-124539.png">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-124602.png">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-125257.png">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-125350.png">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-125526.png">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-130124.png">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-130149.png">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-130510.png">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-130618.png">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-130704.png">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-130813.png">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-130842.png">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-131040.png">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-131138.png">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-131133.png">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-141253.png">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-141357.png">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-141613.png">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-141755.png">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-141757.png">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-141812.png">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-141855.png">
+<meta property="og:updated_time" content="2020-05-23T03:00:37.691Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="vSLAMNet（七）-vSLAM-BA算法">
+<meta name="twitter:description" content="1. 概述 指从视觉重建中提炼出最优的3D 模型和相机参数（内参数和外参数） 从每一个特征点反射出来的几束光线（bundles of light rays），在我们把相机姿态和特征点空间位置做出最优的调整(adjustment) 之后，最后收束到相机光心的这个过程，简称为BA  2. 投影模型 相机模型也有很多啦，这里我们同样是使用最简单的一种：针孔相机模型 首先，把世界坐标转换到相机坐标，这里将">
+<meta name="twitter:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-124440.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/05/16/slam/vSLAMNet（七）-vSLAM-BA算法/">
+
+
+
+
+
+  <title>vSLAMNet（七）-vSLAM-BA算法 | 学步</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">学步</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-编程">
+          <a href="/categories/programming" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            编程
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-学术">
+          <a href="/categories/science" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            学术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-理论">
+          <a href="/categories/theory" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            理论
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-其他">
+          <a href="/categories/other" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            其他
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+    
+  
+  
+
+  <article class="post post-type-normal true" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/05/16/slam/vSLAMNet（七）-vSLAM-BA算法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Xiaoqiang Teng">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="学步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">vSLAMNet（七）-vSLAM-BA算法</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-05-16T20:36:57+08:00">
+                2020-05-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/theory/" itemprop="url" rel="index">
+                    <span itemprop="name">理论</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/theory/SLAM/" itemprop="url" rel="index">
+                    <span itemprop="name">SLAM</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h1><ul>
+<li>指从视觉重建中提炼出最优的3D 模型和相机参数（内参数和外参数）</li>
+<li>从每一个特征点反射出来的几束光线（bundles of light rays），在我们把相机姿态和特征点空间位置做出最优的调整(adjustment) 之后，最后收束到相机光心的这个过程，简称为BA</li>
+</ul>
+<h1 id="2-投影模型"><a href="#2-投影模型" class="headerlink" title="2. 投影模型"></a>2. 投影模型</h1><ul>
+<li>相机模型也有很多啦，这里我们同样是使用最简单的一种：针孔相机模型</li>
+<li>首先，把世界坐标转换到相机坐标，这里将用到相机外参数(R; t)</li>
+</ul>
+<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-124440.png" alt="image-20200516204432914" style="zoom:50%;"></p>
+<ul>
+<li>然后，将P′ 投至归一化平面，得到归一化坐标</li>
+</ul>
+<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-124518.png" alt="image-20200516204512637" style="zoom:50%;"></p>
+<ul>
+<li>对归一化坐标去畸变，得到去畸变后的坐标。这里暂时只考虑径向畸变</li>
+</ul>
+<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-124539.png" alt="image-20200516204534384" style="zoom:50%;"></p>
+<ul>
+<li>最后，根据内参模型，计算像素坐标</li>
+</ul>
+<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-124602.png" alt="image-20200516204556670" style="zoom:50%;"></p>
+<h1 id="3-观测方程参数化"><a href="#3-观测方程参数化" class="headerlink" title="3. 观测方程参数化"></a>3. 观测方程参数化</h1><p>观测方程为：$z = h(x, y)$，其中x表示相机的位姿，即外参R和t，李代数为$\xi$；y表示三维点p的坐标。</p>
+<p>误差项即：$e = z - h(\xi, p)$。</p>
+<p>对于每一个时刻进行误差计算，得到总体的代价函数为：</p>
+<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-125257.png" alt="image-20200516205250615" style="zoom:50%;"></p>
+<p>对这个最小二乘进行求解，相当于对位姿和路标同时作了调整，也就是所谓的BA。</p>
+<p>上述式子进一步整理为如下公式：</p>
+<p>$\arg \min \sum_{\{i, j, k\}\in X} \rho(e^T\Sigma^{-1}e)$.</p>
+<p>其中，$\rho$为Huber函数。</p>
+<p>为了便于计算，这里采用g2o方法，使得$e^T\Sigma^{-1}e = \rho(e^T\Sigma^{-1}e)$，</p>
+<p>那么，$w = \frac{\rho(e^T\Sigma^{-1}e)}{e^T\Sigma^{-1}e}$.</p>
+<p>因此，成本函数可以写成如下公式：</p>
+<p>$\{T_i, X_j\} = \arg \min \sum_{\{i, j, k\}\in X}e^T(w\Sigma^{-1})e$.</p>
+<p>代码实现：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> CostFunction::ComputeInterVars(Eigen::Vector2d &amp;e, Eigen::Matrix2d &amp;weighted_info, <span class="keyword">double</span> &amp;weighted_e2) &#123;</span><br><span class="line">    <span class="keyword">const</span> Eigen::Vector3d ptc = _camera-&gt;GetPose() * _map_point-&gt;GetPosition();</span><br><span class="line">    <span class="keyword">const</span> Eigen::<span class="function">Vector2d <span class="title">u</span><span class="params">(m_Fx * ptc[<span class="number">0</span>] / ptc[<span class="number">2</span>] + m_Cx, m_Fy * ptc[<span class="number">1</span>] / ptc[<span class="number">2</span>] + m_Cy)</span></span>;</span><br><span class="line"></span><br><span class="line">    e = m_Ob_z - u;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">double</span> et_info_e = e.transpose() * m_Info_matrix * e;</span><br><span class="line">    <span class="keyword">double</span> weight = <span class="number">1.0</span>;</span><br><span class="line">    <span class="keyword">double</span> sqrt_ete = <span class="built_in">sqrt</span>(et_info_e);</span><br><span class="line">    <span class="keyword">if</span> (sqrt_ete &gt; m_Huber_b) &#123;</span><br><span class="line">      weight = <span class="number">2</span> * m_Huber_b * sqrt_ete - m_Huber_b * m_Huber_b;</span><br><span class="line">      weight = weight / et_info_e;</span><br><span class="line">    &#125;</span><br><span class="line">    weighted_info = weight * m_Info_matrix;</span><br><span class="line">    weighted_e2 = weight * et_info_e;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="4-BA的求解"><a href="#4-BA的求解" class="headerlink" title="4. BA的求解"></a>4. BA的求解</h1><p>状态量定义为：</p>
+<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-125350.png" alt="image-20200516205345061" style="zoom:50%;"></p>
+<p>相应的，增量方程中的$\Delta x$则是对整体自变量的增量。在这个意义下，当我们给自变量一个增量时，目标函数变为：</p>
+<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-125526.png" alt="image-20200516205521081" style="zoom:50%;"></p>
+<p>其中，$F_{ij}$和$E_{ij}$分别表示整个儿代价函数在当前状态下对相机姿态和路标坐标的偏导。详细推导如下。</p>
+<p>（1）首先推导F</p>
+<p>F是误差对相机姿态$\xi$的偏导矩阵。记变换到相机坐标系下的空间点坐标为P’，即：</p>
+<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-130124.png" alt="image-20200516210118010" style="zoom:50%;"></p>
+<p>根据相机投影模型，得到：</p>
+<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-130149.png" alt="image-20200516210143244" style="zoom:50%;"></p>
+<p>误差e可以通过u和v来求取。接下来，计算e对$\xi$的偏导。采用扰动形式求导，对$\xi$^左乘$\delta \xi$，根据导数定义可得：</p>
+<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-130510.png" alt="image-20200516210505251" style="zoom:50%;"></p>
+<p>其中，第一项是误差关于投影点的导数，第二项为变换后的点关于李代数的导数。</p>
+<p>根据投影模型，可得：</p>
+<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-130618.png" alt="image-20200516210605778" style="zoom:50%;"></p>
+<p>根据SE(3)上的李代数求导可得：</p>
+<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-130704.png" alt="image-20200516210656368" style="zoom:50%;"></p>
+<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-130813.png" alt="image-20200516210807403" style="zoom:50%;"></p>
+<p>将这两项相乘，就得到了雅可比矩阵F，即：</p>
+<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-130842.png" alt="image-20200516210837626" style="zoom:50%;"></p>
+<p>（2）推导E</p>
+<p>根据链式法则，可得：</p>
+<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-131040.png" alt="image-20200516211035091" style="zoom:50%;"></p>
+<p>第一项已在前面推导了，第二项，按照定义</p>
+<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-131138.png" alt="image-20200516211108221" style="zoom:50%;"></p>
+<p>可得：</p>
+<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-131133.png" alt="image-20200516211127266" style="zoom:50%;"></p>
+<p>（3）代码实现</p>
+<ul>
+<li>定义Camera类<ul>
+<li>位姿Sophus::SE3</li>
+<li>ID</li>
+<li>位姿更新</li>
+<li>状态量中的索引</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Camera::Camera(<span class="keyword">const</span> Sophus::SE3 &amp;pose, <span class="keyword">int</span> id, <span class="keyword">bool</span> isFixed) : m_Pose(pose), m_ID(id), m_Fixed(isFixed), _state_index(<span class="number">-1</span>) &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> Camera::UpdatePose(<span class="keyword">const</span> Eigen::Matrix&lt;<span class="keyword">double</span>, <span class="number">6</span>, <span class="number">1</span>&gt; &amp;delta_pose) &#123;</span><br><span class="line">    Sophus::SE3 delta_SE3 = Sophus::SE3::<span class="built_in">exp</span>(delta_pose);</span><br><span class="line">    m_Pose = delta_SE3 * m_Pose;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> Camera::UpdatePose(<span class="keyword">const</span> Sophus::SE3 &amp;delta_pose) &#123;</span><br><span class="line">    m_Pose = delta_pose * m_Pose;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>定义地图点类<ul>
+<li>三维点坐标</li>
+<li>ID</li>
+<li>位置更新</li>
+<li>状态量中的索引</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">MapPoint::MapPoint(<span class="keyword">const</span> Eigen::Vector3d&amp; position, <span class="keyword">int</span> id) : m_Positon(position), m_ID(id), _state_index(<span class="number">-1</span>) &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> MapPoint::UpdatePosition(<span class="keyword">const</span> Eigen::Vector3d &amp;delta_position) &#123;</span><br><span class="line">    m_Positon += delta_position;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>定义损失函数类<ul>
+<li>相机、地图点、相机内参、观测值、超参数（Hubor核参数b，信息矩阵）</li>
+<li>误差对相机位姿的Jocabbi矩阵JT</li>
+<li>误差对地图点的Jocabbi矩阵JX</li>
+<li>基于Hubor核函数的成本函数计算</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">CostFunction::CostFunction(MapPoint *map_point, Camera *camera, <span class="keyword">double</span> fx, <span class="keyword">double</span> fy, <span class="keyword">double</span> cx, <span class="keyword">double</span> cy, <span class="keyword">const</span> Eigen::Vector2d &amp;ob_z)</span><br><span class="line">  : _map_point(map_point), _camera(camera), m_Fx(fx), m_Fy(fy), m_Cx(cx), m_Cy(cy), m_Ob_z(ob_z), m_Huber_b(<span class="number">1.0</span>), m_Info_matrix(Eigen::Matrix2d::Identity()) &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> CostFunction::ComputeJT(Eigen::Matrix&lt;<span class="keyword">double</span>, <span class="number">2</span>, <span class="number">6</span>&gt; &amp;JT) &#123;</span><br><span class="line">    <span class="keyword">const</span> Eigen::Vector3d pt = _camera-&gt;GetPose() * _map_point-&gt;GetPosition();</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">double</span> &amp;x = pt(<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">double</span> &amp;y = pt(<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">double</span> &amp;z = pt(<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">    JT.setZero();</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">double</span> z2 = z*z;</span><br><span class="line"></span><br><span class="line">    JT(<span class="number">0</span>, <span class="number">0</span>) = m_Fx / z;</span><br><span class="line">    JT(<span class="number">0</span>, <span class="number">2</span>) = -m_Fx * x / z2;</span><br><span class="line">    JT(<span class="number">0</span>, <span class="number">3</span>) = -m_Fx * x * y / z2;</span><br><span class="line">    JT(<span class="number">0</span>, <span class="number">4</span>) = m_Fx + m_Fx * x * x / z2;</span><br><span class="line">    JT(<span class="number">0</span>, <span class="number">5</span>) = -m_Fx * y / z;</span><br><span class="line"></span><br><span class="line">    JT(<span class="number">1</span>, <span class="number">1</span>) = m_Fy / z;</span><br><span class="line">    JT(<span class="number">1</span>, <span class="number">2</span>) = -m_Fy * y / z2;</span><br><span class="line">    JT(<span class="number">1</span>, <span class="number">3</span>) = -m_Fy - m_Fy * y * y / z2;</span><br><span class="line">    JT(<span class="number">1</span>, <span class="number">4</span>) = m_Fy * x * y / z2;</span><br><span class="line">    JT(<span class="number">1</span>, <span class="number">5</span>) = m_Fy * x / z;</span><br><span class="line"></span><br><span class="line">    JT = -JT;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> CostFunction::ComputeJX(Eigen::Matrix&lt;<span class="keyword">double</span>, <span class="number">2</span>, <span class="number">3</span>&gt; &amp;JX) &#123;</span><br><span class="line">    <span class="keyword">const</span> Eigen::Vector3d pt = _camera-&gt;GetPose() * _map_point-&gt;GetPosition();</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">double</span> &amp;x = pt(<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">double</span> &amp;y = pt(<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">double</span> &amp;z = pt(<span class="number">2</span>);</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">double</span> z2 = z*z;</span><br><span class="line"></span><br><span class="line">    JX.setZero();</span><br><span class="line"></span><br><span class="line">    Eigen::Matrix&lt;<span class="keyword">double</span>, <span class="number">2</span>, <span class="number">3</span>&gt; Jx;</span><br><span class="line">    Jx.setZero();</span><br><span class="line">    Jx(<span class="number">0</span>, <span class="number">0</span>) = m_Fx / z;</span><br><span class="line">    Jx(<span class="number">0</span>, <span class="number">2</span>) = -m_Fx * x / z2;</span><br><span class="line">    Jx(<span class="number">1</span>, <span class="number">1</span>) = m_Fy / z;</span><br><span class="line">    Jx(<span class="number">1</span>, <span class="number">2</span>) = -m_Fy * y / z2;</span><br><span class="line"></span><br><span class="line">    JX = -Jx * _camera-&gt;GetPose().rotation_matrix();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="5-增量线性方程"><a href="#5-增量线性方程" class="headerlink" title="5. 增量线性方程"></a>5. 增量线性方程</h1><p>无论使用Gauss-Netwon还是Levenburg-Marquadt方法求解最小二乘问题,都会求解一个关于增量的线性方程:</p>
+<p>$H\delta x = g$.</p>
+<p>G-N 和L-M 的主要差别在于，这里的H 是取$J^TJ$还是$J^TJ + \lambda I$的形式。由于我们把变量归类成了位姿和空间点两种，所以雅可比矩阵可以分块为：</p>
+<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-141253.png" alt="image-20200516221247122" style="zoom:50%;"></p>
+<p>因此，我们得到：</p>
+<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-141357.png" alt="image-20200516221352391" style="zoom:50%;"></p>
+<p>Bundle Adjustment中的H矩阵，具有特殊的稀疏结构。利用这种稀疏结构可以加速求解过程。我们这里的实现使用了舒尔补的方法求解。如下图所示：</p>
+<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-141613.png" alt="image-20200516221605391" style="zoom:50%;"></p>
+<p>因此，线性方程组$H\delta x = g$可以写为：</p>
+<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-141755.png" alt="image-20200516221659506" style="zoom:50%;"></p>
+<p>利用舒尔补消元，我们首先求解$\delta x$。</p>
+<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-141757.png" alt="image-20200516221747769" style="zoom:50%;"></p>
+<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-141812.png" alt="image-20200516221807112" style="zoom:50%;"></p>
+<p>然后再去求解$\delta x_p$：</p>
+<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-05-16-141855.png" alt="image-20200516221850254" style="zoom:50%;"></p>
+<p>由于C 为对角块，所以$C^{-1}$容易解得。</p>
+<h1 id="6-固定部分状态"><a href="#6-固定部分状态" class="headerlink" title="6. 固定部分状态"></a>6. 固定部分状态</h1><p>对于一个Bundle Adjustment问题，我们必须固定一部分状态，或者给一部分状态一个先验。不然，就会有无穷多解。可以想象一下，一个网络的误差已经达到了最小后，可以整体在空间内任意移动，而不会对误差造成任何影响。我们只要固定这个网络中的任意1个以上的节点，其他的节点都会有确定的状态。（我们通常会把第一个位姿固定）</p>
+<p>怎么固定呢？一种可以加一个先验约束，就是加一个先验cost function。另外一种就是直接把状态fix住，不让它参与优化就好了。 我们采用后一种方法。</p>
+<h1 id="7-代码实现"><a href="#7-代码实现" class="headerlink" title="7. 代码实现"></a>7. 代码实现</h1><ul>
+<li>实现思路如上所述</li>
+<li>实现代码参考如下工程<ul>
+<li><a href="https://github.com/ydsf16/vslam" target="_blank" rel="noopener">https://github.com/ydsf16/vslam</a></li>
+<li><a href="https://github.com/raulmur/ORB_SLAM2" target="_blank" rel="noopener">https://github.com/raulmur/ORB_SLAM2</a></li>
+<li><a href="https://github.com/meiroo/ORBSLAM2-OSX" target="_blank" rel="noopener">https://github.com/meiroo/ORBSLAM2-OSX</a></li>
+</ul>
+</li>
+<li>简单介绍<ul>
+<li>依赖库<ul>
+<li>Eigen3</li>
+<li>Sophus</li>
+<li>OpenCV</li>
+</ul>
+</li>
+<li>结构<ul>
+<li>定义几个类，分别是地图点，相机位姿，CostFunction</li>
+<li>地图点和相机位姿类用来存储需要优化的状态，通过id进行标识</li>
+<li>CostFunction用来存储代价函数、观测，计算雅克比、残差等</li>
+<li>BundleAdjustment类求解BA问题<ul>
+<li>map结构存储地图点和相机，主要是为了方便快速查找；构造地图点、相机，加入到BundleAdjustment类</li>
+<li>set结构存储cost function，构造cost function，加入到BundleAdjustment类</li>
+<li>将所有cost function的雅克比、信息矩阵整合成大的雅克比、信息矩阵、Hassian矩阵等</li>
+<li>采用LM优化算法求解最小二乘问题</li>
+<li>根据id将结果取出</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>（1）初始化BundleAdjustment类</p>
+<ul>
+<li>设定优化算法迭代终止条件<ul>
+<li>最大迭代次数20</li>
+<li>误差阈值1e-10</li>
+<li>设置min delta</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> BundleAjustment::Init(<span class="keyword">int</span> max_iters, <span class="keyword">double</span> min_delta, <span class="keyword">double</span> min_error, <span class="keyword">bool</span> verbose) &#123;</span><br><span class="line">    max_iters_ = max_iters;</span><br><span class="line">    min_delta_ = min_delta;</span><br><span class="line">    min_error_ = min_error;</span><br><span class="line">    verbose_ = verbose;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>（2）将地图点、相机和成本函数添加到BundleAdjustment类</p>
+<ul>
+<li>ID就是添加到顺序索引</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">void</span> BundleAjustment::addMapPoint(MapPoint *mpt) &#123;</span><br><span class="line">    m_MapPoints[mpt-&gt;GetID()] = mpt;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> BundleAjustment::addCamera(Camera *cam) &#123;</span><br><span class="line">    m_Cameras[cam-&gt;GetID()] = cam;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> BundleAjustment::addCostFunction(CostFunction *cost_func) &#123;</span><br><span class="line">    m_CostFunstions.insert(cost_func);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>（3）采用LM优化算法求解</p>
+<ul>
+<li>初始化<ul>
+<li>确定各个矩阵的大小</li>
+<li>定义状态量大小为$N_s$，相机个数为$N_c$，地图点个数为$N_m$，观测数量为$N_{cost}$，观测量大小为$N_o$</li>
+<li>$N_s = N_c <em> 6 + N_m </em> 3$，其中，6表示相机的位姿维度，即se3，3表示地图点向量维度，即三维坐标</li>
+<li>$N_o = N_{cost} * 2$，其中，2表示每个Jacobian为2行</li>
+<li>Jacobian大小为$N_o * N_s$</li>
+<li>H的大小为$N_s <em> N_s$，$H = J^T </em> J$</li>
+<li>r的大小为$N_o * 1$</li>
+<li>b的大小为$N_s <em> 1$，$b = -J^T </em> r$</li>
+<li>$\Delta x$的大小为$N_s * 1$</li>
+<li>信息矩阵大小为$N_o * N_o$</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> BundleAjustment::optimizationInit() &#123;</span><br><span class="line">    <span class="keyword">int</span> state_size = n_cam_state_ * <span class="number">6</span> + n_mpt_state_ * <span class="number">3</span>;</span><br><span class="line">    <span class="keyword">int</span> obs_size = m_CostFunstions.size() * <span class="number">2</span>;</span><br><span class="line">    J_.resize ( obs_size, state_size );</span><br><span class="line">    JTinfo_.resize ( state_size, obs_size );</span><br><span class="line">    H_.resize ( state_size, state_size );</span><br><span class="line">    r_.resize ( obs_size, <span class="number">1</span> );</span><br><span class="line">    b_.resize ( state_size, <span class="number">1</span> );</span><br><span class="line">    info_matrix_.resize ( obs_size, obs_size );</span><br><span class="line">    Delta_X_.resize ( state_size, <span class="number">1</span> );</span><br><span class="line"></span><br><span class="line">    I_.resize ( state_size, state_size );</span><br><span class="line">    <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; state_size; i ++ ) &#123;</span><br><span class="line">      I_ ( i,i ) = <span class="number">1.0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>求H、b和误差量<ul>
+<li>H的大小为$N_s <em> N_s$，$H = J^T </em> J$</li>
+<li>r的大小为$N_o * 1$</li>
+<li>b的大小为$N_s <em> 1$，$b = -J^T </em> r$</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">void</span> BundleAjustment::computeHAndbAndError() &#123;</span><br><span class="line">    <span class="keyword">int</span> cnt = <span class="number">0</span>;</span><br><span class="line">    J_.setZero();</span><br><span class="line">    H_.setZero();</span><br><span class="line">    r_.setZero();</span><br><span class="line">    info_matrix_.setZero();</span><br><span class="line">    JTinfo_.setZero();</span><br><span class="line"></span><br><span class="line">    sum_error2_ = <span class="number">0.0</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">set</span>&lt;CostFunction*&gt;::iterator iter;</span><br><span class="line">    <span class="keyword">for</span> ( iter = m_CostFunstions.begin(); iter != m_CostFunstions.end(); iter ++ ) &#123;</span><br><span class="line">      CostFunction* cost_func = *iter;</span><br><span class="line">      Camera* cam = cost_func-&gt;_camera;</span><br><span class="line">      <span class="keyword">if</span> ( cam-&gt;IsFixed() == <span class="literal">false</span> ) &#123;</span><br><span class="line">        Eigen::Matrix&lt;<span class="keyword">double</span>, <span class="number">2</span>, <span class="number">6</span>&gt; JT;</span><br><span class="line">        cost_func-&gt;ComputeJT ( JT );</span><br><span class="line">        J_.block ( <span class="number">2</span>*cnt, cam-&gt;_state_index*<span class="number">6</span>, <span class="number">2</span>,<span class="number">6</span> ) = JT;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      MapPoint* mpt = cost_func-&gt;_map_point;</span><br><span class="line">      Eigen::Matrix&lt;<span class="keyword">double</span>, <span class="number">2</span>, <span class="number">3</span>&gt; JX;</span><br><span class="line">      cost_func-&gt;ComputeJX ( JX );</span><br><span class="line">      J_.block ( <span class="number">2</span>*cnt, n_cam_state_*<span class="number">6</span> + mpt-&gt;_state_index*<span class="number">3</span>, <span class="number">2</span>, <span class="number">3</span> ) = JX;</span><br><span class="line"></span><br><span class="line">      Eigen::Vector2d e;</span><br><span class="line">      Eigen::Matrix2d weighted_info;</span><br><span class="line">      <span class="keyword">double</span> weighted_e2;</span><br><span class="line">      cost_func-&gt;ComputeInterVars ( e, weighted_info, weighted_e2 );</span><br><span class="line"></span><br><span class="line">      r_.block ( <span class="number">2</span>*cnt, <span class="number">0</span>, <span class="number">2</span>, <span class="number">1</span> ) = e;</span><br><span class="line">      info_matrix_.block ( <span class="number">2</span>*cnt, <span class="number">2</span>*cnt, <span class="number">2</span>, <span class="number">2</span> ) = weighted_info;</span><br><span class="line"></span><br><span class="line">      sum_error2_ += weighted_e2;</span><br><span class="line">      cnt ++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    JTinfo_ = J_.transpose() * info_matrix_;</span><br><span class="line">    H_ = JTinfo_ * J_;</span><br><span class="line">    b_ = -JTinfo_ * r_;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>LM求解<ul>
+<li>计算$\mu$，首先令$\mu = \tau * \max{H_{i, i}}$，其中，$\tau = 1e-8$</li>
+<li>$H += \mu * I$</li>
+<li>利用舒尔补方法和QR分解求解正规方程</li>
+<li>根据求解出来的$\Delta X$状态量更新相机和地图点状态</li>
+<li>再次计算H、b和误差量</li>
+<li>更新LM中的参数$\mu$<ul>
+<li>计算超参数$\rho = \frac{F(x) - f(x + h)}{L(0) - L(h)}$</li>
+<li>如果$\rho &gt; 0$，则接受$\mu$，更新$\mu = \mu <em> \max(\frac{1}{3}, 1 - (2 </em> \rho - 1)^3)$，$v = v * 2$</li>
+<li>如果$\rho \leq 0$，则拒绝本次更新，恢复前一步的相机和地图点状态并重新计算H、b和误差，$\mu = v <em> \mu$，$v = v </em> 2$</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> BundleAjustment::optimize() &#123;</span><br><span class="line">    optimizationInit();</span><br><span class="line">    <span class="keyword">int</span> niter = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">double</span> upsilon = <span class="number">2.0</span>;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">double</span> tau = <span class="number">1e-8</span>;</span><br><span class="line"></span><br><span class="line">    computeHAndbAndError();</span><br><span class="line">    last_sum_error2_ = sum_error2_;</span><br><span class="line">    <span class="keyword">bool</span> found = ( ( -b_ ).lpNorm&lt;Eigen::Infinity&gt;() &lt; min_error_ );</span><br><span class="line"></span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">double</span>&gt; aa;</span><br><span class="line">    aa.reserve ( H_.rows() );</span><br><span class="line">    <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; H_.rows(); i ++ ) &#123;</span><br><span class="line">      aa.push_back ( H_ ( i,i ) );</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">auto</span> max_aa = <span class="built_in">std</span>::max_element ( aa.begin(), aa.end() );</span><br><span class="line">    <span class="keyword">double</span> mu = tau* ( *max_aa );</span><br><span class="line"></span><br><span class="line">    <span class="keyword">double</span> total_time = <span class="number">0.0</span>;</span><br><span class="line">    <span class="keyword">while</span> ( !found &amp;&amp; niter &lt; max_iters_ ) &#123;</span><br><span class="line">      Runtimer t;</span><br><span class="line">      t.start();</span><br><span class="line"></span><br><span class="line">      niter ++;</span><br><span class="line"></span><br><span class="line">      H_ += mu * I_;</span><br><span class="line">      solveNormalEquation();</span><br><span class="line"></span><br><span class="line">      <span class="keyword">double</span> delta = Delta_X_.norm();</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> ( delta &lt; min_delta_ ) &#123;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      updateStates();</span><br><span class="line"></span><br><span class="line">      computeHAndbAndError();</span><br><span class="line"></span><br><span class="line">      <span class="keyword">double</span> varrho = (last_sum_error2_ - sum_error2_) / (Delta_X_.transpose() * (mu * Delta_X_ + b_))(<span class="number">0</span>,<span class="number">0</span>) ;</span><br><span class="line">      <span class="keyword">if</span>(varrho &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        last_sum_error2_ = sum_error2_;</span><br><span class="line">        found = ( ( -b_ ).lpNorm&lt;Eigen::Infinity&gt;() &lt; min_error_ );</span><br><span class="line">        mu = mu * <span class="built_in">std</span>::max&lt;<span class="keyword">double</span>&gt;(<span class="number">0.3333</span>, <span class="number">1.0</span>-<span class="built_in">std</span>::<span class="built_in">pow</span>(<span class="number">2.0</span>*varrho<span class="number">-1.0</span>, <span class="number">3</span>));</span><br><span class="line">        upsilon = <span class="number">2.0</span>;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        recoverStates();</span><br><span class="line">        computeHAndbAndError();</span><br><span class="line">        mu = mu * upsilon;</span><br><span class="line">        upsilon *= <span class="number">2.0</span>;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      t.stop();</span><br><span class="line">      total_time += t.duration();</span><br><span class="line">      <span class="keyword">if</span>(verbose_) &#123;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="built_in">std</span>::fixed &lt;&lt; <span class="string">"Iter: "</span> &lt;&lt; <span class="built_in">std</span>::left &lt;&lt;<span class="built_in">std</span>::setw(<span class="number">4</span>) &lt;&lt; niter</span><br><span class="line">          &lt;&lt; <span class="string">" Cost: "</span>&lt;&lt; <span class="built_in">std</span>::left &lt;&lt;<span class="built_in">std</span>::setw(<span class="number">20</span>)  &lt;&lt; <span class="built_in">std</span>::setprecision(<span class="number">10</span>) &lt;&lt; sum_error2_</span><br><span class="line">          &lt;&lt; <span class="string">" Step: "</span> &lt;&lt; <span class="built_in">std</span>::left &lt;&lt;<span class="built_in">std</span>::setw(<span class="number">14</span>) &lt;&lt; <span class="built_in">std</span>::setprecision(<span class="number">10</span>) &lt;&lt; delta</span><br><span class="line">          &lt;&lt; <span class="string">" Time "</span> &lt;&lt; <span class="built_in">std</span>::left &lt;&lt;<span class="built_in">std</span>::setw(<span class="number">10</span>) &lt;&lt; <span class="built_in">std</span>::setprecision(<span class="number">3</span>) &lt;&lt; t.duration()</span><br><span class="line">          &lt;&lt; <span class="string">" Total_time "</span> &lt;&lt; <span class="built_in">std</span>::left &lt;&lt;<span class="built_in">std</span>::setw(<span class="number">10</span>) &lt;&lt; <span class="built_in">std</span>::setprecision(<span class="number">3</span>) &lt;&lt; total_time &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> BundleAjustment::computeHAndbAndError() &#123;</span><br><span class="line">    <span class="keyword">int</span> cnt = <span class="number">0</span>;</span><br><span class="line">    J_.setZero();</span><br><span class="line">    H_.setZero();</span><br><span class="line">    r_.setZero();</span><br><span class="line">    info_matrix_.setZero();</span><br><span class="line">    JTinfo_.setZero();</span><br><span class="line"></span><br><span class="line">    sum_error2_ = <span class="number">0.0</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">set</span>&lt;CostFunction*&gt;::iterator iter;</span><br><span class="line">    <span class="keyword">for</span> ( iter = m_CostFunstions.begin(); iter != m_CostFunstions.end(); iter ++ ) &#123;</span><br><span class="line">      CostFunction* cost_func = *iter;</span><br><span class="line">      Camera* cam = cost_func-&gt;_camera;</span><br><span class="line">      <span class="keyword">if</span> ( cam-&gt;IsFixed() == <span class="literal">false</span> ) &#123;</span><br><span class="line">        Eigen::Matrix&lt;<span class="keyword">double</span>, <span class="number">2</span>, <span class="number">6</span>&gt; JT;</span><br><span class="line">        cost_func-&gt;ComputeJT ( JT );</span><br><span class="line">        J_.block ( <span class="number">2</span>*cnt, cam-&gt;_state_index*<span class="number">6</span>, <span class="number">2</span>,<span class="number">6</span> ) = JT;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      MapPoint* mpt = cost_func-&gt;_map_point;</span><br><span class="line">      Eigen::Matrix&lt;<span class="keyword">double</span>, <span class="number">2</span>, <span class="number">3</span>&gt; JX;</span><br><span class="line">      cost_func-&gt;ComputeJX ( JX );</span><br><span class="line">      J_.block ( <span class="number">2</span>*cnt, n_cam_state_*<span class="number">6</span> + mpt-&gt;_state_index*<span class="number">3</span>, <span class="number">2</span>, <span class="number">3</span> ) = JX;</span><br><span class="line"></span><br><span class="line">      Eigen::Vector2d e;</span><br><span class="line">      Eigen::Matrix2d weighted_info;</span><br><span class="line">      <span class="keyword">double</span> weighted_e2;</span><br><span class="line">      cost_func-&gt;ComputeInterVars ( e, weighted_info, weighted_e2 );</span><br><span class="line"></span><br><span class="line">      r_.block ( <span class="number">2</span>*cnt, <span class="number">0</span>, <span class="number">2</span>, <span class="number">1</span> ) = e;</span><br><span class="line">      info_matrix_.block ( <span class="number">2</span>*cnt, <span class="number">2</span>*cnt, <span class="number">2</span>, <span class="number">2</span> ) = weighted_info;</span><br><span class="line"></span><br><span class="line">      sum_error2_ += weighted_e2;</span><br><span class="line">      cnt ++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    JTinfo_ = J_.transpose() * info_matrix_;</span><br><span class="line">    H_ = JTinfo_ * J_;</span><br><span class="line">    b_ = -JTinfo_ * r_;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> BundleAjustment::solveNormalEquation() &#123;</span><br><span class="line">    <span class="keyword">if</span> ( n_cam_state_ &gt;= <span class="number">1</span> &amp;&amp; n_mpt_state_ &gt;= <span class="number">1</span> ) &#123;</span><br><span class="line">      <span class="keyword">const</span> Eigen::MatrixXd&amp; C = H_.block ( <span class="number">0</span>, <span class="number">0</span>, n_cam_state_*<span class="number">6</span>, n_cam_state_*<span class="number">6</span> );</span><br><span class="line">      <span class="keyword">const</span> Eigen::MatrixXd&amp; M = H_.block ( n_cam_state_*<span class="number">6</span>, n_cam_state_*<span class="number">6</span>, n_mpt_state_*<span class="number">3</span>, n_mpt_state_*<span class="number">3</span> );</span><br><span class="line">      <span class="keyword">const</span> Eigen::MatrixXd&amp; Etrans = H_.block ( n_cam_state_*<span class="number">6</span>, <span class="number">0</span>, n_mpt_state_*<span class="number">3</span>, n_cam_state_*<span class="number">6</span>);</span><br><span class="line">      <span class="keyword">const</span> Eigen::MatrixXd&amp; E = H_.block ( <span class="number">0</span>, n_cam_state_*<span class="number">6</span>, n_cam_state_*<span class="number">6</span>, n_mpt_state_*<span class="number">3</span>);</span><br><span class="line"></span><br><span class="line">      <span class="keyword">const</span> Eigen::MatrixXd&amp; bc = b_.block ( <span class="number">0</span>, <span class="number">0</span>, n_cam_state_*<span class="number">6</span>, <span class="number">1</span> );</span><br><span class="line">      <span class="keyword">const</span> Eigen::MatrixXd&amp; bm = b_.block ( n_cam_state_*<span class="number">6</span>, <span class="number">0</span>, n_mpt_state_*<span class="number">3</span>, <span class="number">1</span> );</span><br><span class="line"></span><br><span class="line">      Eigen::MatrixXd M_inv;</span><br><span class="line">      inverseM ( M, M_inv );</span><br><span class="line"></span><br><span class="line">      Delta_X_.block ( <span class="number">0</span>, <span class="number">0</span>, n_cam_state_*<span class="number">6</span>, <span class="number">1</span> ) =</span><br><span class="line">        ( C-E*M_inv*Etrans ).fullPivHouseholderQr().solve ( bc-E*M_inv*bm );</span><br><span class="line"></span><br><span class="line">      Delta_X_.block ( n_cam_state_*<span class="number">6</span>, <span class="number">0</span>, n_mpt_state_*<span class="number">3</span>, <span class="number">1</span> ) =</span><br><span class="line">        M_inv * ( bm - Etrans * Delta_X_.block ( <span class="number">0</span>, <span class="number">0</span>, n_cam_state_*<span class="number">6</span>, <span class="number">1</span> ) );</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      Delta_X_ = H_.llt().solve ( b_ );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> BundleAjustment::updateStates() &#123;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">map</span>&lt;<span class="keyword">int</span>, Camera*&gt;::iterator it_cam;</span><br><span class="line">    <span class="keyword">for</span> ( it_cam = m_Cameras.begin(); it_cam != m_Cameras.end(); it_cam ++ ) &#123;</span><br><span class="line">      Camera* cam = it_cam-&gt;second;</span><br><span class="line">      <span class="keyword">if</span> ( cam-&gt;IsFixed() == <span class="literal">false</span> ) &#123;</span><br><span class="line">        <span class="keyword">int</span> index = cam-&gt;_state_index;</span><br><span class="line">        cam-&gt;UpdatePose ( Delta_X_.block ( index*<span class="number">6</span>, <span class="number">0</span>, <span class="number">6</span>, <span class="number">1</span> ) );</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">map</span>&lt;<span class="keyword">int</span>, MapPoint*&gt;::iterator it_mpt;</span><br><span class="line">    <span class="keyword">for</span> ( it_mpt = m_MapPoints.begin(); it_mpt != m_MapPoints.end(); it_mpt++ ) &#123;</span><br><span class="line">      MapPoint* mpt = it_mpt-&gt;second;</span><br><span class="line">      <span class="keyword">int</span> index = mpt-&gt;_state_index;</span><br><span class="line">      mpt-&gt;UpdatePosition ( Delta_X_.block ( n_cam_state_*<span class="number">6</span> + index*<span class="number">3</span>, <span class="number">0</span>, <span class="number">3</span>, <span class="number">1</span> ) );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> BundleAjustment::recoverStates() &#123;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">map</span>&lt;<span class="keyword">int</span>, Camera*&gt;::iterator it_cam;</span><br><span class="line">    <span class="keyword">for</span> ( it_cam = m_Cameras.begin(); it_cam != m_Cameras.end(); it_cam ++ ) &#123;</span><br><span class="line">      Camera* cam = it_cam-&gt;second;</span><br><span class="line">      <span class="keyword">if</span> ( cam-&gt;IsFixed() == <span class="literal">false</span> ) &#123;</span><br><span class="line">        <span class="keyword">int</span> index = cam-&gt;_state_index;</span><br><span class="line">        cam-&gt;UpdatePose ( -Delta_X_.block ( index*<span class="number">6</span>, <span class="number">0</span>, <span class="number">6</span>, <span class="number">1</span> ) );</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">map</span>&lt;<span class="keyword">int</span>, MapPoint*&gt;::iterator it_mpt;</span><br><span class="line">    <span class="keyword">for</span> ( it_mpt = m_MapPoints.begin(); it_mpt != m_MapPoints.end(); it_mpt++ ) &#123;</span><br><span class="line">      MapPoint* mpt = it_mpt-&gt;second;</span><br><span class="line">      <span class="keyword">int</span> index = mpt-&gt;_state_index;</span><br><span class="line">      mpt-&gt;UpdatePosition ( -Delta_X_.block ( n_cam_state_*<span class="number">6</span> + index*<span class="number">3</span>, <span class="number">0</span>, <span class="number">3</span>, <span class="number">1</span> ) );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="8-参考"><a href="#8-参考" class="headerlink" title="8. 参考"></a>8. 参考</h1><ul>
+<li><a href="https://zhuanlan.zhihu.com/p/64471565" target="_blank" rel="noopener">[V-SLAM] Bundle Adjustment 实现</a></li>
+<li>《视觉SLAM十四讲》</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+        
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/理论/" rel="tag"># 理论</a>
+          
+            <a href="/tags/SLAM/" rel="tag"># SLAM</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/05/13/data_structure_algorithm/Leetcode算法（二）-算法-算法思想/" rel="next" title="Leetcode算法（二）-算法-算法思想">
+                <i class="fa fa-chevron-left"></i> Leetcode算法（二）-算法-算法思想
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/05/16/data_structure_algorithm/Leetcode算法（二）-探索初级算法-字符串/" rel="prev" title="Leetcode算法（二）-探索初级算法-字符串">
+                Leetcode算法（二）-探索初级算法-字符串 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Xiaoqiang Teng</p>
+              <p class="site-description motion-element" itemprop="description">Remember what should be remembered, and forget what should be forgotten.Alter what is changeable, and accept what is mutable.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">86</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">39</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-概述"><span class="nav-text">1. 概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-投影模型"><span class="nav-text">2. 投影模型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-观测方程参数化"><span class="nav-text">3. 观测方程参数化</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-BA的求解"><span class="nav-text">4. BA的求解</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-增量线性方程"><span class="nav-text">5. 增量线性方程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-固定部分状态"><span class="nav-text">6. 固定部分状态</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7-代码实现"><span class="nav-text">7. 代码实现</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#8-参考"><span class="nav-text">8. 参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiaoqiang Teng</span>
+
+  
+</div>
+
+
+
+<div class="powered-by">
+<i class="fa fa-user-md"></i><span id="busuanzi_container_site_uv">
+  本站访客数:<span id="busuanzi_value_site_uv"></span>
+</span>
+</div>
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+<div>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style="display:none">
+    本站总访问量 <span id="busuanzi_value_site_pv"></span> 次
+    <span class="post-meta-divider">|</span>
+</span>
+<span id="busuanzi_container_site_uv" style="display:none">
+    有<span id="busuanzi_value_site_uv"></span>人看过我的博客啦
+</span>
+</div>
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
