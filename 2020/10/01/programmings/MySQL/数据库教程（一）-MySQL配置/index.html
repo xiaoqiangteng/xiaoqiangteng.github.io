@@ -93,7 +93,8 @@
 <meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-10-01-144856.png">
 <meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-10-01-145303.png">
 <meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-10-01-145415.png">
-<meta property="og:updated_time" content="2020-10-01T15:01:39.062Z">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-10-01-145650.png">
+<meta property="og:updated_time" content="2020-10-03T11:15:05.942Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="数据库教程（一）-MySQL配置">
 <meta name="twitter:description" content="1. 概述 操作系统：Ubuntu 18.04 MySQL版本：5.7.31  2. 安装MySQL 查看有没有安装MySQL $ dpkg -l | grep mysql   在Ubuntu中，默认情况下，只有最新版本的MySQL包含在APT软件包存储库中,要安装它，只需更新服务器上的包索引并安装默认包`apt-get $ sudo apt-get update $ sudo apt-get i">
@@ -472,16 +473,19 @@
 </ul>
 </li>
 </ul>
-<pre><code>- 检查mysql服务状态
-
-    - \$ systemctl status mysql.service
-
-    - 显示如下表示MySQL服务正常
-
-        &lt;img src=&quot;https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-10-01-145650.png&quot; alt=&quot;image-20201001225614816&quot; style=&quot;zoom:50%;&quot; /&gt;
-
-- 再次用mysql -u root -p命令，Enter password:处输入刚设置的密码，回车，就能够进入mysql数据库
-</code></pre><h1 id="4-配置远程访问数据库"><a href="#4-配置远程访问数据库" class="headerlink" title="4. 配置远程访问数据库"></a>4. 配置远程访问数据库</h1><p>在Ubuntu下MySQL缺省是只允许本地访问的。如果你要其他机器也能够访问的话，需要进行配置。</p>
+<ul>
+<li><p>检查mysql服务状态</p>
+<ul>
+<li>$ systemctl status mysql.service</li>
+<li><p>显示如下表示MySQL服务正常</p>
+<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-10-01-145650.png" alt="image-20201001225614816" style="zoom:50%;"></p>
+</li>
+</ul>
+</li>
+<li><p>再次用mysql -u root -p命令，Enter password:处输入刚设置的密码，回车，就能够进入mysql数据库</p>
+</li>
+</ul>
+<h1 id="4-配置远程访问数据库"><a href="#4-配置远程访问数据库" class="headerlink" title="4. 配置远程访问数据库"></a>4. 配置远程访问数据库</h1><p>在Ubuntu下MySQL缺省是只允许本地访问的。如果你要其他机器也能够访问的话，需要进行配置。</p>
 <ul>
 <li>首先用根用户进入</li>
 <li>$ GRANT ALL PRIVILEGES ON <em>.</em> TO root@localhost IDENTIFIED BY “123456”; </li>
@@ -538,6 +542,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/10/03/programmings/MySQL/数据库教程（一）-MySQL的DDL/" rel="prev" title="数据库教程（一）-MySQL的DDL">
+                数据库教程（一）-MySQL的DDL <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -614,7 +622,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">92</span>
+                  <span class="site-state-item-count">93</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
