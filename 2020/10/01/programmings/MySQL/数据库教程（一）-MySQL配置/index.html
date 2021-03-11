@@ -94,7 +94,7 @@
 <meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-10-01-145303.png">
 <meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-10-01-145415.png">
 <meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-10-01-145650.png">
-<meta property="og:updated_time" content="2020-10-03T11:15:05.942Z">
+<meta property="og:updated_time" content="2020-10-09T14:55:42.518Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="数据库教程（一）-MySQL配置">
 <meta name="twitter:description" content="1. 概述 操作系统：Ubuntu 18.04 MySQL版本：5.7.31  2. 安装MySQL 查看有没有安装MySQL $ dpkg -l | grep mysql   在Ubuntu中，默认情况下，只有最新版本的MySQL包含在APT软件包存储库中,要安装它，只需更新服务器上的包索引并安装默认包`apt-get $ sudo apt-get update $ sudo apt-get i">
@@ -491,7 +491,41 @@
 <li>$ GRANT ALL PRIVILEGES ON <em>.</em> TO root@localhost IDENTIFIED BY “123456”; </li>
 <li>其中<code>root@localhos</code>，<code>localhost</code>就是本地访问，配置成<code>%</code>就是所有主机都可连接；第二个<code>&#39;123456&#39;</code>为你给新增权限用户设置的密码，<code>%</code>代表所有主机，也可以是具体的ip</li>
 </ul>
-<h1 id="5-参考"><a href="#5-参考" class="headerlink" title="5. 参考"></a>5. 参考</h1><ul>
+<h1 id="5-数据库导入导出"><a href="#5-数据库导入导出" class="headerlink" title="5. 数据库导入导出"></a>5. 数据库导入导出</h1><ul>
+<li><p>创建数据库</p>
+<ul>
+<li>$ create database test;</li>
+</ul>
+</li>
+<li><p>使用数据库</p>
+<ul>
+<li>$ use test;</li>
+</ul>
+</li>
+<li><p>导入数据</p>
+<ul>
+<li>$ source ./test.sql</li>
+</ul>
+</li>
+<li><p>导出整个数据库</p>
+<ul>
+<li>mysqldump -u 用户名 -p 数据库名 &gt; 导出的文件名</li>
+</ul>
+</li>
+<li><p>导出一个表</p>
+<ul>
+<li>mysqldump -u 用户名 -p 数据库名表名 &gt; 导出的文件名</li>
+</ul>
+</li>
+<li><p>导出一个数据库结构</p>
+<ul>
+<li><p>mysqldump -u wcnc -p -d —add-drop-table smgp_apps_wcnc &gt;d:wcnc_db.sql</p>
+<p>  -d 没有数据 —add-drop-table 在每个create语句之前增加一个drop table</p>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="6-参考"><a href="#6-参考" class="headerlink" title="6. 参考"></a>6. 参考</h1><ul>
 <li><a href="https://blog.csdn.net/weixx3/article/details/80782479" target="_blank" rel="noopener">Ubuntu18.04 安装MySQL</a></li>
 <li><a href="https://www.cnblogs.com/opsprobe/p/9126864.html" target="_blank" rel="noopener">Ubuntu18.04下安装MySQL</a></li>
 </ul>
@@ -622,7 +656,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">93</span>
+                  <span class="site-state-item-count">97</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -633,7 +667,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">48</span>
+                  <span class="site-state-item-count">49</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -644,7 +678,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">40</span>
+                  <span class="site-state-item-count">41</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -677,7 +711,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-概述"><span class="nav-text">1. 概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-安装MySQL"><span class="nav-text">2. 安装MySQL</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-配置MySQL"><span class="nav-text">3. 配置MySQL</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-配置远程访问数据库"><span class="nav-text">4. 配置远程访问数据库</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-参考"><span class="nav-text">5. 参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-概述"><span class="nav-text">1. 概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-安装MySQL"><span class="nav-text">2. 安装MySQL</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-配置MySQL"><span class="nav-text">3. 配置MySQL</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-配置远程访问数据库"><span class="nav-text">4. 配置远程访问数据库</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-数据库导入导出"><span class="nav-text">5. 数据库导入导出</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-参考"><span class="nav-text">6. 参考</span></a></li></ol></div>
             
 
           </div>
@@ -699,7 +733,7 @@
       <div class="footer-inner">
         
 <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-<div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
