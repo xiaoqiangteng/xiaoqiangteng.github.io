@@ -79,21 +79,21 @@
 
 
 
-<meta name="description" content="1. 概述Dijkstra算法是一种单向的最短路径算法，其搜索范围如下图所示。  有研究者就提出了一种优化方法，即双向Dijkstra算法。其主要思想就是从起点和终点同时开始搜索，这样应该能够提升算法效率。事实证明，在大部分情况下，双向Dijkstra算法还是要优于单向的Dijkstra算法，其搜索范围如下图所示。  2. 算法详解 主要思想 分别从路径搜索的起点s和路径搜索的终点t同时执行前向的">
+<meta name="description" content="1. 概述DFS和BFS是两种搜索树和图的基本策略，一种往深处搜，一种往边上搜。 DFS常用于暴力搜索所有状态，BFS常用于搜索到达某一状态的最短路径。广度优先搜索在进一步遍历图中顶点之前，先访问当前顶点的所有邻接结点。深度优先搜索在搜索过程中访问某个顶点后，需要递归地访问此顶点的所有未访问过的相邻顶点。 2. 算法详解2.1 深度优先搜索深度优先搜索策略是递归的访问此顶点的所有未访问过的相邻节点">
 <meta name="keywords" content="理论,路径规划">
 <meta property="og:type" content="article">
-<meta property="og:title" content="路径规划（一）-双向Dijkstra算法">
-<meta property="og:url" content="http://yoursite.com/2020/10/15/route_planning/路径规划（一）-双向Dijkstra算法/index.html">
+<meta property="og:title" content="路径规划（一）-BFS和DFS算法">
+<meta property="og:url" content="http://yoursite.com/2021/03/08/route_planning/路径规划（一）-BFS和DFS算法/index.html">
 <meta property="og:site_name" content="学步">
-<meta property="og:description" content="1. 概述Dijkstra算法是一种单向的最短路径算法，其搜索范围如下图所示。  有研究者就提出了一种优化方法，即双向Dijkstra算法。其主要思想就是从起点和终点同时开始搜索，这样应该能够提升算法效率。事实证明，在大部分情况下，双向Dijkstra算法还是要优于单向的Dijkstra算法，其搜索范围如下图所示。  2. 算法详解 主要思想 分别从路径搜索的起点s和路径搜索的终点t同时执行前向的">
+<meta property="og:description" content="1. 概述DFS和BFS是两种搜索树和图的基本策略，一种往深处搜，一种往边上搜。 DFS常用于暴力搜索所有状态，BFS常用于搜索到达某一状态的最短路径。广度优先搜索在进一步遍历图中顶点之前，先访问当前顶点的所有邻接结点。深度优先搜索在搜索过程中访问某个顶点后，需要递归地访问此顶点的所有未访问过的相邻顶点。 2. 算法详解2.1 深度优先搜索深度优先搜索策略是递归的访问此顶点的所有未访问过的相邻节点">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-10-15-144324.png">
-<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-10-15-144401.png">
-<meta property="og:updated_time" content="2020-10-15T14:59:47.651Z">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2021-03-10-153704.png">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2021-03-10-155355.png">
+<meta property="og:updated_time" content="2021-03-14T13:22:45.876Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="路径规划（一）-双向Dijkstra算法">
-<meta name="twitter:description" content="1. 概述Dijkstra算法是一种单向的最短路径算法，其搜索范围如下图所示。  有研究者就提出了一种优化方法，即双向Dijkstra算法。其主要思想就是从起点和终点同时开始搜索，这样应该能够提升算法效率。事实证明，在大部分情况下，双向Dijkstra算法还是要优于单向的Dijkstra算法，其搜索范围如下图所示。  2. 算法详解 主要思想 分别从路径搜索的起点s和路径搜索的终点t同时执行前向的">
-<meta name="twitter:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-10-15-144324.png">
+<meta name="twitter:title" content="路径规划（一）-BFS和DFS算法">
+<meta name="twitter:description" content="1. 概述DFS和BFS是两种搜索树和图的基本策略，一种往深处搜，一种往边上搜。 DFS常用于暴力搜索所有状态，BFS常用于搜索到达某一状态的最短路径。广度优先搜索在进一步遍历图中顶点之前，先访问当前顶点的所有邻接结点。深度优先搜索在搜索过程中访问某个顶点后，需要递归地访问此顶点的所有未访问过的相邻顶点。 2. 算法详解2.1 深度优先搜索深度优先搜索策略是递归的访问此顶点的所有未访问过的相邻节点">
+<meta name="twitter:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2021-03-10-153704.png">
 
 
 
@@ -123,13 +123,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2020/10/15/route_planning/路径规划（一）-双向Dijkstra算法/">
+  <link rel="canonical" href="http://yoursite.com/2021/03/08/route_planning/路径规划（一）-BFS和DFS算法/">
 
 
 
 
 
-  <title>路径规划（一）-双向Dijkstra算法 | 学步</title>
+  <title>路径规划（一）-BFS和DFS算法 | 学步</title>
   
 
 
@@ -310,7 +310,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/10/15/route_planning/路径规划（一）-双向Dijkstra算法/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/03/08/route_planning/路径规划（一）-BFS和DFS算法/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Xiaoqiang Teng">
@@ -327,7 +327,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">路径规划（一）-双向Dijkstra算法</h1>
+          <h1 class="post-title" itemprop="name headline">路径规划（一）-BFS和DFS算法</h1>
         
 
         <div class="post-meta">
@@ -339,8 +339,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-10-15T22:38:25+08:00">
-                2020-10-15
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-03-08T23:32:48+08:00">
+                2021-03-08
               </time>
             
 
@@ -410,29 +410,28 @@
       
 
       
-        <h1 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h1><p>Dijkstra算法是一种单向的最短路径算法，其搜索范围如下图所示。</p>
-<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-10-15-144324.png" alt="image-20201015224311183" style="zoom:50%;"></p>
-<p>有研究者就提出了一种优化方法，即双向Dijkstra算法。其主要思想就是从起点和终点同时开始搜索，这样应该能够提升算法效率。事实证明，在大部分情况下，双向Dijkstra算法还是要优于单向的Dijkstra算法，其搜索范围如下图所示。</p>
-<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-10-15-144401.png" alt="image-20201015224354382" style="zoom:50%;"></p>
-<h1 id="2-算法详解"><a href="#2-算法详解" class="headerlink" title="2. 算法详解"></a>2. 算法详解</h1><ul>
-<li>主要思想<ul>
-<li>分别从路径搜索的起点s和路径搜索的终点t同时执行前向的Dijkstra算法和后向的Dijkstra算法</li>
-<li>当前向Dijkstra算法和后向Dijkstra算法相遇时，搜索结束。假设二者相遇时的节点为u，起点s到u节点的Dijkstra路径为D(s, u)，终点t到u节点的Dijkstra路径为D(t, u)，则起点s到终点t的最短路径为: D(s, u) + D(u, t)</li>
+        <h1 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h1><p>DFS和BFS是两种搜索树和图的基本策略，一种往深处搜，一种往边上搜。 DFS常用于暴力搜索所有状态，BFS常用于搜索到达某一状态的最短路径。广度优先搜索在进一步遍历图中顶点之前，先访问当前顶点的所有邻接结点。深度优先搜索在搜索过程中访问某个顶点后，需要递归地访问此顶点的所有未访问过的相邻顶点。</p>
+<h1 id="2-算法详解"><a href="#2-算法详解" class="headerlink" title="2. 算法详解"></a>2. 算法详解</h1><h2 id="2-1-深度优先搜索"><a href="#2-1-深度优先搜索" class="headerlink" title="2.1 深度优先搜索"></a>2.1 深度优先搜索</h2><p>深度优先搜索策略是递归的访问此顶点的所有未访问过的相邻节点。如下图所示：</p>
+<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2021-03-10-153704.png" alt="image-20210310233648245" style="zoom:50%;"></p>
+<p>（图片参考：<a href="https://developer.aliyun.com/article/756316）" target="_blank" rel="noopener">https://developer.aliyun.com/article/756316）</a></p>
+<ul>
+<li>从节点1开始遍历，相邻的节点有2，3，4，先遍历节点2，再遍历节点5，然后再节点9</li>
+<li>上图中最右侧的一条路已经走到底了，此时从节点9开始回溯到上一个节点，如果上一个节点有子节点，则在该节点处继续遍历它的子节点；如果上一个节点，没有子节点，则继续回溯。如上图所示，遍历到节点9之后，回溯到节点5，节点5没有子节点，继续回退到节点2，再回溯到节点1；此时，节点1有其他的子节点3和4，那么继续遍历3的子节点</li>
+<li>重复上一步，直到遍历到节点10，则进行回溯，直到节点3，发现节点3有子节点7还未被访问，那么遍历节点7及其子节点</li>
+<li>从节点7往上回溯到3，1，发现1还有节点4未遍历，所以此时沿着4，8进行遍历，最后遍历结束</li>
 </ul>
-</li>
-<li>算法流程<ul>
-<li>从heap中弹出节点  </li>
-<li>更新当前的候选最优路径cost  </li>
-<li>从当前节点广度搜索展开，更新相邻节点的权重，加入heap中</li>
-<li>最短路径搜索时我们会用到两个容器，一个堆(Heap)：维护着已经reach到的候选节点集合；一个Map:维护已经从heap中弹出的节点集合</li>
-<li>PSet和PRelaxed分别表示正向搜索的Map和Heap,NSet和NRelaxed分别表示反向搜索的Map和Heap</li>
-<li>终止条件：当PSet和NSet初次相遇节点时，获得了第一条候选最优路径时，继续进行双向搜索，但这时停止向heap放入新的节点，仅用弹出当前的PRelaxed和NRelaxed的集合，最优meet节点肯定在红色背景的节点集合中。  </li>
+<h2 id="2-2-广度优先搜索"><a href="#2-2-广度优先搜索" class="headerlink" title="2.2 广度优先搜索"></a>2.2 广度优先搜索</h2><p>广度优先遍历从图的一个未遍历的节点出发，先遍历这个节点的相邻节点，再依次遍历每个相邻节点的相邻节点。所以广度优先遍历也叫层序遍历。正如上图所示，广度优先遍历先遍历第一层（节点1），再遍历第二层（节点2，3，4），第三层（5，6，7，8），第四层（9，10）。</p>
+<h1 id="3-代码实现"><a href="#3-代码实现" class="headerlink" title="3. 代码实现"></a>3. 代码实现</h1><h2 id="3-1-深度优先搜索"><a href="#3-1-深度优先搜索" class="headerlink" title="3.1 深度优先搜索"></a>3.1 深度优先搜索</h2><ul>
+<li>非递归实现</li>
 </ul>
-</li>
-</ul>
-<h1 id="3-代码实现"><a href="#3-代码实现" class="headerlink" title="3. 代码实现"></a>3. 代码实现</h1><h1 id="4-总结和讨论"><a href="#4-总结和讨论" class="headerlink" title="4. 总结和讨论"></a>4. 总结和讨论</h1><h1 id="5-参考"><a href="#5-参考" class="headerlink" title="5. 参考"></a>5. 参考</h1><ul>
-<li><a href="https://blog.csdn.net/qq_25102303/article/details/99692570" target="_blank" rel="noopener">最短路径算法—双向Dijkstra算法Python实现</a></li>
-<li><a href="https://www.cnblogs.com/gisorange/p/3632958.html" target="_blank" rel="noopener">路网最优路径算法之一单向和双向搜索</a></li>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> defaultdict</span><br><span class="line"><span class="keyword">from</span> heapq <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_DFS_data</span><span class="params">(graph, start_node)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> len(graph) == <span class="number">0</span>:</span><br><span class="line">        print(<span class="string">"\tGraph error"</span>)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> start_node <span class="keyword">not</span> <span class="keyword">in</span> graph:</span><br><span class="line">        print(<span class="string">"\tStart node is not in graph, start node = "</span>, start_node)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">    queue, seen_list = [], []</span><br><span class="line">    queue.append(start_node)</span><br><span class="line">    seen_list.append(start_node)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (len(queue) &gt; <span class="number">0</span>):</span><br><span class="line">        node = queue.pop()</span><br><span class="line">        <span class="keyword">if</span> node <span class="keyword">not</span> <span class="keyword">in</span> graph:</span><br><span class="line">            print(<span class="string">"\tNode is not in graph, node = "</span>, node)</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">        print(<span class="string">"\t"</span>, node)</span><br><span class="line">        subnodes = graph[node]</span><br><span class="line">        <span class="keyword">for</span> subnode <span class="keyword">in</span> subnodes:</span><br><span class="line">            <span class="keyword">if</span> subnode <span class="keyword">not</span> <span class="keyword">in</span> graph:</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> subnode <span class="keyword">not</span> <span class="keyword">in</span> seen_list:</span><br><span class="line">                queue.append(subnode)</span><br><span class="line">                seen_list.append(subnode)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    graph = &#123;</span><br><span class="line">        <span class="string">"A"</span>: [<span class="string">"B"</span>, <span class="string">"C"</span>],</span><br><span class="line">        <span class="string">"B"</span>: [<span class="string">"A"</span>, <span class="string">"C"</span>, <span class="string">"D"</span>],</span><br><span class="line">        <span class="string">"C"</span>: [<span class="string">"A"</span>, <span class="string">"B"</span>, <span class="string">"D"</span>, <span class="string">"E"</span>],</span><br><span class="line">        <span class="string">"D"</span>: [<span class="string">"B"</span>, <span class="string">"C"</span>, <span class="string">"E"</span>, <span class="string">"F"</span>],</span><br><span class="line">        <span class="string">"E"</span>: [<span class="string">"C"</span>, <span class="string">"D"</span>],</span><br><span class="line">        <span class="string">"F"</span>: [<span class="string">"D"</span>]</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    get_DFS_data(graph, <span class="string">"A"</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="3-2-广度优先搜索"><a href="#3-2-广度优先搜索" class="headerlink" title="3.2 广度优先搜索"></a>3.2 广度优先搜索</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> defaultdict</span><br><span class="line"><span class="keyword">from</span> heapq <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_BFS_data</span><span class="params">(graph, start_node)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> len(graph) == <span class="number">0</span>:</span><br><span class="line">        print(<span class="string">"\tGraph error"</span>)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> start_node <span class="keyword">not</span> <span class="keyword">in</span> graph:</span><br><span class="line">        print(<span class="string">"\tStart node is not in graph, start node = "</span>, start_node)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">    queue, seen_list = [], []</span><br><span class="line">    queue.append(start_node)</span><br><span class="line">    seen_list.append(start_node)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (len(queue) &gt; <span class="number">0</span>):</span><br><span class="line">        node = queue.pop(<span class="number">0</span>)</span><br><span class="line">        <span class="keyword">if</span> node <span class="keyword">not</span> <span class="keyword">in</span> graph:</span><br><span class="line">            print(<span class="string">"\tNode is not in graph, node = "</span>, node)</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">        print(<span class="string">"\t"</span>, node)</span><br><span class="line">        subnodes = graph[node]</span><br><span class="line">        <span class="keyword">for</span> subnode <span class="keyword">in</span> subnodes:</span><br><span class="line">            <span class="keyword">if</span> subnode <span class="keyword">not</span> <span class="keyword">in</span> graph:</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> subnode <span class="keyword">not</span> <span class="keyword">in</span> seen_list:</span><br><span class="line">                queue.append(subnode)</span><br><span class="line">                seen_list.append(subnode)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    graph = &#123;</span><br><span class="line">        <span class="string">"A"</span>: [<span class="string">"B"</span>, <span class="string">"C"</span>],</span><br><span class="line">        <span class="string">"B"</span>: [<span class="string">"A"</span>, <span class="string">"C"</span>, <span class="string">"D"</span>],</span><br><span class="line">        <span class="string">"C"</span>: [<span class="string">"A"</span>, <span class="string">"B"</span>, <span class="string">"D"</span>, <span class="string">"E"</span>],</span><br><span class="line">        <span class="string">"D"</span>: [<span class="string">"B"</span>, <span class="string">"C"</span>, <span class="string">"E"</span>, <span class="string">"F"</span>],</span><br><span class="line">        <span class="string">"E"</span>: [<span class="string">"C"</span>, <span class="string">"D"</span>],</span><br><span class="line">        <span class="string">"F"</span>: [<span class="string">"D"</span>]</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    get_BFS_data(graph, <span class="string">'A'</span>)</span><br></pre></td></tr></table></figure>
+<h1 id="4-总结和讨论"><a href="#4-总结和讨论" class="headerlink" title="4. 总结和讨论"></a>4. 总结和讨论</h1><p>BFS和DFS可应用于最短路径问题的求解中。在一棵树中，一个结点到另一个结点的路径是唯一的，但在图中，结点之间可能有多条路径，其中哪条路最近呢？这一类问题称为最短路径问题。在图数据结构中，BFS和DFS从源点出发，一次遍历，直到遍历到目标节点结束，此时就能找到到某个点的最短路径了。</p>
+<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2021-03-10-155355.png" alt="image-20210310235340552" style="zoom:50%;"></p>
+<p>（图片参考：<a href="https://zhuanlan.zhihu.com/p/136183284）" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/136183284）</a></p>
+<h1 id="5-参考"><a href="#5-参考" class="headerlink" title="5. 参考"></a>5. 参考</h1><ul>
+<li><a href="https://developer.aliyun.com/article/756316" target="_blank" rel="noopener">图文详解 DFS 和 BFS | 算法必看系列知识二十四</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/136183284" target="_blank" rel="noopener">BFS 的使用场景：层序遍历、最短路径问题</a></li>
 </ul>
 
       
@@ -472,8 +471,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/10/08/route_planning/路径规划（一）-Dijkstra算法/" rel="next" title="路径规划（一）-Dijkstra算法">
-                <i class="fa fa-chevron-left"></i> 路径规划（一）-Dijkstra算法
+              <a href="/2020/10/15/route_planning/路径规划（四）-双向Dijkstra算法/" rel="next" title="路径规划（四）-双向Dijkstra算法">
+                <i class="fa fa-chevron-left"></i> 路径规划（四）-双向Dijkstra算法
               </a>
             
           </div>
@@ -557,7 +556,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">96</span>
+                  <span class="site-state-item-count">97</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -612,7 +611,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-概述"><span class="nav-text">1. 概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-算法详解"><span class="nav-text">2. 算法详解</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-代码实现"><span class="nav-text">3. 代码实现</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-总结和讨论"><span class="nav-text">4. 总结和讨论</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-参考"><span class="nav-text">5. 参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-概述"><span class="nav-text">1. 概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-算法详解"><span class="nav-text">2. 算法详解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-深度优先搜索"><span class="nav-text">2.1 深度优先搜索</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-广度优先搜索"><span class="nav-text">2.2 广度优先搜索</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-代码实现"><span class="nav-text">3. 代码实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-深度优先搜索"><span class="nav-text">3.1 深度优先搜索</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-广度优先搜索"><span class="nav-text">3.2 广度优先搜索</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-总结和讨论"><span class="nav-text">4. 总结和讨论</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-参考"><span class="nav-text">5. 参考</span></a></li></ol></div>
             
 
           </div>
