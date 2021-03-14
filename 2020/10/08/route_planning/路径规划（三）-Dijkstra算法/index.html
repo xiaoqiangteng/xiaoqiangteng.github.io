@@ -89,7 +89,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2021-03-14-131737.png">
 <meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-10-14-140844.png">
-<meta property="og:updated_time" content="2021-03-14T13:22:20.949Z">
+<meta property="og:updated_time" content="2021-03-14T15:01:26.809Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="路径规划（三）-Dijkstra算法">
 <meta name="twitter:description" content="1. 概述Dijkstra算法是由计算机科学家Edsger W. Dijkstra在1956年提出的，用来寻找图形中节点之间的最短路径。从图中的某个顶点出发到达另外一个顶点的所经过的边的权重和最小的一条路径，称为最短路径。 它的主要特点是以起始点为中心向外层层扩展(广度优先搜索思想)，直到扩展到终点为止。如下图所示，扩展和访问下一个节点最主要考虑累计成本$g(n)$的大小。  核心思想：设G=(V">
@@ -428,7 +428,59 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> defaultdict</span><br><span class="line"><span class="keyword">from</span> heapq <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dijkstra</span><span class="params">(graph_dict, from_node, to_node)</span>:</span></span><br><span class="line">    Shortest_path, cost = [], <span class="number">-1</span></span><br><span class="line">    q, seen = [(<span class="number">0</span>, from_node, ())], set()</span><br><span class="line">    <span class="keyword">while</span> q:</span><br><span class="line">        (cost, v1, path) = heappop(q)</span><br><span class="line">        <span class="keyword">if</span> v1 <span class="keyword">not</span> <span class="keyword">in</span> seen:</span><br><span class="line">            seen.add(v1)</span><br><span class="line">            path = (v1, path)</span><br><span class="line">            <span class="keyword">if</span> v1 == to_node:</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            <span class="keyword">for</span> v2, c <span class="keyword">in</span> graph_dict.get(v1, ()):</span><br><span class="line">                <span class="keyword">if</span> v2 <span class="keyword">not</span> <span class="keyword">in</span> seen:</span><br><span class="line">                    heappush(q, (cost + c, v2, path))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> v1 != to_node:</span><br><span class="line">        cost = <span class="number">-1</span></span><br><span class="line">        Shortest_path = []</span><br><span class="line">        <span class="keyword">return</span> cost, Shortest_path</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        left = path[<span class="number">0</span>]</span><br><span class="line">        Shortest_path.append(left)</span><br><span class="line">        right = path[<span class="number">1</span>]</span><br><span class="line">        <span class="keyword">while</span> len(right) &gt; <span class="number">0</span>:</span><br><span class="line">            left = right[<span class="number">0</span>]</span><br><span class="line">            Shortest_path.append(left)</span><br><span class="line">            right = right[<span class="number">1</span>]</span><br><span class="line">        Shortest_path.reverse()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> cost, Shortest_path</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dijkstra_all</span><span class="params">(graph_dict)</span>:</span></span><br><span class="line">    Shortest_path_dict = defaultdict(dict)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> nodes:</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> nodes:</span><br><span class="line">            <span class="keyword">if</span> i != j:</span><br><span class="line">                cost, Shortest_path = dijkstra(graph_dict, i, j)</span><br><span class="line">                Shortest_path_dict[i][j] = Shortest_path</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> Shortest_path_dict</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    nodes = [<span class="string">'s1'</span>, <span class="string">'s2'</span>, <span class="string">'s3'</span>, <span class="string">'s4'</span>, <span class="string">'s5'</span>, <span class="string">'s6'</span>]</span><br><span class="line">    M = float(<span class="string">"inf"</span>)</span><br><span class="line">    graph_list = [</span><br><span class="line">        [<span class="number">0</span>, <span class="number">30</span>, <span class="number">15</span>, M, M, M],</span><br><span class="line">        [<span class="number">5</span>, <span class="number">0</span>, M, M, <span class="number">20</span>, <span class="number">30</span>],</span><br><span class="line">        [M, <span class="number">10</span>, <span class="number">0</span>, M, M, <span class="number">15</span>],</span><br><span class="line">        [M, M, M, <span class="number">0</span>, M, M],</span><br><span class="line">        [M, M, M, <span class="number">10</span>, <span class="number">0</span>, M],</span><br><span class="line">        [M, M, M, <span class="number">30</span>, <span class="number">10</span>, <span class="number">0</span>]</span><br><span class="line">    ]</span><br><span class="line"></span><br><span class="line">    graph_edges = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> nodes:</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> nodes:</span><br><span class="line">            <span class="keyword">if</span> i != j <span class="keyword">and</span> graph_list[nodes.index(i)][nodes.index(j)] != M:</span><br><span class="line">                graph_edges.append((i, j, graph_list[nodes.index(i)][nodes.index(j)]))</span><br><span class="line"></span><br><span class="line">    graph_dict = defaultdict(list)</span><br><span class="line">    <span class="keyword">for</span> tail, head, cost <span class="keyword">in</span> graph_edges:</span><br><span class="line">        graph_dict[tail].append((head, cost))</span><br><span class="line"></span><br><span class="line">    Shortest_path_dict = dijkstra_all(graph_dict)</span><br><span class="line">    <span class="keyword">for</span> key <span class="keyword">in</span> Shortest_path_dict:</span><br><span class="line">        print(<span class="string">"'%s': %s,"</span> % (key, Shortest_path_dict[key]))</span><br></pre></td></tr></table></figure>
 <p>输出结果如下所示：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Shortest_path_dict = &#123;</span><br><span class="line"><span class="string">'s1'</span>: &#123;<span class="string">'s2'</span>: [<span class="string">'s1'</span>, <span class="string">'s3'</span>, <span class="string">'s2'</span>], <span class="string">'s3'</span>: [<span class="string">'s1'</span>, <span class="string">'s3'</span>], <span class="string">'s4'</span>: [<span class="string">'s1'</span>, <span class="string">'s3'</span>, <span class="string">'s6'</span>, <span class="string">'s5'</span>, <span class="string">'s4'</span>], <span class="string">'s5'</span>: [<span class="string">'s1'</span>, <span class="string">'s3'</span>, <span class="string">'s6'</span>, <span class="string">'s5'</span>], <span class="string">'s6'</span>: [<span class="string">'s1'</span>, <span class="string">'s3'</span>, <span class="string">'s6'</span>]&#125;,</span><br><span class="line"><span class="string">'s2'</span>: &#123;<span class="string">'s1'</span>: [<span class="string">'s2'</span>, <span class="string">'s1'</span>], <span class="string">'s3'</span>: [<span class="string">'s2'</span>, <span class="string">'s1'</span>, <span class="string">'s3'</span>], <span class="string">'s4'</span>: [<span class="string">'s2'</span>, <span class="string">'s5'</span>, <span class="string">'s4'</span>], <span class="string">'s5'</span>: [<span class="string">'s2'</span>, <span class="string">'s5'</span>], <span class="string">'s6'</span>: [<span class="string">'s2'</span>, <span class="string">'s6'</span>]&#125;,</span><br><span class="line"><span class="string">'s3'</span>: &#123;<span class="string">'s1'</span>: [<span class="string">'s3'</span>, <span class="string">'s2'</span>, <span class="string">'s1'</span>], <span class="string">'s2'</span>: [<span class="string">'s3'</span>, <span class="string">'s2'</span>], <span class="string">'s4'</span>: [<span class="string">'s3'</span>, <span class="string">'s6'</span>, <span class="string">'s5'</span>, <span class="string">'s4'</span>], <span class="string">'s5'</span>: [<span class="string">'s3'</span>, <span class="string">'s6'</span>, <span class="string">'s5'</span>], <span class="string">'s6'</span>: [<span class="string">'s3'</span>, <span class="string">'s6'</span>]&#125;,</span><br><span class="line"><span class="string">'s4'</span>: &#123;<span class="string">'s1'</span>: [], <span class="string">'s2'</span>: [], <span class="string">'s3'</span>: [], <span class="string">'s5'</span>: [], <span class="string">'s6'</span>: []&#125;,</span><br><span class="line"><span class="string">'s5'</span>: &#123;<span class="string">'s1'</span>: [], <span class="string">'s2'</span>: [], <span class="string">'s3'</span>: [], <span class="string">'s4'</span>: [<span class="string">'s5'</span>, <span class="string">'s4'</span>], <span class="string">'s6'</span>: []&#125;,</span><br><span class="line"><span class="string">'s6'</span>: &#123;<span class="string">'s1'</span>: [], <span class="string">'s2'</span>: [], <span class="string">'s3'</span>: [], <span class="string">'s4'</span>: [<span class="string">'s6'</span>, <span class="string">'s5'</span>, <span class="string">'s4'</span>], <span class="string">'s5'</span>: [<span class="string">'s6'</span>, <span class="string">'s5'</span>]&#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h1 id="4-参考"><a href="#4-参考" class="headerlink" title="4. 参考"></a>4. 参考</h1><ul>
+<h1 id="4-总结和讨论"><a href="#4-总结和讨论" class="headerlink" title="4. 总结和讨论"></a>4. 总结和讨论</h1><ul>
+<li>优点<ul>
+<li>完备的：只要有解，就能够找到解</li>
+<li>最优的：找到的解是最优的</li>
+</ul>
+</li>
+<li>局限性<ul>
+<li>计算复杂度高：求解的过程中，是按照均匀的向外扩散的，类似于穷举搜索，类似于BFS</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>算法对比</li>
+</ul>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>序号</th>
+<th>算法</th>
+<th>主要思想</th>
+<th>优缺点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>BFS</td>
+<td>按照宽度向外扩展节点</td>
+<td>可以找到最优解，但计算复杂度高</td>
+</tr>
+<tr>
+<td>2</td>
+<td>DFS</td>
+<td>按照深度向外扩展节点</td>
+<td>可以找到最优解，计算复杂度高</td>
+</tr>
+<tr>
+<td>3</td>
+<td>GBFS</td>
+<td>按照宽度以一定朝向扩展节点</td>
+<td>计算复杂度相对较低，但可能无法找到最优解</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Dijkstra</td>
+<td>按照一定宽度以一定成本函数值向外扩展节点</td>
+<td>完备的且最优的，但计算复杂度较高</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h1 id="5-参考"><a href="#5-参考" class="headerlink" title="5. 参考"></a>5. 参考</h1><ul>
 <li><a href="http://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html#dijkstras-algorithm-and-best-first-search" target="_blank" rel="noopener">Introduction to A*</a></li>
 <li><a href="https://houbb.github.io/2020/01/23/data-struct-learn-03-graph-dijkstra" target="_blank" rel="noopener">图最短路径算法之迪杰斯特拉算法（Dijkstra）</a></li>
 </ul>
@@ -614,7 +666,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-概述"><span class="nav-text">1. 概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-算法详解"><span class="nav-text">2. 算法详解</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-代码实现"><span class="nav-text">3. 代码实现</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-参考"><span class="nav-text">4. 参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-概述"><span class="nav-text">1. 概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-算法详解"><span class="nav-text">2. 算法详解</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-代码实现"><span class="nav-text">3. 代码实现</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-总结和讨论"><span class="nav-text">4. 总结和讨论</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-参考"><span class="nav-text">5. 参考</span></a></li></ol></div>
             
 
           </div>
@@ -1151,6 +1203,26 @@
   
 
   
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

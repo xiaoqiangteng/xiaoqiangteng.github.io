@@ -89,7 +89,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2021-03-10-153704.png">
 <meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2021-03-10-155355.png">
-<meta property="og:updated_time" content="2021-03-14T13:22:45.876Z">
+<meta property="og:updated_time" content="2021-03-14T15:01:17.612Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="路径规划（一）-BFS和DFS算法">
 <meta name="twitter:description" content="1. 概述DFS和BFS是两种搜索树和图的基本策略，一种往深处搜，一种往边上搜。 DFS常用于暴力搜索所有状态，BFS常用于搜索到达某一状态的最短路径。广度优先搜索在进一步遍历图中顶点之前，先访问当前顶点的所有邻接结点。深度优先搜索在搜索过程中访问某个顶点后，需要递归地访问此顶点的所有未访问过的相邻顶点。 2. 算法详解2.1 深度优先搜索深度优先搜索策略是递归的访问此顶点的所有未访问过的相邻节点">
@@ -429,6 +429,35 @@
 <h1 id="4-总结和讨论"><a href="#4-总结和讨论" class="headerlink" title="4. 总结和讨论"></a>4. 总结和讨论</h1><p>BFS和DFS可应用于最短路径问题的求解中。在一棵树中，一个结点到另一个结点的路径是唯一的，但在图中，结点之间可能有多条路径，其中哪条路最近呢？这一类问题称为最短路径问题。在图数据结构中，BFS和DFS从源点出发，一次遍历，直到遍历到目标节点结束，此时就能找到到某个点的最短路径了。</p>
 <p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2021-03-10-155355.png" alt="image-20210310235340552" style="zoom:50%;"></p>
 <p>（图片参考：<a href="https://zhuanlan.zhihu.com/p/136183284）" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/136183284）</a></p>
+<ul>
+<li>算法对比</li>
+</ul>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>序号</th>
+<th>算法</th>
+<th>主要思想</th>
+<th>优缺点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>BFS</td>
+<td>按照宽度向外扩展节点</td>
+<td>计算复杂度高</td>
+</tr>
+<tr>
+<td>2</td>
+<td>DFS</td>
+<td>按照深度向外扩展节点</td>
+<td>计算复杂度高</td>
+</tr>
+</tbody>
+</table>
+</div>
 <h1 id="5-参考"><a href="#5-参考" class="headerlink" title="5. 参考"></a>5. 参考</h1><ul>
 <li><a href="https://developer.aliyun.com/article/756316" target="_blank" rel="noopener">图文详解 DFS 和 BFS | 算法必看系列知识二十四</a></li>
 <li><a href="https://zhuanlan.zhihu.com/p/136183284" target="_blank" rel="noopener">BFS 的使用场景：层序遍历、最短路径问题</a></li>
@@ -1152,6 +1181,26 @@
   
 
   
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

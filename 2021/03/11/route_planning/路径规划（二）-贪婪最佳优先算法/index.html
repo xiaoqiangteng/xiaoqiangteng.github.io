@@ -88,7 +88,7 @@
 <meta property="og:description" content="1. 概述本小节介绍基于启发式的搜索算法。前文我们介绍了BFS和DFS，他们的区别主要在于节点的弹出策略，根据弹出策略的区别，分别使用了队列和栈两种数据结构，而栈和队列作为两种相当基本的容器，只将节点进入容器的顺序作为弹出节点的依据，并未考虑目标位置等因素，这就使搜索过程变得漫无目的，导致效率低下。 启发式搜索算法 (Heuristic Algorithm) 就是用来解决搜索效率问题的。一个Heu">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2021-03-11-155024.png">
-<meta property="og:updated_time" content="2021-03-14T13:24:31.109Z">
+<meta property="og:updated_time" content="2021-03-14T15:01:30.628Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="路径规划（二）-贪婪最佳优先算法">
 <meta name="twitter:description" content="1. 概述本小节介绍基于启发式的搜索算法。前文我们介绍了BFS和DFS，他们的区别主要在于节点的弹出策略，根据弹出策略的区别，分别使用了队列和栈两种数据结构，而栈和队列作为两种相当基本的容器，只将节点进入容器的顺序作为弹出节点的依据，并未考虑目标位置等因素，这就使搜索过程变得漫无目的，导致效率低下。 启发式搜索算法 (Heuristic Algorithm) 就是用来解决搜索效率问题的。一个Heu">
@@ -442,6 +442,41 @@
 </ul>
 </li>
 </ul>
+<ul>
+<li>算法对比</li>
+</ul>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>序号</th>
+<th>算法</th>
+<th>主要思想</th>
+<th>优缺点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>BFS</td>
+<td>按照宽度向外扩展节点</td>
+<td>可以找到最优解，但计算复杂度高</td>
+</tr>
+<tr>
+<td>2</td>
+<td>DFS</td>
+<td>按照深度向外扩展节点</td>
+<td>可以找到最优解，计算复杂度高</td>
+</tr>
+<tr>
+<td>3</td>
+<td>GBFS</td>
+<td>按照宽度以一定朝向扩展节点</td>
+<td>计算复杂度相对较低，但可能无法找到最优解</td>
+</tr>
+</tbody>
+</table>
+</div>
 <h1 id="5-参考"><a href="#5-参考" class="headerlink" title="5. 参考"></a>5. 参考</h1><ul>
 <li><a href="https://zhuanlan.zhihu.com/p/346666812" target="_blank" rel="noopener">路径规划 | 图搜索算法：DFS、BFS、GBFS、Dijkstra、A*</a></li>
 <li><a href="https://zhuanlan.zhihu.com/p/110686645" target="_blank" rel="noopener">搜索算法(1)——启发式搜索1(GBFS)</a></li>
@@ -1161,6 +1196,26 @@
   
 
   
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

@@ -89,7 +89,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-10-15-144324.png">
 <meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-10-15-144401.png">
-<meta property="og:updated_time" content="2021-03-14T13:22:25.144Z">
+<meta property="og:updated_time" content="2021-03-14T15:01:22.189Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="路径规划（四）-双向Dijkstra算法">
 <meta name="twitter:description" content="1. 概述Dijkstra算法是一种单向的最短路径算法，其搜索范围如下图所示。  有研究者就提出了一种优化方法，即双向Dijkstra算法。其主要思想就是从起点和终点同时开始搜索，这样应该能够提升算法效率。事实证明，在大部分情况下，双向Dijkstra算法还是要优于单向的Dijkstra算法，其搜索范围如下图所示。  2. 算法详解 主要思想 分别从路径搜索的起点s和路径搜索的终点t同时执行前向的">
@@ -1153,6 +1153,26 @@
   
 
   
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 
