@@ -79,20 +79,21 @@
 
 
 
-<meta name="description" content="1. 概述Dijkstra算法是由计算机科学家Edsger W. Dijkstra在1956年提出的，用来寻找图形中节点之间的最短路径。从图中的某个顶点出发到达另外一个顶点的所经过的边的权重和最小的一条路径，称为最短路径。 它的主要特点是以起始点为中心向外层层扩展(广度优先搜索思想)，直到扩展到终点为止。 核心思想：设G=(V,E)是一个带权有向图，把图中顶点集合V分成两组，第一组为已求出最短路径">
+<meta name="description" content="1. 概述Dijkstra算法是由计算机科学家Edsger W. Dijkstra在1956年提出的，用来寻找图形中节点之间的最短路径。从图中的某个顶点出发到达另外一个顶点的所经过的边的权重和最小的一条路径，称为最短路径。 它的主要特点是以起始点为中心向外层层扩展(广度优先搜索思想)，直到扩展到终点为止。如下图所示，扩展和访问下一个节点最主要考虑累计成本$g(n)$的大小。  核心思想：设G=(V">
 <meta name="keywords" content="理论,路径规划">
 <meta property="og:type" content="article">
 <meta property="og:title" content="路径规划（一）-Dijkstra算法">
 <meta property="og:url" content="http://yoursite.com/2020/10/08/route_planning/路径规划（一）-Dijkstra算法/index.html">
 <meta property="og:site_name" content="学步">
-<meta property="og:description" content="1. 概述Dijkstra算法是由计算机科学家Edsger W. Dijkstra在1956年提出的，用来寻找图形中节点之间的最短路径。从图中的某个顶点出发到达另外一个顶点的所经过的边的权重和最小的一条路径，称为最短路径。 它的主要特点是以起始点为中心向外层层扩展(广度优先搜索思想)，直到扩展到终点为止。 核心思想：设G=(V,E)是一个带权有向图，把图中顶点集合V分成两组，第一组为已求出最短路径">
+<meta property="og:description" content="1. 概述Dijkstra算法是由计算机科学家Edsger W. Dijkstra在1956年提出的，用来寻找图形中节点之间的最短路径。从图中的某个顶点出发到达另外一个顶点的所经过的边的权重和最小的一条路径，称为最短路径。 它的主要特点是以起始点为中心向外层层扩展(广度优先搜索思想)，直到扩展到终点为止。如下图所示，扩展和访问下一个节点最主要考虑累计成本$g(n)$的大小。  核心思想：设G=(V">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2021-03-14-131737.png">
 <meta property="og:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-10-14-140844.png">
-<meta property="og:updated_time" content="2020-10-14T14:14:45.801Z">
+<meta property="og:updated_time" content="2021-03-14T13:18:51.298Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="路径规划（一）-Dijkstra算法">
-<meta name="twitter:description" content="1. 概述Dijkstra算法是由计算机科学家Edsger W. Dijkstra在1956年提出的，用来寻找图形中节点之间的最短路径。从图中的某个顶点出发到达另外一个顶点的所经过的边的权重和最小的一条路径，称为最短路径。 它的主要特点是以起始点为中心向外层层扩展(广度优先搜索思想)，直到扩展到终点为止。 核心思想：设G=(V,E)是一个带权有向图，把图中顶点集合V分成两组，第一组为已求出最短路径">
-<meta name="twitter:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-10-14-140844.png">
+<meta name="twitter:description" content="1. 概述Dijkstra算法是由计算机科学家Edsger W. Dijkstra在1956年提出的，用来寻找图形中节点之间的最短路径。从图中的某个顶点出发到达另外一个顶点的所经过的边的权重和最小的一条路径，称为最短路径。 它的主要特点是以起始点为中心向外层层扩展(广度优先搜索思想)，直到扩展到终点为止。如下图所示，扩展和访问下一个节点最主要考虑累计成本$g(n)$的大小。  核心思想：设G=(V">
+<meta name="twitter:image" content="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2021-03-14-131737.png">
 
 
 
@@ -410,7 +411,8 @@
 
       
         <h1 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h1><p>Dijkstra算法是由计算机科学家Edsger W. Dijkstra在1956年提出的，用来寻找图形中节点之间的最短路径。从图中的某个顶点出发到达另外一个顶点的所经过的边的权重和最小的一条路径，称为最短路径。</p>
-<p>它的主要特点是以起始点为中心向外层层扩展(广度优先搜索思想)，直到扩展到终点为止。</p>
+<p>它的主要特点是以起始点为中心向外层层扩展(广度优先搜索思想)，直到扩展到终点为止。如下图所示，扩展和访问下一个节点最主要考虑累计成本$g(n)$的大小。</p>
+<p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2021-03-14-131737.png" alt="image-20210314211737154" style="zoom:50%;"></p>
 <p>核心思想：设G=(V,E)是一个带权有向图，把图中顶点集合V分成两组，第一组为已求出最短路径的顶点集合（用S表示，初始时S中只有一个源点，以后每求得一条最短路径 , 就将加入到集合S中，直到全部顶点都加入到S中，算法就结束了），第二组为其余未确定最短路径的顶点集合（用U表示），按最短路径长度的递增次序依次把第二组的顶点加入S中。在加入的过程中，总保持从源点v到S中各顶点的最短路径长度不大于从源点v到U中任何顶点的最短路径长度。此外，每个顶点对应一个距离，S中的顶点的距离就是从v到此顶点的最短路径长度，U中的顶点的距离，是从v到此顶点只包括S中的顶点为中间顶点的当前最短路径长度。</p>
 <h1 id="2-算法详解"><a href="#2-算法详解" class="headerlink" title="2. 算法详解"></a>2. 算法详解</h1><p>给定一个有权图，如下图所示：</p>
 <p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2020-10-14-140844.png" alt="image-20201014220830574" style="zoom:50%;"></p>
