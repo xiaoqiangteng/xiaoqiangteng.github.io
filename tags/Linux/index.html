@@ -82,7 +82,7 @@
 <meta name="description" content="Remember what should be remembered, and forget what should be forgotten.Alter what is changeable, and accept what is mutable.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="学步">
-<meta property="og:url" content="http://yoursite.com/tags/linux/index.html">
+<meta property="og:url" content="http://yoursite.com/tags/Linux/index.html">
 <meta property="og:site_name" content="学步">
 <meta property="og:description" content="Remember what should be remembered, and forget what should be forgotten.Alter what is changeable, and accept what is mutable.">
 <meta property="og:locale" content="zh-CN">
@@ -118,13 +118,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/tags/linux/">
+  <link rel="canonical" href="http://yoursite.com/tags/Linux/">
 
 
 
 
 
-  <title>标签: linux | 学步</title>
+  <title>标签: Linux | 学步</title>
   
 
 
@@ -296,7 +296,7 @@
 
     <div id="posts" class="posts-collapse">
       <div class="collection-title">
-        <h1>linux<small>标签</small>
+        <h1>Linux<small>标签</small>
         </h1>
       </div>
 
@@ -308,17 +308,121 @@
 
       <h2 class="post-title">
         
-            <a class="post-title-link" href="/2019/02/15/programmings/linux/linux-grep教程/" itemprop="url">
+            <a class="post-title-link" href="/2019/12/06/programmings/linux/Linux实战技能（三）-系统管理/" itemprop="url">
               
-                <span itemprop="name">linux-grep教程</span>
+                <span itemprop="name">Linux实战技能（三）-系统管理</span>
               
             </a>
         
       </h2>
 
       <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-02-15T08:31:32+08:00" content="2019-02-15">
-          02-15
+        <time class="post-time" itemprop="dateCreated" datetime="2019-12-06T20:17:46+08:00" content="2019-12-06">
+          12-06
+        </time>
+      </div>
+
+    </header>
+  </article>
+
+
+      
+        
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <h2 class="post-title">
+        
+            <a class="post-title-link" href="/2019/11/27/programmings/linux/Linux实战技能（二）-常用命令/" itemprop="url">
+              
+                <span itemprop="name">Linux实战技能（二）-常用命令</span>
+              
+            </a>
+        
+      </h2>
+
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated" datetime="2019-11-27T00:59:28+08:00" content="2019-11-27">
+          11-27
+        </time>
+      </div>
+
+    </header>
+  </article>
+
+
+      
+        
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <h2 class="post-title">
+        
+            <a class="post-title-link" href="/2018/04/08/machine_learning/linux-深度学习环境配置-Centos/" itemprop="url">
+              
+                <span itemprop="name">linux-深度学习环境配置-Centos</span>
+              
+            </a>
+        
+      </h2>
+
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated" datetime="2018-04-08T20:57:33+08:00" content="2018-04-08">
+          04-08
+        </time>
+      </div>
+
+    </header>
+  </article>
+
+
+      
+        
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <h2 class="post-title">
+        
+            <a class="post-title-link" href="/2018/03/31/machine_learning/linux-深度学习环境配置-Ubuntu/" itemprop="url">
+              
+                <span itemprop="name">linux-深度学习环境配置-Ubuntu</span>
+              
+            </a>
+        
+      </h2>
+
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated" datetime="2018-03-31T21:17:38+08:00" content="2018-03-31">
+          03-31
+        </time>
+      </div>
+
+    </header>
+  </article>
+
+
+      
+        
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <h2 class="post-title">
+        
+            <a class="post-title-link" href="/2018/03/25/programmings/linux/linux入门教程/" itemprop="url">
+              
+                <span itemprop="name">linux入门教程</span>
+              
+            </a>
+        
+      </h2>
+
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated" datetime="2018-03-25T15:44:04+08:00" content="2018-03-25">
+          03-25
         </time>
       </div>
 
@@ -876,110 +980,6 @@
               resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
             } else {
               resultItems.sort(function (resultLeft, resultRight) {
-                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
-                  return resultRight.searchTextCount - resultLeft.searchTextCount;
-                } else if (resultLeft.hitCount !== resultRight.hitCount) {
-                  return resultRight.hitCount - resultLeft.hitCount;
-                } else {
-                  return resultRight.id - resultLeft.id;
-                }
-              });
-              var searchResultList = '<ul class=\"search-result-list\">';
-              resultItems.forEach(function (result) {
-                searchResultList += result.item;
-              })
-              searchResultList += "</ul>";
-              resultContent.innerHTML = searchResultList;
-            }
-          }
-
-          if ('auto' === 'auto') {
-            input.addEventListener('input', inputEventFunction);
-          } else {
-            $('.search-icon').click(inputEventFunction);
-            input.addEventListener('keypress', function (event) {
-              if (event.keyCode === 13) {
-                inputEventFunction();
-              }
-            });
-          }
-
-          // remove loading animation
-          $(".local-search-pop-overlay").remove();
-          $('body').css('overflow', '');
-
-          proceedsearch();
-        }
-      });
-    }
-
-    // handle and trigger popup window;
-    $('.popup-trigger').click(function(e) {
-      e.stopPropagation();
-      if (isfetched === false) {
-        searchFunc(path, 'local-search-input', 'local-search-result');
-      } else {
-        proceedsearch();
-      };
-    });
-
-    $('.popup-btn-close').click(onPopupClose);
-    $('.popup').click(function(e){
-      e.stopPropagation();
-    });
-    $(document).on('keyup', function (event) {
-      var shouldDismissSearchPopup = event.which === 27 &&
-        $('.search-popup').is(':visible');
-      if (shouldDismissSearchPopup) {
-        onPopupClose();
-      }
-    });
-  </script>
-
-
-
-
-
-  
-
-  
-
-  
-
-  
-  
-
-  
-  
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Config({
-        tex2jax: {
-          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
-          processEscapes: true,
-          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-        }
-      });
-    </script>
-
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for (i=0; i < all.length; i += 1) {
-          all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-      });
-    </script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-  
-
-
-  
-
-  
-
-</body>
-</html>
-Items.sort(function (resultLeft, resultRight) {
                 if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
                   return resultRight.searchTextCount - resultLeft.searchTextCount;
                 } else if (resultLeft.hitCount !== resultRight.hitCount) {
