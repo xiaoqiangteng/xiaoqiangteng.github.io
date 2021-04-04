@@ -4,6 +4,35 @@
   
     
     <entry>
+      <title>空间数据结构（二）-OCTree</title>
+      <link href="/2021/04/04/data_structure_algorithm/%E7%A9%BA%E9%97%B4%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%88%E4%BA%8C%EF%BC%89-OCTree/"/>
+      <url>/2021/04/04/data_structure_algorithm/%E7%A9%BA%E9%97%B4%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%88%E4%BA%8C%EF%BC%89-OCTree/</url>
+      
+        <content type="html"><![CDATA[<h1 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h1><p>八叉树结构是由Hunter博士于1978年首次提出的一种数据模型。八叉树结构通过对三维空间的几何实体进行体元剖分，每个体元具有相同的时间和空间复杂度，通过循环递归的划分方法对大小为(2n∗2n∗2n的三维空间的几何对象进行剖分，从而构成一个具有根节点的方向图。在八叉树结构中如果被划分的体元具有相同的属性，则该体元构成一个叶节点；否则继续对该体元剖分成8个子立方体，依次递剖分，对于(2n∗2n∗2n)大小的空间对象，最多剖分n次，如下图所示：</p><p><img src="https://toddler.oss-cn-hongkong.aliyuncs.com/images/2021-04-04-093038.png" alt="image-20210404173029797" style="zoom:50%;"></p><p>八叉树（Octree）是一种用于描述三维空间的树状数据结构。八叉树的每个节点表示一个正方体的体积元素，每个节点有八个子节点，这八个子节点所表示的体积元素加在一起就等于父节点的体积。一般中心点作为节点的分叉中心。八叉树若不为空树的话，树中任一节点的子节点恰好只会有八个，或零个，也就是子节点不会有0与8以外的数目。八叉树叶子节点代表了分辨率最高的情况。例如分辨率设成0.01m，那么每个叶子就是一个1cm见方的小方块。</p><h1 id="2-算法详解"><a href="#2-算法详解" class="headerlink" title="2. 算法详解"></a>2. 算法详解</h1><p>八叉树是将空间平均得分为8个部分，每个节点就是一个部分，我们假设三维空间是一个正立方体，每个节点就是一个小立方体。划分到最后，一个叶子结点代表一个最小的空间范围，我们称之为体素。八叉树的建立过程也就是空间划分的过程。</p><p>实现原理：</p><ul><li>设定最大递归深度</li><li>找出场景的最大尺寸，并以此尺寸建立第一个立方体</li><li>依序将单位元元素丢入能被包含且没有子节点的立方体</li><li>若没有达到最大递归深度，就进行细分八等份，再将该立方体所装的单位元元素全部分担给八个子立方体</li><li>若发现子立方体所分配到的单位元元素数量不为零且跟父立方体是一样的，则该子立方体停止细分，因为跟据空间分割理论，细分的空间所得到的分配必定较少，若是一样数目，则再怎么切数目还是一样，会造成无穷切割的情形。</li><li>重复，直到达到最大递归深度。</li></ul><p>基于八叉树的近邻搜索可以分为三种：</p><ul><li>范围搜索</li><li>k最近邻搜索</li><li>体素内搜索</li></ul><h1 id="3-代码实现"><a href="#3-代码实现" class="headerlink" title="3. 代码实现"></a>3. 代码实现</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">from</span> random <span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">from</span> math <span class="keyword">import</span> sqrt</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Point3D</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">"""A point in 3 dimensions"""</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, x, y, z, data=None)</span>:</span></span><br><span class="line">        self.x = x</span><br><span class="line">        self.y = y</span><br><span class="line">        self.z = z</span><br><span class="line">        self.data = data</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__add__</span><span class="params">(self, point)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> Point3D(self.x + point.x, self.y + point.y, self.z + point.z)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__sub__</span><span class="params">(self, point)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> Point3D(self.x - point.x, self.y - point.y, self.z - point.z)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__mul__</span><span class="params">(self, value)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> type(value) == tuple:</span><br><span class="line">            <span class="keyword">return</span> Point3D(self.x * value[<span class="number">0</span>], self.y * value[<span class="number">1</span>], self.z * value[<span class="number">2</span>])</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> Point3D(self.x * value, self.y * value, self.z * value)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__truediv__</span><span class="params">(self, value)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> type(value) == Point3D:</span><br><span class="line">            <span class="keyword">raise</span> NotImplementedError()</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> Point3D(self.x / value, self.y / value, self.z / value)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__repr__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="string">'Return a nicely formatted representation string'</span></span><br><span class="line">        <span class="keyword">return</span> self.__class__.__name__ + <span class="string">'(x='</span>+str(self.x)+<span class="string">', y='</span>+str(self.y)+<span class="string">', z='</span>+str(self.z)+<span class="string">')'</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">dist</span><span class="params">(self, point)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> sqrt(self.x**<span class="number">2</span> + self.y**<span class="number">2</span> + self.z**<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index2mask</span><span class="params">(idx: int)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> (idx &amp; <span class="number">1</span>, (idx &gt;&gt; <span class="number">1</span>) &amp; <span class="number">1</span>, (idx &gt;&gt; <span class="number">2</span>) &amp; <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">mask2index</span><span class="params">(idx: tuple)</span>:</span></span><br><span class="line">    x, y, z = [int(bool(idx[i])) <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">3</span>)]</span><br><span class="line">    <span class="keyword">return</span> (z &lt;&lt; <span class="number">2</span>) + (y &lt;&lt; <span class="number">1</span>) + x</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">invMask</span><span class="params">(mask: tuple)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> tuple([mask[i] ^ <span class="number">1</span> <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">3</span>)])</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Octree</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">"""Representation of a Node in the Octree."""</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, lower_bound: Point3D, upper_bound: Point3D, max_levels=<span class="number">-1</span>, max_size=<span class="number">10</span>)</span>:</span></span><br><span class="line">        self.has_children = <span class="keyword">False</span></span><br><span class="line">        self.children: Octree = []</span><br><span class="line">        self.points: Point3D = []</span><br><span class="line">        self.lower_bound = lower_bound</span><br><span class="line">        self.upper_bound = upper_bound</span><br><span class="line">        self.max_levels = max_levels</span><br><span class="line">        self.max_size = max_size</span><br><span class="line">        self.center = (lower_bound + upper_bound) / <span class="number">2</span></span><br><span class="line">        self.numPoints = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">extend</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> (self.max_levels == <span class="number">0</span>):</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.has_children = <span class="keyword">True</span></span><br><span class="line">            self.children = list([self._generateChildTree(idx) <span class="keyword">for</span> idx <span class="keyword">in</span> range(<span class="number">8</span>)])</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_generateChildTree</span><span class="params">(self, idx)</span>:</span></span><br><span class="line">        mask = index2mask(idx)</span><br><span class="line">        imask = invMask(mask)</span><br><span class="line">        new_lower_bound = self.lower_bound * imask + self.center * mask</span><br><span class="line">        new_upper_bound = self.center * imask + self.upper_bound * mask</span><br><span class="line">        <span class="keyword">return</span> Octree(new_lower_bound, new_upper_bound, self.max_levels - <span class="number">1</span>, self.max_size)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">addPoint</span><span class="params">(self, pt: Point3D)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> self.has_children:</span><br><span class="line">            self._addPointToChild(pt)</span><br><span class="line">        <span class="keyword">elif</span> len(self.points) &gt;= self.max_size:</span><br><span class="line">            self.extend()</span><br><span class="line">            <span class="keyword">for</span> point <span class="keyword">in</span> self.points:</span><br><span class="line">                self._addPointToChild(point)</span><br><span class="line">            self._addPointToChild(pt)</span><br><span class="line">            self.points = []</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.points.append(pt)</span><br><span class="line">        self.numPoints += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_addPointToChild</span><span class="params">(self, pt: Point3D)</span>:</span></span><br><span class="line">        x = int(pt.x &gt;= self.center.x)</span><br><span class="line">        y = int(pt.y &gt;= self.center.y)</span><br><span class="line">        z = int(pt.z &gt;= self.center.z)</span><br><span class="line">        self.children[mask2index((x, y, z))].addPoint(pt)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    ot = Octree(Point3D(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>), Point3D(<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">20</span>):</span><br><span class="line">        x, y, z = random(), random(), random()</span><br><span class="line">        ot.addPoint(Point3D(x, y, z))</span><br></pre></td></tr></table></figure><p>参考：<a href="https://github.com/LukasACH/Octree-Py/blob/master/Octree/Octree.py" target="_blank" rel="noopener">https://github.com/LukasACH/Octree-Py/blob/master/Octree/Octree.py</a></p><h1 id="4-总结和讨论"><a href="#4-总结和讨论" class="headerlink" title="4. 总结和讨论"></a>4. 总结和讨论</h1><h1 id="5-参考"><a href="#5-参考" class="headerlink" title="5. 参考"></a>5. 参考</h1><ul><li><a href="https://github.com/LukasACH/Octree-Py" target="_blank" rel="noopener">Octree-Py</a></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 编程 </category>
+          
+          <category> 数据结构 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 编程 </tag>
+            
+            <tag> 数据结构 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>空间数据结构（一）-KD-Tree</title>
       <link href="/2021/04/03/data_structure_algorithm/%E7%A9%BA%E9%97%B4%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%88%E4%B8%80%EF%BC%89-KD-Tree/"/>
       <url>/2021/04/03/data_structure_algorithm/%E7%A9%BA%E9%97%B4%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%88%E4%B8%80%EF%BC%89-KD-Tree/</url>
@@ -428,9 +457,9 @@
       
         <tags>
             
-            <tag> 理论 </tag>
-            
             <tag> 深度学习 </tag>
+            
+            <tag> 理论 </tag>
             
         </tags>
       
@@ -515,9 +544,9 @@
       
         <tags>
             
-            <tag> 理论 </tag>
-            
             <tag> 深度学习 </tag>
+            
+            <tag> 理论 </tag>
             
         </tags>
       
@@ -2639,9 +2668,9 @@
             
             <tag> 编程 </tag>
             
-            <tag> 环境配置 </tag>
-            
             <tag> Linux </tag>
+            
+            <tag> 环境配置 </tag>
             
         </tags>
       
@@ -2763,9 +2792,9 @@
             
             <tag> 编程 </tag>
             
-            <tag> 环境配置 </tag>
-            
             <tag> Linux </tag>
+            
+            <tag> 环境配置 </tag>
             
         </tags>
       
@@ -2829,9 +2858,9 @@
             
             <tag> 编程 </tag>
             
-            <tag> 环境配置 </tag>
-            
             <tag> 深度学习 </tag>
+            
+            <tag> 环境配置 </tag>
             
         </tags>
       
