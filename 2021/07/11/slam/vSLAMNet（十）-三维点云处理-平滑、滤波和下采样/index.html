@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="理论,三维点云处理,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="1. 概述点云是某个坐标系下的点的数据集。点包含了丰富的信息，包括三维坐标 X，Y，Z、颜色、分类值、强度值、时间等等。点云在组成特点上分为两种，一种是有序点云，一种是无序点云：  有序点云：一般由深度图还原的点云，有序点云按照图方阵一行一行的，从左上角到右下角排列，当然其中有一些无效点因为。有序点云按顺序排列，可以很容易的找到它的相邻点信息。有序点云在某些处理的时候还是很便利的，但是很多情况下是">
+<meta name="keywords" content="理论,三维点云处理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vSLAMNet（十）-三维点云处理-平滑、滤波和下采样">
+<meta property="og:url" content="http://yoursite.com/2021/07/11/slam/vSLAMNet（十）-三维点云处理-平滑、滤波和下采样/index.html">
+<meta property="og:site_name" content="学步">
+<meta property="og:description" content="1. 概述点云是某个坐标系下的点的数据集。点包含了丰富的信息，包括三维坐标 X，Y，Z、颜色、分类值、强度值、时间等等。点云在组成特点上分为两种，一种是有序点云，一种是无序点云：  有序点云：一般由深度图还原的点云，有序点云按照图方阵一行一行的，从左上角到右下角排列，当然其中有一些无效点因为。有序点云按顺序排列，可以很容易的找到它的相邻点信息。有序点云在某些处理的时候还是很便利的，但是很多情况下是">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://yoursite.com/Users/xiaoqiangteng/Library/Application%20Support/typora-user-images/image-20210711131411119.png">
+<meta property="og:image" content="http://yoursite.com/Users/xiaoqiangteng/Library/Application%20Support/typora-user-images/image-20210711135410069.png">
+<meta property="og:image" content="http://yoursite.com/Users/xiaoqiangteng/Library/Application%20Support/typora-user-images/image-20210711140553913.png">
+<meta property="og:image" content="http://yoursite.com/Users/xiaoqiangteng/Library/Application%20Support/typora-user-images/image-20210711154414444.png">
+<meta property="og:updated_time" content="2021-07-11T08:05:11.711Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="vSLAMNet（十）-三维点云处理-平滑、滤波和下采样">
+<meta name="twitter:description" content="1. 概述点云是某个坐标系下的点的数据集。点包含了丰富的信息，包括三维坐标 X，Y，Z、颜色、分类值、强度值、时间等等。点云在组成特点上分为两种，一种是有序点云，一种是无序点云：  有序点云：一般由深度图还原的点云，有序点云按照图方阵一行一行的，从左上角到右下角排列，当然其中有一些无效点因为。有序点云按顺序排列，可以很容易的找到它的相邻点信息。有序点云在某些处理的时候还是很便利的，但是很多情况下是">
+<meta name="twitter:image" content="http://yoursite.com/Users/xiaoqiangteng/Library/Application%20Support/typora-user-images/image-20210711131411119.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2021/07/11/slam/vSLAMNet（十）-三维点云处理-平滑、滤波和下采样/">
+
+
+
+
+
+  <title>vSLAMNet（十）-三维点云处理-平滑、滤波和下采样 | 学步</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">学步</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-编程">
+          <a href="/categories/programming" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            编程
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-学术">
+          <a href="/categories/science" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            学术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-理论">
+          <a href="/categories/theory" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            理论
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-其他">
+          <a href="/categories/other" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            其他
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+    
+  
+  
+
+  <article class="post post-type-normal true" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/07/11/slam/vSLAMNet（十）-三维点云处理-平滑、滤波和下采样/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Xiaoqiang Teng">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="学步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">vSLAMNet（十）-三维点云处理-平滑、滤波和下采样</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-07-11T12:53:01+08:00">
+                2021-07-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/theory/" itemprop="url" rel="index">
+                    <span itemprop="name">理论</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/theory/三维点云处理/" itemprop="url" rel="index">
+                    <span itemprop="name">三维点云处理</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h1><p>点云是某个坐标系下的点的数据集。点包含了丰富的信息，包括三维坐标 X，Y，Z、颜色、分类值、强度值、时间等等。点云在组成特点上分为两种，一种是有序点云，一种是无序点云：</p>
+<ul>
+<li>有序点云：一般由深度图还原的点云，有序点云按照图方阵一行一行的，从左上角到右下角排列，当然其中有一些无效点因为。有序点云按顺序排列，可以很容易的找到它的相邻点信息。有序点云在某些处理的时候还是很便利的，但是很多情况下是无法获取有序点云的</li>
+<li>无序点云：无序点云就是其中的点的集合，点排列之间没有任何顺序，点的顺序交换后没有任何影响。是比较普遍的点云形式，有序点云也可看做无序点云来处理</li>
+</ul>
+<p>点云不是通过普通的相机拍摄得到的，一般是通过三维成像传感器获得，比如双目相机、三维扫描仪、RGB-D 相机等。目前主流的 RGB-D 相机有微软的 Kinect 系列、Intel 的 realsense 系列、structure sensor（需结合 iPad 使用）等。点云可通过扫描的 RGB-D 图像，以及扫描相机的内在参数创建点云，方法是通过相机校准，使用相机内在参数计算真实世界的点（x，y）。因此，RGB-D 图像是网格对齐的图像，而点云则是更稀疏的结构。此外，获得点云的较好方法还包括 LiDAR 激光探测与测量，主要通过星载、机载和地面三种方式获取。</p>
+<p>点云的属性包括：</p>
+<ul>
+<li>空间分辨率、点位精度、表面法向量等</li>
+<li>点云可以表达物体的空间轮廓和具体位置，我们能看到街道、房屋的形状，物体距离摄像机的距离也是可知的；其次，点云本身和视角无关，可以任意旋转，从不同角度和方向观察一个点云，而且不同的点云只要在同一个坐标系下就可以直接融合</li>
+</ul>
+<p>存储格式：</p>
+<ul>
+<li>PTS点云文件格式是最简便的点云格式，直接按XYZ顺序存储点云数据， 可以是整型或者浮点型</li>
+<li>LAS是激光雷达数据（LiDAR），存储格式比 pts 复杂，旨在提供一种开放的格式标准，允许不同的硬件和软件提供商输出可互操作的统一格式。LAS 格式点云截图，其中 C：class(所属类)，F：flight(航线号)，T：time(GPS 时间)，I：intensity(回波强度)，R：return(第几次回波)，N：number of return(回波次数)，A：scan angle(扫描角)，RGB：red green blue(RGB 颜色值)</li>
+<li>PCD存储格式，现有的文件结构因本身组成的原因不支持由 PCL 库（后文会进行介绍）引进 n 维点类型机制处理过程中的某些扩展，而 PCD 文件格式能够很好地补足这一点。PCD 格式具有文件头，用于描绘点云的整体信息：定义数字的可读头、尺寸、点云的维数和数据类型；一种数据段，可以是 ASCII 码或二进制码。数据本体部分由点的笛卡尔坐标构成，文本模式下以空格做分隔符</li>
+<li>XYZ一种文本格式，前面 3 个数字表示点坐标，后面 3 个数字是点的法向量，数字间以空格分隔</li>
+<li>PCAB是一种通用的数据流格式，现在流行的Velodyne公司出品的激光雷达默认采集数据文件格式，是一种二进制文件</li>
+<li>OBJ是一种文本文件，通常用以“#”开头的注释行作为文件头，数据部分每一行的开头关键字代表该行数据所表示的几何和模型元素，以空格做数据分隔符</li>
+</ul>
+<p>基础算法库:</p>
+<ul>
+<li>PCL（Point Cloud Library）库支持跨平台存储，可以在Windows、Linux、macOS、iOS、Android上部署。可应用于计算资源有限或者内存有限的应用场景，是一个大型跨平台开源C++编程库，它实现了大量点云相关的通用算法和高效数据结构，其基于以下第三方库：Boost、Eigen、FLANN、VTK、CUDA、OpenNI、Qhull，实现点云相关的获取、滤波、分割、配准、检索、特征提取、识别、追踪、曲面重建、可视化等操作，非常方便移动端开发</li>
+<li>VCG 库（Visulization and Computer Graphics Libary）是专门为处理三角网格而设计的，该库很大，且提供了许多先进的处理网格的功能，以及比较少的点云处理功能</li>
+<li>CGAL（Computational Geometry Algorithms Library）计算几何算法库，设计目标是以C++库的形式，提供方便、高效、可靠的几何算法，其实现了很多处理点云以及处</li>
+<li>Open3D是一个可以支持3D数据处理软件快速开发的开源库。支持快速开发处理3D数据的软件。Open3D前端在C++和Python中公开了一组精心选择的数据结构和算法。后端经过高度优化，并设置为并行化。Open3D是从一开始就开发出来的，带有很少的、经过仔细考虑的依赖项。它可以在不同的平台上设置，并且可以从源代码进行最小的编译。代码干净，样式一致，并通过清晰的代码审查机制进行维护。在点云、网格、RGBD数据上都有支持</li>
+</ul>
+<p>点云法向量：</p>
+<ul>
+<li><p>法向量是点云中各点的重要属性之一。众多点云算法的实施都基于精确的法向量估计，例如许多表面重建算法、点云分割算法、点云去噪算法以及特征描述算法等</p>
+</li>
+<li><p>由空间变换可知，点云中每一点的法向量夹角及曲率值均不随物体的运动而改变，具有刚体运动不变性</p>
+</li>
+<li><p>点云法向量求解需要其邻域内点支持，而邻域的大小一般由邻域半径值或临近点个数来表示。现实中需要根据点分别率、物体细节精细程度和用途等因素来取值。过大的邻域会抹平三维结构细节使得法向量过于粗糙，而过小的邻域由于包含了太少的点受噪声干扰程度较强</p>
+</li>
+<li><p>点云法向量计算方法</p>
+<ul>
+<li><p>选取一个点</p>
+</li>
+<li><p>找到其邻居点</p>
+</li>
+<li><p>PCA</p>
+</li>
+<li><p>计算法向量</p>
+</li>
+<li><p>曲率</p>
+<p>  如下图所示：</p>
+<p>  <img src="/Users/xiaoqiangteng/Library/Application Support/typora-user-images/image-20210711131411119.png" alt="image-20210711131411119" style="zoom:50%;"></p>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="2-算法详解"><a href="#2-算法详解" class="headerlink" title="2. 算法详解"></a>2. 算法详解</h1><h2 id="2-1-滤波"><a href="#2-1-滤波" class="headerlink" title="2.1 滤波"></a>2.1 滤波</h2><p>点云滤波处理：</p>
+<ul>
+<li>点云数据密度不规则需要平滑</li>
+<li>因为遮挡等问题造成离群点需要去除</li>
+<li>大量数据需要下采样</li>
+<li>噪声数据需要去除</li>
+</ul>
+<h3 id="2-1-1-Radius-Outlier-Removal算法"><a href="#2-1-1-Radius-Outlier-Removal算法" class="headerlink" title="2.1.1 Radius Outlier Removal算法"></a>2.1.1 Radius Outlier Removal算法</h3><p>在点云数据中用户可以定义每个点的一定半径圆的范围内要有足够多近邻。例如当指定圆领域内至少要有一个邻近点时，黄色点将被删除；如果指定要有两个点时，黄色和绿色点都将被删除而黑色点会被保留（黑色点近邻圆内有4个点），如下图所示：</p>
+<p><img src="/Users/xiaoqiangteng/Library/Application Support/typora-user-images/image-20210711135410069.png" alt="image-20210711135410069" style="zoom:50%;"></p>
+<h3 id="2-1-2-Statistical-Outlier-Removal算法"><a href="#2-1-2-Statistical-Outlier-Removal算法" class="headerlink" title="2.1.2 Statistical Outlier Removal算法"></a>2.1.2 Statistical Outlier Removal算法</h3><p>稀疏离群点移除方法， 通过对查询点与邻域点集之间的距离统计判断来过滤离群点 ：对每个点，我们计算它到它的所有临近点的平均距离。假设得到的结果是一个高斯分布，其形状由均值和标准差决定，平均距离在标准范围（由全局距离平均值和方差定义〉之外的点，可被定义为离群点并可从数据集中去除掉。</p>
+<h3 id="2-1-3-体素滤波"><a href="#2-1-3-体素滤波" class="headerlink" title="2.1.3 体素滤波"></a>2.1.3 体素滤波</h3><p>体素的概念类似于像素，使用AABB包围盒将点云数据体素化，一般体素越密集的地方信息越多，噪音点及离群点可通过体素网格去除。另一方面如果使用高分辨率相机等设备对点云进行采集，往往点云会较为密集。过多的点云数量会对后续分割工作带来困难。体素滤波器可以达到向下采样同时不破坏点云本身几何结构的功能。</p>
+<p><img src="/Users/xiaoqiangteng/Library/Application Support/typora-user-images/image-20210711140553913.png" alt="image-20210711140553913" style="zoom:50%;"></p>
+<h3 id="2-1-4-Bilateral-Filter算法"><a href="#2-1-4-Bilateral-Filter算法" class="headerlink" title="2.1.4 Bilateral Filter算法"></a>2.1.4 Bilateral Filter算法</h3><p>双边滤波是一种非线性滤波器，它可以达到保持边缘、降噪平滑的效果。和其他滤波原理一样，双边滤波也是采用加权平均的方法，用周边像素亮度值的加权平均代表某个像素的强度，所用的加权平均基于高斯分布[1]。最重要的是，双边滤波的权重不仅考虑了像素的欧氏距离（如普通的高斯低通滤波，只考虑了位置对中心像素的影响），还考虑了像素范围域中的辐射差异（例如卷积核中像素与中心像素之间相似程度、颜色强度，深度距离等），在计算中心像素的时候同时考虑这两个权重。</p>
+<p><img src="/Users/xiaoqiangteng/Library/Application Support/typora-user-images/image-20210711154414444.png" alt="image-20210711154414444" style="zoom:50%;"></p>
+<h1 id="2-2-降采样"><a href="#2-2-降采样" class="headerlink" title="2.2 降采样"></a>2.2 降采样</h1><h3 id="2-2-1-Farthest-Point-Sampling-FPS-算法"><a href="#2-2-1-Farthest-Point-Sampling-FPS-算法" class="headerlink" title="2.2.1 Farthest Point Sampling (FPS)算法"></a>2.2.1 Farthest Point Sampling (FPS)算法</h3><p>主要思想：</p>
+<ul>
+<li>不断迭代地选择距离已有采样点集合的最远点</li>
+</ul>
+<p>算法步骤：</p>
+<ul>
+<li>输入点云有N个点，从点云中选取一个点P0作为起始点，得到采样点集合S={P0}</li>
+<li>计算所有点到P0的距离，构成N维数组L，从中选择最大值对应的点作为P1，更新采样点集合S={P0，P1}</li>
+<li>计算所有点到P1的距离，对于每一个点Pi，其距离P1的距离如果小于L[i]，则更新L[i] = d(Pi, P1)，因此，数组L中存储的一直是每一个点到采样点集合S的最近距离</li>
+<li>选取L中最大值对应的点作为P2，更新采样点集合S={P0，P1，P2}</li>
+<li>重复2-4步，一直采样到N’个目标采样点为止</li>
+</ul>
+<p>有两个问题，一个是初始点选择，一个是采用的距离度量。</p>
+<ul>
+<li>初始点选择<ul>
+<li>随机选择一个点，每次结果不同</li>
+<li>选择距离点云重心的最远点，每次结果相同，一般位于局部极值点，具有刻画能力</li>
+</ul>
+</li>
+<li>距离度量<ul>
+<li>欧氏距离：主要对于点云，在3D体空间均匀采样</li>
+<li>测地距离：主要对于三角网格，在三角网格面上进行均匀采样</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-2-2-Normal-Space-Sampling-NSS-算法"><a href="#2-2-2-Normal-Space-Sampling-NSS-算法" class="headerlink" title="2.2.2 Normal Space Sampling (NSS)算法"></a>2.2.2 Normal Space Sampling (NSS)算法</h3><p>法向量上面的降采样，为了保持其局部的特征，针对于点云的对齐而采用。</p>
+<p>主要思想：</p>
+<ul>
+<li>先在法向量的空间里建一堆容器</li>
+<li>依据平面法向量将所有点放入容器中</li>
+<li>在每个容器中都挑选出同等数量的点。</li>
+</ul>
+<h1 id="3-代码实现"><a href="#3-代码实现" class="headerlink" title="3. 代码实现"></a>3. 代码实现</h1><h2 id="3-1Radius-Outlier-Removal算法"><a href="#3-1Radius-Outlier-Removal算法" class="headerlink" title="3.1Radius Outlier Removal算法"></a>3.1Radius Outlier Removal算法</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pcl/point_types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pcl/filters/radius_outlier_removal.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pcl/filters/conditional_removal.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>** argv)</span> </span>&#123;</span><br><span class="line">    pcl::PointCloud&lt;pcl::PointXYZ&gt;::<span class="function">Ptr <span class="title">RawCloud</span><span class="params">(<span class="keyword">new</span> pcl::PointCloud&lt;pcl::PointXYZ&gt;)</span></span>;</span><br><span class="line">    pcl::PointCloud&lt;pcl::PointXYZ&gt;::<span class="function">Ptr <span class="title">Cloud_Filtered</span><span class="params">(<span class="keyword">new</span> pcl::PointCloud&lt;pcl::PointXYZ&gt;)</span></span>;</span><br><span class="line">    RawCloud-&gt;width = <span class="number">10</span>;</span><br><span class="line">    RawCloud-&gt;height = <span class="number">1</span>;</span><br><span class="line">    RawCloud-&gt;points.resize(RawCloud-&gt;width * RawCloud-&gt;height);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">rsize_t</span> i = <span class="number">0</span>; i &lt; RawCloud-&gt;points.size(); ++i) &#123;</span><br><span class="line">        RawCloud-&gt;points[i].x = <span class="number">1024</span> * rand() / (RAND_MAX + <span class="number">1.0f</span>);</span><br><span class="line">        RawCloud-&gt;points[i].y = <span class="number">1024</span> * rand() / (RAND_MAX + <span class="number">1.0f</span>);</span><br><span class="line">        RawCloud-&gt;points[i].z = <span class="number">1024</span> * rand() / (RAND_MAX + <span class="number">1.0f</span>);</span><br><span class="line">    &#125;</span><br><span class="line">     pcl::RadiusOutlierRemoval&lt;pcl::PointXYZ&gt; outrem;</span><br><span class="line">    outrem.setInputCloud(RawCloud);</span><br><span class="line">    outrem.setRadiusSearch(<span class="number">0.8</span>);</span><br><span class="line">    outrem.setMinNeighborsInRadius(<span class="number">2</span>);</span><br><span class="line">    outrem.filter (*Cloud_Filtered);</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cerr</span> &lt;&lt; <span class="string">"Cloud before filtering: "</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">size_t</span> i = <span class="number">0</span>; i &lt; RawCloud-&gt;points.size(); ++i)</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cerr</span> &lt;&lt; <span class="string">"    "</span> &lt;&lt; RawCloud-&gt;points[i].x &lt;&lt; <span class="string">" "</span></span><br><span class="line">        &lt;&lt; RawCloud-&gt;points[i].y &lt;&lt; <span class="string">" "</span></span><br><span class="line">        &lt;&lt; RawCloud-&gt;points[i].z &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cerr</span> &lt;&lt; <span class="string">"Cloud after filtering: "</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">size_t</span> i = <span class="number">0</span>; i &lt; Cloud_Filtered-&gt;points.size(); ++i)</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cerr</span> &lt;&lt; <span class="string">"    "</span> &lt;&lt; Cloud_Filtered-&gt;points[i].x &lt;&lt; <span class="string">" "</span></span><br><span class="line">        &lt;&lt; Cloud_Filtered-&gt;points[i].y &lt;&lt; <span class="string">" "</span></span><br><span class="line">        &lt;&lt; Cloud_Filtered-&gt;points[i].z &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> (<span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="3-2-Statistical-Outlier-Removal算法"><a href="#3-2-Statistical-Outlier-Removal算法" class="headerlink" title="3.2 Statistical Outlier Removal算法"></a>3.2 Statistical Outlier Removal算法</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pcl/io/pcd_io.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pcl/point_types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pcl/filters/statistical_outlier_removal.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>** argv)</span> </span>&#123;</span><br><span class="line">  pcl::PointCloud&lt;pcl::PointXYZ&gt;::<span class="function">Ptr <span class="title">cloud</span> <span class="params">(<span class="keyword">new</span> pcl::PointCloud&lt;pcl::PointXYZ&gt;)</span></span>;</span><br><span class="line">  pcl::PointCloud&lt;pcl::PointXYZ&gt;::<span class="function">Ptr <span class="title">cloud_filtered</span> <span class="params">(<span class="keyword">new</span> pcl::PointCloud&lt;pcl::PointXYZ&gt;)</span></span>;</span><br><span class="line">  pcl::PCDReader reader;</span><br><span class="line">  reader.read&lt;pcl::PointXYZ&gt; (<span class="string">"..\\source\\table_scene_lms400.pcd"</span>, *cloud);</span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">cerr</span> &lt;&lt; <span class="string">"Cloud before filtering: "</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">cerr</span> &lt;&lt; *cloud &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">  </span><br><span class="line">  pcl::StatisticalOutlierRemoval&lt;pcl::PointXYZ&gt; sor;</span><br><span class="line">  sor.setInputCloud (cloud);</span><br><span class="line">  sor.setMeanK (<span class="number">50</span>);</span><br><span class="line">  sor.setStddevMulThresh (<span class="number">1.0</span>);</span><br><span class="line">  sor.filter (*cloud_filtered);</span><br><span class="line">  </span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">cerr</span> &lt;&lt; <span class="string">"Cloud after filtering: "</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">cerr</span> &lt;&lt; *cloud_filtered &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">  pcl::PCDWriter writer;</span><br><span class="line">  writer.write&lt;pcl::PointXYZ&gt; (<span class="string">"table_scene_lms400_inliers.pcd"</span>, *cloud_filtered, <span class="literal">false</span>);</span><br><span class="line">  </span><br><span class="line">  sor.setNegative (<span class="literal">true</span>);</span><br><span class="line">  sor.filter (*cloud_filtered);</span><br><span class="line">  writer.write&lt;pcl::PointXYZ&gt; (<span class="string">"table_scene_lms400_outliers.pcd"</span>, *cloud_filtered, <span class="literal">false</span>);</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">return</span> (<span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="3-3-体素滤波"><a href="#3-3-体素滤波" class="headerlink" title="3.3 体素滤波"></a>3.3 体素滤波</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pcl/io/pcd_io.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pcl/point_types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pcl/filters/voxel_grid.h&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>** argv)</span> </span>&#123;</span><br><span class="line">    pcl::PCLPointCloud2::<span class="function">Ptr <span class="title">cloud</span><span class="params">(<span class="keyword">new</span> pcl::PCLPointCloud2())</span></span>;</span><br><span class="line">    pcl::PCLPointCloud2::<span class="function">Ptr <span class="title">cloud_filtered</span><span class="params">(<span class="keyword">new</span> pcl::PCLPointCloud2())</span></span>;</span><br><span class="line"></span><br><span class="line">    pcl::PCDReader reader;</span><br><span class="line">    reader.read (<span class="string">"table_scene_lms400.pcd"</span>, *cloud);</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cerr</span> &lt;&lt; <span class="string">"Point cloud before filtering: "</span> &lt;&lt; cloud-&gt;width * cloud-&gt;height </span><br><span class="line">    &lt;&lt; <span class="string">" data points ("</span> &lt;&lt; pcl::getFieldsList (*cloud) &lt;&lt; <span class="string">")."</span>;</span><br><span class="line"></span><br><span class="line">    pcl::VoxelGrid&lt;pcl::PCLPointCloud2&gt; sor;</span><br><span class="line">    sor.setInputCloud (cloud);</span><br><span class="line">    sor.setLeafSize (<span class="number">0.01f</span>, <span class="number">0.01f</span>, <span class="number">0.01f</span>);</span><br><span class="line">    sor.filter (*cloud_filtered);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cerr</span> &lt;&lt; <span class="string">"Point cloud after filtering: "</span> &lt;&lt; cloud_filtered-&gt;width * cloud_filtered-&gt;height </span><br><span class="line">    &lt;&lt; <span class="string">" data points ("</span> &lt;&lt; pcl::getFieldsList (*cloud_filtered) &lt;&lt; <span class="string">")."</span>;</span><br><span class="line"></span><br><span class="line">    pcl::PCDWriter writer;</span><br><span class="line">    writer.write (<span class="string">"2f.pcd"</span>, *cloud_filtered, Eigen::Vector4f::Zero (), Eigen::Quaternionf::Identity (), <span class="literal">false</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> (<span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="3-4-Farthest-Point-Sampling-FPS-算法"><a href="#3-4-Farthest-Point-Sampling-FPS-算法" class="headerlink" title="3.4 Farthest Point Sampling (FPS)算法"></a>3.4 Farthest Point Sampling (FPS)算法</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> print_function</span><br><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">from</span> torch.autograd <span class="keyword">import</span> Variable</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">farthest_point_sample</span><span class="params">(xyz, npoint)</span>:</span> </span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Input:</span></span><br><span class="line"><span class="string">        xyz: pointcloud data, [B, N, 3]</span></span><br><span class="line"><span class="string">        npoint: number of samples</span></span><br><span class="line"><span class="string">    Return:</span></span><br><span class="line"><span class="string">        centroids: sampled pointcloud index, [B, npoint]</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    xyz = xyz.transpose(<span class="number">2</span>,<span class="number">1</span>)</span><br><span class="line">    device = xyz.device</span><br><span class="line">    B, N, C = xyz.shape</span><br><span class="line">    </span><br><span class="line">    centroids = torch.zeros(B, npoint, dtype=torch.long).to(device)</span><br><span class="line">    distance = torch.ones(B, N).to(device) * <span class="number">1e10</span></span><br><span class="line"></span><br><span class="line">    batch_indices = torch.arange(B, dtype=torch.long).to(device)</span><br><span class="line">    barycenter = torch.sum((xyz), <span class="number">1</span>) </span><br><span class="line">    barycenter = barycenter/xyz.shape[<span class="number">1</span>]</span><br><span class="line">    barycenter = barycenter.view(B, <span class="number">1</span>, <span class="number">3</span>)</span><br><span class="line"></span><br><span class="line">    dist = torch.sum((xyz - barycenter) ** <span class="number">2</span>, <span class="number">-1</span>)</span><br><span class="line">    farthest = torch.max(dist,<span class="number">1</span>)[<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(npoint):</span><br><span class="line">        print(<span class="string">"-------------------------------------------------------"</span>)</span><br><span class="line">        print(<span class="string">"The %d farthest pts %s "</span> % (i, farthest))</span><br><span class="line">        centroids[:, i] = farthest</span><br><span class="line">        centroid = xyz[batch_indices, farthest, :].view(B, <span class="number">1</span>, <span class="number">3</span>)</span><br><span class="line">        dist = torch.sum((xyz - centroid) ** <span class="number">2</span>, <span class="number">-1</span>)</span><br><span class="line">        print(<span class="string">"dist    : "</span>, dist)</span><br><span class="line">        mask = dist &lt; distance</span><br><span class="line">        print(<span class="string">"mask %i : %s"</span> % (i,mask))</span><br><span class="line">        distance[mask] = dist[mask]</span><br><span class="line">        print(<span class="string">"distance: "</span>, distance)</span><br><span class="line"></span><br><span class="line">        farthest = torch.max(distance, <span class="number">-1</span>)[<span class="number">1</span>]</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">return</span> centroids</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    sim_data = Variable(torch.rand(<span class="number">1</span>,<span class="number">3</span>,<span class="number">8</span>))</span><br><span class="line">    print(sim_data)</span><br><span class="line"></span><br><span class="line">    centroids = farthest_point_sample(sim_data, <span class="number">4</span>)</span><br><span class="line">    </span><br><span class="line">    print(<span class="string">"Sampled pts: "</span>, centroids)</span><br></pre></td></tr></table></figure>
+<h2 id="3-5-Normal-Space-Sampling-NSS-算法"><a href="#3-5-Normal-Space-Sampling-NSS-算法" class="headerlink" title="3.5 Normal Space Sampling (NSS)算法"></a>3.5 Normal Space Sampling (NSS)算法</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pcl/io/pcd_io.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pcl/point_cloud.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pcl/features/normal_3d_omp.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pcl/filters/normal_space.h&gt;//法线空间采样</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pcl/visualization/pcl_visualizer.h&gt;//可视化</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;boost/thread/thread.hpp&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">estimate_normals</span><span class="params">(pcl::PointCloud&lt;pcl::PointXYZ&gt;::Ptr cloud_in, pcl::PointCloud&lt;pcl::Normal&gt;::Ptr normals)</span> </span>&#123;</span><br><span class="line">    pcl::NormalEstimationOMP&lt;pcl::PointXYZ, pcl::Normal&gt; n;</span><br><span class="line">    n.setInputCloud(cloud_in);</span><br><span class="line">    pcl::search::KdTree&lt;pcl::PointXYZ&gt;::<span class="function">Ptr <span class="title">tree</span><span class="params">(<span class="keyword">new</span> pcl::search::KdTree&lt;pcl::PointXYZ&gt;())</span></span>;</span><br><span class="line">    n.setSearchMethod(tree);</span><br><span class="line">    n.setNumberOfThreads(<span class="number">8</span>);</span><br><span class="line">    n.setKSearch(<span class="number">30</span>);</span><br><span class="line">    n.compute(*normals);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">visualize_cloud</span><span class="params">(pcl::PointCloud&lt;pcl::PointXYZ&gt;::Ptr&amp; cloud, pcl::PointCloud&lt;pcl::PointXYZ&gt;::Ptr&amp; filter_cloud)</span> </span>&#123;</span><br><span class="line">    boost::<span class="built_in">shared_ptr</span>&lt;pcl::visualization::PCLVisualizer&gt; viewer(<span class="keyword">new</span> pcl::visualization::PCLVisualizer(<span class="string">"显示点云"</span>));</span><br><span class="line"></span><br><span class="line">    int v1(0), v2(0);</span><br><span class="line">    viewer-&gt;createViewPort(<span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">0.5</span>, <span class="number">1.0</span>, v1);</span><br><span class="line">    viewer-&gt;setBackgroundColor(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, v1);</span><br><span class="line">    viewer-&gt;addText(<span class="string">"point clouds"</span>, <span class="number">10</span>, <span class="number">10</span>, <span class="string">"v1_text"</span>, v1);</span><br><span class="line">    viewer-&gt;createViewPort(<span class="number">0.5</span>, <span class="number">0.0</span>, <span class="number">1</span>, <span class="number">1.0</span>, v2);</span><br><span class="line">    viewer-&gt;setBackgroundColor(<span class="number">0.1</span>, <span class="number">0.1</span>, <span class="number">0.1</span>, v2);</span><br><span class="line">    viewer-&gt;addText(<span class="string">"filtered point clouds"</span>, <span class="number">10</span>, <span class="number">10</span>, <span class="string">"v2_text"</span>, v2);</span><br><span class="line">    pcl::visualization::PointCloudColorHandlerGenericField&lt;pcl::PointXYZ&gt; fildColor(cloud, <span class="string">"z"</span>);</span><br><span class="line">    viewer-&gt;addPointCloud&lt;pcl::PointXYZ&gt;(cloud, fildColor, <span class="string">"sample cloud"</span>, v1);</span><br><span class="line"></span><br><span class="line">    viewer-&gt;addPointCloud&lt;pcl::PointXYZ&gt;(filter_cloud, <span class="string">"cloud_filtered"</span>, v2);</span><br><span class="line">    viewer-&gt;setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="string">"cloud_filtered"</span>, v2);</span><br><span class="line">    <span class="keyword">while</span> (!viewer-&gt;wasStopped())</span><br><span class="line">    &#123;</span><br><span class="line">        viewer-&gt;spinOnce(<span class="number">100</span>);</span><br><span class="line">        boost::this_thread::sleep(boost::posix_time::microseconds(<span class="number">100000</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    pcl::PointCloud&lt;pcl::PointXYZ&gt;::<span class="function">Ptr <span class="title">cloud</span><span class="params">(<span class="keyword">new</span> pcl::PointCloud&lt;pcl::PointXYZ&gt;)</span></span>;</span><br><span class="line">    <span class="keyword">if</span> (pcl::io::loadPCDFile&lt;pcl::PointXYZ&gt;(<span class="string">"飞机.pcd"</span>, *cloud) == <span class="number">-1</span>) &#123;</span><br><span class="line">        PCL_ERROR(<span class="string">"读取源标点云失败 \n"</span>);</span><br><span class="line">        <span class="keyword">return</span> (<span class="number">-1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"从点云中读取 "</span> &lt;&lt; cloud-&gt;size() &lt;&lt; <span class="string">" 个点"</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    pcl::PointCloud&lt;pcl::Normal&gt;::<span class="function">Ptr <span class="title">normals</span><span class="params">(<span class="keyword">new</span> pcl::PointCloud&lt;pcl::Normal&gt;)</span></span>;</span><br><span class="line">    estimate_normals(cloud,normals);</span><br><span class="line">    pcl::NormalSpaceSampling&lt;pcl::PointXYZ, pcl::Normal&gt; nss;</span><br><span class="line">    nss.setInputCloud(cloud);</span><br><span class="line">    nss.setNormals(normals);</span><br><span class="line">    nss.setBins(<span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>);</span><br><span class="line">    nss.setSeed(<span class="number">0</span>);</span><br><span class="line">    nss.setSample(<span class="number">1000</span>);</span><br><span class="line">    pcl::PointCloud&lt;pcl::PointXYZ&gt;::<span class="function">Ptr <span class="title">cloud_nss</span><span class="params">(<span class="keyword">new</span> pcl::PointCloud&lt;pcl::PointXYZ&gt;)</span></span>;</span><br><span class="line">    nss.filter(*cloud_nss);</span><br><span class="line">    pcl::io::savePCDFileASCII (<span class="string">"nss.pcd"</span>, *cloud_nss);</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"法线空间采样后的点云个数为："</span> &lt;&lt; cloud_nss-&gt;points.size() &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    visualize_cloud(cloud, cloud_nss);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="3-6-Bilateral-Filter算法"><a href="#3-6-Bilateral-Filter算法" class="headerlink" title="3.6 Bilateral Filter算法"></a>3.6 Bilateral Filter算法</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bilateralfiter</span><span class="params">(cv::Mat&amp; src, cv::Mat&amp; dst, cv::Size wsize, <span class="keyword">double</span> spaceSigma, <span class="keyword">double</span> colorSigma)</span> </span>&#123;</span><br><span class="line">	cv::Mat spaceMask;</span><br><span class="line">	<span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">double</span>&gt; colorMask;</span><br><span class="line">	cv::Mat Mask0 = cv::Mat::zeros(wsize, CV_64F);</span><br><span class="line">	cv::Mat Mask1 = cv::Mat::zeros(wsize, CV_64F);</span><br><span class="line">	cv::Mat Mask2 = cv::Mat::zeros(wsize, CV_64F);</span><br><span class="line"> </span><br><span class="line">	getGausssianMask(spaceMask, wsize, spaceSigma);</span><br><span class="line">	getColorMask(colorMask, colorSigma);</span><br><span class="line">	<span class="keyword">int</span> hh = (wsize.height - <span class="number">1</span>) / <span class="number">2</span>;</span><br><span class="line">	<span class="keyword">int</span> ww = (wsize.width - <span class="number">1</span>) / <span class="number">2</span>;</span><br><span class="line">	dst.create(src.size(), src.type());</span><br><span class="line">	cv::Mat Newsrc;</span><br><span class="line">	cv::copyMakeBorder(src, Newsrc, hh, hh, ww, ww, cv::BORDER_REPLICATE);</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = hh; i &lt; src.rows + hh; ++i)&#123;</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> j = ww; j &lt; src.cols + ww; ++j)&#123;</span><br><span class="line">			<span class="keyword">double</span> sum[<span class="number">3</span>] = &#123; <span class="number">0</span> &#125;;</span><br><span class="line">			<span class="keyword">int</span> graydiff[<span class="number">3</span>] = &#123; <span class="number">0</span> &#125;;</span><br><span class="line">			<span class="keyword">double</span> space_color_sum[<span class="number">3</span>] = &#123; <span class="number">0.0</span> &#125;;</span><br><span class="line"> </span><br><span class="line">			<span class="keyword">for</span> (<span class="keyword">int</span> r = -hh; r &lt;= hh; ++r)&#123;</span><br><span class="line">				<span class="keyword">for</span> (<span class="keyword">int</span> c = -ww; c &lt;= ww; ++c)&#123;</span><br><span class="line">					<span class="keyword">if</span> (src.channels() == <span class="number">1</span>)&#123;</span><br><span class="line">						<span class="keyword">int</span> centerPix = Newsrc.at&lt;uchar&gt;(i, j);</span><br><span class="line">						<span class="keyword">int</span> pix = Newsrc.at&lt;uchar&gt;(i + r, j + c);</span><br><span class="line">						graydiff[<span class="number">0</span>] = <span class="built_in">abs</span>(pix - centerPix);</span><br><span class="line">						<span class="keyword">double</span> colorWeight = colorMask[graydiff[<span class="number">0</span>]];</span><br><span class="line">						Mask0.at&lt;<span class="keyword">double</span>&gt;(r + hh, c + ww) = colorWeight * spaceMask.at&lt;<span class="keyword">double</span>&gt;(r + hh, c + ww);</span><br><span class="line">						space_color_sum[<span class="number">0</span>] = space_color_sum[<span class="number">0</span>] + Mask0.at&lt;<span class="keyword">double</span>&gt;(r + hh, c + ww);</span><br><span class="line"> </span><br><span class="line">					&#125;</span><br><span class="line">					<span class="keyword">else</span> <span class="keyword">if</span> (src.channels() == <span class="number">3</span>)&#123;</span><br><span class="line">						cv::Vec3b centerPix = Newsrc.at&lt;cv::Vec3b&gt;(i, j);</span><br><span class="line">						cv::Vec3b bgr = Newsrc.at&lt;cv::Vec3b&gt;(i + r, j + c);</span><br><span class="line">						graydiff[<span class="number">0</span>] = <span class="built_in">abs</span>(bgr[<span class="number">0</span>] - centerPix[<span class="number">0</span>]); graydiff[<span class="number">1</span>] = <span class="built_in">abs</span>(bgr[<span class="number">1</span>] - centerPix[<span class="number">1</span>]); graydiff[<span class="number">2</span>] = <span class="built_in">abs</span>(bgr[<span class="number">2</span>] - centerPix[<span class="number">2</span>]);</span><br><span class="line">						<span class="keyword">double</span> colorWeight0 = colorMask[graydiff[<span class="number">0</span>]];</span><br><span class="line">						<span class="keyword">double</span> colorWeight1 = colorMask[graydiff[<span class="number">1</span>]];</span><br><span class="line">						<span class="keyword">double</span> colorWeight2 = colorMask[graydiff[<span class="number">2</span>]];</span><br><span class="line">						Mask0.at&lt;<span class="keyword">double</span>&gt;(r + hh, c + ww) = colorWeight0 * spaceMask.at&lt;<span class="keyword">double</span>&gt;(r + hh, c + ww);</span><br><span class="line">						Mask1.at&lt;<span class="keyword">double</span>&gt;(r + hh, c + ww) = colorWeight1 * spaceMask.at&lt;<span class="keyword">double</span>&gt;(r + hh, c + ww);</span><br><span class="line">						Mask2.at&lt;<span class="keyword">double</span>&gt;(r + hh, c + ww) = colorWeight2 * spaceMask.at&lt;<span class="keyword">double</span>&gt;(r + hh, c + ww);</span><br><span class="line">						space_color_sum[<span class="number">0</span>] = space_color_sum[<span class="number">0</span>] + Mask0.at&lt;<span class="keyword">double</span>&gt;(r + hh, c + ww);</span><br><span class="line">						space_color_sum[<span class="number">1</span>] = space_color_sum[<span class="number">1</span>] + Mask1.at&lt;<span class="keyword">double</span>&gt;(r + hh, c + ww);</span><br><span class="line">						space_color_sum[<span class="number">2</span>] = space_color_sum[<span class="number">2</span>] + Mask2.at&lt;<span class="keyword">double</span>&gt;(r + hh, c + ww);</span><br><span class="line"> </span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line"> </span><br><span class="line">			<span class="keyword">if</span>(src.channels() == <span class="number">1</span>)</span><br><span class="line">			Mask0 = Mask0 / space_color_sum[<span class="number">0</span>]; </span><br><span class="line">			<span class="keyword">else</span>&#123;</span><br><span class="line">				Mask0 = Mask0 / space_color_sum[<span class="number">0</span>];</span><br><span class="line">				Mask1 = Mask1 / space_color_sum[<span class="number">1</span>];</span><br><span class="line">				Mask2 = Mask2 / space_color_sum[<span class="number">2</span>];</span><br><span class="line">			&#125;</span><br><span class="line">				</span><br><span class="line"> </span><br><span class="line">			<span class="keyword">for</span> (<span class="keyword">int</span> r = -hh; r &lt;= hh; ++r)&#123;</span><br><span class="line">				<span class="keyword">for</span> (<span class="keyword">int</span> c = -ww; c &lt;= ww; ++c)&#123;</span><br><span class="line"> </span><br><span class="line">					<span class="keyword">if</span> (src.channels() == <span class="number">1</span>)&#123;</span><br><span class="line">						sum[<span class="number">0</span>] = sum[<span class="number">0</span>] + Newsrc.at&lt;uchar&gt;(i + r, j + c) * Mask0.at&lt;<span class="keyword">double</span>&gt;(r + hh, c + ww);</span><br><span class="line">					&#125;</span><br><span class="line">					<span class="keyword">else</span> <span class="keyword">if</span>(src.channels() == <span class="number">3</span>)&#123;</span><br><span class="line">						cv::Vec3b bgr = Newsrc.at&lt;cv::Vec3b&gt;(i + r, j + c);</span><br><span class="line">						sum[<span class="number">0</span>] = sum[<span class="number">0</span>] + bgr[<span class="number">0</span>] * Mask0.at&lt;<span class="keyword">double</span>&gt;(r + hh, c + ww);</span><br><span class="line">						sum[<span class="number">1</span>] = sum[<span class="number">1</span>] + bgr[<span class="number">1</span>] * Mask1.at&lt;<span class="keyword">double</span>&gt;(r + hh, c + ww);</span><br><span class="line">						sum[<span class="number">2</span>] = sum[<span class="number">2</span>] + bgr[<span class="number">2</span>] * Mask2.at&lt;<span class="keyword">double</span>&gt;(r + hh, c + ww);</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line"> </span><br><span class="line">			<span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; src.channels(); ++k)&#123;</span><br><span class="line">				<span class="keyword">if</span> (sum[k] &lt; <span class="number">0</span>)</span><br><span class="line">					sum[k] = <span class="number">0</span>;</span><br><span class="line">				<span class="keyword">else</span> <span class="keyword">if</span> (sum[k]&gt;<span class="number">255</span>)</span><br><span class="line">					sum[k] = <span class="number">255</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span> (src.channels() == <span class="number">1</span>)</span><br><span class="line">			&#123;</span><br><span class="line">				dst.at&lt;uchar&gt;(i - hh, j - ww) = <span class="keyword">static_cast</span>&lt;uchar&gt;(sum[<span class="number">0</span>]);</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span> <span class="keyword">if</span> (src.channels() == <span class="number">3</span>)</span><br><span class="line">			&#123;</span><br><span class="line">				cv::Vec3b bgr = &#123; <span class="keyword">static_cast</span>&lt;uchar&gt;(sum[<span class="number">0</span>]), <span class="keyword">static_cast</span>&lt;uchar&gt;(sum[<span class="number">1</span>]), <span class="keyword">static_cast</span>&lt;uchar&gt;(sum[<span class="number">2</span>]) &#125;;</span><br><span class="line">				dst.at&lt;cv::Vec3b&gt;(i - hh, j - ww) = bgr;</span><br><span class="line">			&#125;</span><br><span class="line"> </span><br><span class="line">		&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="4-总结和讨论"><a href="#4-总结和讨论" class="headerlink" title="4. 总结和讨论"></a>4. 总结和讨论</h1><h1 id="5-参考"><a href="#5-参考" class="headerlink" title="5. 参考"></a>5. 参考</h1><ul>
+<li><a href="https://blog.csdn.net/weixin_40647819/article/details/89761563" target="_blank" rel="noopener">双边滤波(bilateralfiter)原理及C++实现</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+        
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/理论/" rel="tag"># 理论</a>
+          
+            <a href="/tags/三维点云处理/" rel="tag"># 三维点云处理</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/07/04/slam/vSLAMNet（九）-运动估计-PnP问题/" rel="next" title="vSLAMNet（九）-运动估计-PnP问题">
+                <i class="fa fa-chevron-left"></i> vSLAMNet（九）-运动估计-PnP问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Xiaoqiang Teng</p>
+              <p class="site-description motion-element" itemprop="description">Remember what should be remembered, and forget what should be forgotten.Alter what is changeable, and accept what is mutable.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">109</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">51</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">43</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-概述"><span class="nav-text">1. 概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-算法详解"><span class="nav-text">2. 算法详解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-滤波"><span class="nav-text">2.1 滤波</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-1-Radius-Outlier-Removal算法"><span class="nav-text">2.1.1 Radius Outlier Removal算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-2-Statistical-Outlier-Removal算法"><span class="nav-text">2.1.2 Statistical Outlier Removal算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-3-体素滤波"><span class="nav-text">2.1.3 体素滤波</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-4-Bilateral-Filter算法"><span class="nav-text">2.1.4 Bilateral Filter算法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-2-降采样"><span class="nav-text">2.2 降采样</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-1-Farthest-Point-Sampling-FPS-算法"><span class="nav-text">2.2.1 Farthest Point Sampling (FPS)算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-2-Normal-Space-Sampling-NSS-算法"><span class="nav-text">2.2.2 Normal Space Sampling (NSS)算法</span></a></li></ol></li></ol><li class="nav-item nav-level-1"><a class="nav-link" href="#3-代码实现"><span class="nav-text">3. 代码实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1Radius-Outlier-Removal算法"><span class="nav-text">3.1Radius Outlier Removal算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-Statistical-Outlier-Removal算法"><span class="nav-text">3.2 Statistical Outlier Removal算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-体素滤波"><span class="nav-text">3.3 体素滤波</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-4-Farthest-Point-Sampling-FPS-算法"><span class="nav-text">3.4 Farthest Point Sampling (FPS)算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-5-Normal-Space-Sampling-NSS-算法"><span class="nav-text">3.5 Normal Space Sampling (NSS)算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-6-Bilateral-Filter算法"><span class="nav-text">3.6 Bilateral Filter算法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-总结和讨论"><span class="nav-text">4. 总结和讨论</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-参考"><span class="nav-text">5. 参考</span></a></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiaoqiang Teng</span>
+
+  
+</div>
+
+
+
+<div class="powered-by">
+<i class="fa fa-user-md"></i><span id="busuanzi_container_site_uv">
+  本站访客数:<span id="busuanzi_value_site_uv"></span>
+</span>
+</div>
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+<div>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style="display:none">
+    本站总访问量 <span id="busuanzi_value_site_pv"></span> 次
+    <span class="post-meta-divider">|</span>
+</span>
+<span id="busuanzi_container_site_uv" style="display:none">
+    有<span id="busuanzi_value_site_uv"></span>人看过我的博客啦
+</span>
+</div>
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
